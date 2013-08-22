@@ -65,26 +65,32 @@ func (self *T) LengthSqr() float32 {
 	return self[0]*self[0] + self[1]*self[1]
 }
 
-func (self *T) Scale(f float32) {
+func (self *T) Scale(f float32) *T {
 	self[0] *= f
 	self[1] *= f
+	return self
 }
 
-func (self *T) Invert() {
+func (self *T) Scaled(f float32) T {
+	return T{self[0] * f, self[1] * f}
+}
+
+func (self *T) Invert() *T {
 	self[0] = -self[0]
 	self[1] = -self[1]
+	return self
 }
 
 func (self *T) Inverted() T {
 	return T{-self[0], -self[1]}
 }
 
-func (self *T) Normalize() {
+func (self *T) Normalize() *T {
 	sl := self.LengthSqr()
 	if sl == 0 || sl == 1 {
-		return
+		return self
 	}
-	self.Scale(1 / fmath.Sqrt(sl))
+	return self.Scale(1 / fmath.Sqrt(sl))
 }
 
 func (self *T) Normalized() T {
@@ -93,19 +99,58 @@ func (self *T) Normalized() T {
 	return v
 }
 
-func (self *T) Add(v *T) {
+func (self *T) Add(v *T) *T {
 	self[0] += v[0]
 	self[1] += v[1]
+	return self
 }
 
-func (self *T) Sub(v *T) {
+func (self *T) Sub(v *T) *T {
 	self[0] -= v[0]
 	self[1] -= v[1]
+	return self
 }
 
-func (self *T) Mul(v *T) {
+func (self *T) Mul(v *T) *T {
 	self[0] *= v[0]
 	self[1] *= v[1]
+	return self
+}
+
+func (self *T) Rotated(angle float32) T {
+	sinus := fmath.Sin(angle)
+	cosinus := fmath.Cos(angle)
+	return T{
+		self[0]*cosinus - self[1]*sinus,
+		self[0]*sinus + self[1]*cosinus,
+	}
+}
+
+func (self *T) Rotate(angle float32) *T {
+	*self = self.Rotated(angle)
+	return self
+}
+
+func (self *T) RotateAroundPoint(point *T, angle float32) *T {
+	return self.Sub(point).Rotate(angle).Add(point)
+}
+
+func (self *T) Rotate90DegLeft() *T {
+	temp := self[0]
+	self[0] = -self[1]
+	self[1] = temp
+	return self
+}
+
+func (self *T) Rotate90DegRight() *T {
+	temp := self[0]
+	self[0] = self[1]
+	self[1] = -temp
+	return self
+}
+
+func (self *T) Angle() float32 {
+	return fmath.Atan2(self[1], self[0])
 }
 
 func Add(a, b *T) T {
@@ -133,6 +178,16 @@ func Cross(a, b *T) T {
 
 func Angle(a, b *T) float32 {
 	return fmath.Acos(Dot(a, b))
+}
+
+func IsLeftWinding(a, b *T) bool {
+	ab := b.Rotated(-a.Angle())
+	return ab.Angle() > 0
+}
+
+func IsRightWinding(a, b *T) bool {
+	ab := b.Rotated(-a.Angle())
+	return ab.Angle() < 0
 }
 
 func Min(a, b *T) T {
