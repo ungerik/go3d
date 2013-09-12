@@ -52,11 +52,13 @@ func (self *T) Vec4() vec4d.T {
 	return vec4d.T(*self)
 }
 
+// Parse parses T from a string. See also String()
 func Parse(s string) (r T, err error) {
 	_, err = fmt.Sscanf(s, "%f %f %f %f", &r[0], &r[1], &r[2], &r[3])
 	return r, err
 }
 
+// String formats T as string. See also Parse().
 func (self *T) String() string {
 	return fmt.Sprintf("%f %f %f %f", self[0], self[1], self[2], self[3])
 }

@@ -1,3 +1,5 @@
+// The package hermit contains functions for float32 cubic hermit splines.
+// See: http://en.wikipedia.org/wiki/Cubic_Hermite_spline
 package hermit
 
 import (
@@ -5,6 +7,7 @@ import (
 	"github.com/ungerik/go3d/vec3"
 )
 
+// Point2D returns a point on a 2D hermit spline at t (0,1).
 func Point2D(pointA, tangentA, pointB, tangentB *vec2.T, t float32) vec2.T {
 	t2 := t * t
 	t3 := t2 * t
@@ -27,6 +30,7 @@ func Point2D(pointA, tangentA, pointB, tangentB *vec2.T, t float32) vec2.T {
 	return result
 }
 
+// Point3D returns a point on a 3D hermit spline at t (0,1).
 func Point3D(pointA, tangentA, pointB, tangentB *vec3.T, t float32) vec3.T {
 	t2 := t * t
 	t3 := t2 * t
@@ -49,6 +53,7 @@ func Point3D(pointA, tangentA, pointB, tangentB *vec3.T, t float32) vec3.T {
 	return result
 }
 
+// Tangent2D returns a tangent on a 2D hermit spline at t (0,1).
 func Tangent2D(pointA, tangentA, pointB, tangentB *vec2.T, t float32) vec2.T {
 	t2 := t * t
 	t3 := t2 * t
@@ -71,6 +76,7 @@ func Tangent2D(pointA, tangentA, pointB, tangentB *vec2.T, t float32) vec2.T {
 	return result
 }
 
+// Tangent3D returns a tangent on a 3D hermit spline at t (0,1).
 func Tangent3D(pointA, tangentA, pointB, tangentB *vec3.T, t float32) vec3.T {
 	t2 := t * t
 	t3 := t2 * t
@@ -93,6 +99,7 @@ func Tangent3D(pointA, tangentA, pointB, tangentB *vec3.T, t float32) vec3.T {
 	return result
 }
 
+// Length2D returns the length of a 2D hermit spline from pointA to t (0,1).
 func Length2D(pointA, tangentA, pointB, tangentB *vec2.T, t float32) float32 {
 	sqrT := t * t
 	t1 := sqrT * 0.5
@@ -117,6 +124,7 @@ func Length2D(pointA, tangentA, pointB, tangentB *vec2.T, t float32) float32 {
 	return result.Length()
 }
 
+// Length3D returns the length of a 3D hermit spline from pointA to t (0,1).
 func Length3D(pointA, tangentA, pointB, tangentB *vec3.T, t float32) float32 {
 	sqrT := t * t
 	t1 := sqrT * 0.5
