@@ -198,13 +198,6 @@ func (self *T) SetScaling(s *vec4.T) *T {
 	return self
 }
 
-func (self *T) Scale(s float32) *T {
-	self[0][0] *= s
-	self[1][1] *= s
-	self[2][2] *= s
-	return self
-}
-
 func (self *T) ScaleVec3(s *vec3.T) *T {
 	self[0][0] *= s[0]
 	self[1][1] *= s[1]

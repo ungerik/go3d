@@ -1,10 +1,10 @@
-package vec3d
+package vec3
 
 import (
 	"fmt"
 	"math"
 
-	"github.com/ungerik/go3d/genericd"
+	"github.com/ungerik/go3d/float64/generic"
 )
 
 var (
@@ -26,7 +26,7 @@ var (
 type T [3]float64
 
 // From copies a T from a generic.T implementation.
-func From(other genericd.T) T {
+func From(other generic.T) T {
 	switch other.Size() {
 	case 2:
 		return T{other.Get(0, 0), other.Get(0, 1), 0}

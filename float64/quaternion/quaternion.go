@@ -1,11 +1,11 @@
-package quaterniond
+package quaternion
 
 import (
 	"fmt"
 	"math"
 
-	"github.com/ungerik/go3d/vec3d"
-	"github.com/ungerik/go3d/vec4d"
+	"github.com/ungerik/go3d/float64/vec3"
+	"github.com/ungerik/go3d/float64/vec4"
 )
 
 var (
@@ -15,7 +15,7 @@ var (
 
 type T [4]float64
 
-func FromAxisAngle(axis *vec3d.T, angle float64) T {
+func FromAxisAngle(axis *vec3.T, angle float64) T {
 	angle *= 0.5
 	sin := math.Sin(angle)
 	q := T{axis[0] * sin, axis[1] * sin, axis[2] * sin, math.Cos(angle)}
@@ -44,12 +44,12 @@ func FromEulerAngles(yHead, xPitch, zRoll float64) T {
 	return Mul3(&qy, &qx, &qz)
 }
 
-func FromVec4(v *vec4d.T) T {
+func FromVec4(v *vec4.T) T {
 	return T(*v)
 }
 
-func (self *T) Vec4() vec4d.T {
-	return vec4d.T(*self)
+func (self *T) Vec4() vec4.T {
+	return vec4.T(*self)
 }
 
 // Parse parses T from a string. See also String()
@@ -63,7 +63,7 @@ func (self *T) String() string {
 	return fmt.Sprintf("%f %f %f %f", self[0], self[1], self[2], self[3])
 }
 
-func (self *T) AxisAngle() (axis vec3d.T, angle float64) {
+func (self *T) AxisAngle() (axis vec3.T, angle float64) {
 	cos := self[3]
 	sin := math.Sqrt(1 - cos*cos)
 	angle = math.Acos(cos)
@@ -147,7 +147,7 @@ func (self *T) IsUnitQuat(tolerance float64) bool {
 	return norm >= (1.0-tolerance) && norm <= (1.0+tolerance)
 }
 
-func (self *T) RotateVec3(v *vec3d.T) {
+func (self *T) RotateVec3(v *vec3.T) {
 	qv := T{v[0], v[1], v[2], 0}
 	inv := self.Inverted()
 	q := Mul3(self, &qv, &inv)
@@ -156,11 +156,11 @@ func (self *T) RotateVec3(v *vec3d.T) {
 	v[2] = q[2]
 }
 
-func (self *T) RotatedVec3(v *vec3d.T) vec3d.T {
+func (self *T) RotatedVec3(v *vec3.T) vec3.T {
 	qv := T{v[0], v[1], v[2], 0}
 	inv := self.Inverted()
 	q := Mul3(self, &qv, &inv)
-	return vec3d.T{q[0], q[1], q[2]}
+	return vec3.T{q[0], q[1], q[2]}
 }
 
 func Dot(a, b *T) float64 {
@@ -205,9 +205,9 @@ func Slerp(a, b *T, f float64) T {
 	return q.Normalized()
 }
 
-func Vec3Diff(a, b *vec3d.T) T {
-	cr := vec3d.Cross(a, b)
-	sr := math.Sqrt(2 * (1 + vec3d.Dot(a, b)))
+func Vec3Diff(a, b *vec3.T) T {
+	cr := vec3.Cross(a, b)
+	sr := math.Sqrt(2 * (1 + vec3.Dot(a, b)))
 	oosr := 1 / sr
 
 	q := T{cr[0] * oosr, cr[1] * oosr, cr[2] * oosr, sr * 0.5}

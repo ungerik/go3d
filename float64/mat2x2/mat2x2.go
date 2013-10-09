@@ -1,24 +1,24 @@
-package mat2x2d
+package mat2x2
 
 import (
 	"fmt"
 
-	"github.com/ungerik/go3d/genericd"
-	"github.com/ungerik/go3d/vec2d"
+	"github.com/ungerik/go3d/float64/generic"
+	"github.com/ungerik/go3d/float64/vec2"
 )
 
 var (
 	Zero  = T{}
 	Ident = T{
-		vec2d.T{1, 0},
-		vec2d.T{0, 1},
+		vec2.T{1, 0},
+		vec2.T{0, 1},
 	}
 )
 
-type T [2]vec2d.T
+type T [2]vec2.T
 
 // From copies a T from a generic.T implementation.
-func From(other genericd.T) T {
+func From(other generic.T) T {
 	r := Ident
 	cols := other.Cols()
 	rows := other.Rows()
@@ -107,8 +107,8 @@ func (self *T) AssignMul(a, b *T) *T {
 	return self
 }
 
-func (self *T) MulVec2(vec *vec2d.T) vec2d.T {
-	return vec2d.T{
+func (self *T) MulVec2(vec *vec2.T) vec2.T {
+	return vec2.T{
 		self[0][0]*vec[0] + self[1][0]*vec[1],
 		self[0][1]*vec[1] + self[1][1]*vec[1],
 	}

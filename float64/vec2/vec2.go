@@ -1,10 +1,10 @@
-package vec2d
+package vec2
 
 import (
 	"fmt"
 	"math"
 
-	"github.com/ungerik/go3d/genericd"
+	"github.com/ungerik/go3d/float64/generic"
 )
 
 var (
@@ -20,7 +20,7 @@ var (
 type T [2]float64
 
 // From copies a T from a generic.T implementation.
-func From(other genericd.T) T {
+func From(other generic.T) T {
 	return T{other.Get(0, 0), other.Get(0, 1)}
 }
 

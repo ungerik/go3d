@@ -1,6 +1,6 @@
 // The package genericd contains an interface T that
 // that all float64 vector and matrix types implement.
-package genericd
+package generic
 
 // T is an interface that all float64 vector and matrix types implement.
 type T interface {

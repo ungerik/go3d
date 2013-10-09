@@ -1,4 +1,4 @@
-package vec2d
+package vec2
 
 import (
 	"fmt"

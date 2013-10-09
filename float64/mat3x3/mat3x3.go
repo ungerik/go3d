@@ -1,28 +1,28 @@
-package mat3x3d
+package mat3x3
 
 import (
 	"fmt"
 	"math"
 
-	"github.com/ungerik/go3d/genericd"
-	"github.com/ungerik/go3d/mat2x2d"
-	"github.com/ungerik/go3d/quaterniond"
-	"github.com/ungerik/go3d/vec3d"
+	"github.com/ungerik/go3d/float64/generic"
+	"github.com/ungerik/go3d/float64/mat2x2"
+	"github.com/ungerik/go3d/float64/quaternion"
+	"github.com/ungerik/go3d/float64/vec3"
 )
 
 var (
 	Zero  = T{}
 	Ident = T{
-		vec3d.T{1, 0, 0},
-		vec3d.T{0, 1, 0},
-		vec3d.T{0, 0, 1},
+		vec3.T{1, 0, 0},
+		vec3.T{0, 1, 0},
+		vec3.T{0, 0, 1},
 	}
 )
 
-type T [3]vec3d.T
+type T [3]vec3.T
 
 // From copies a T from a generic.T implementation.
-func From(other genericd.T) T {
+func From(other generic.T) T {
 	r := Ident
 	cols := other.Cols()
 	rows := other.Rows()
@@ -104,18 +104,18 @@ func (self *T) Scaled(f float64) T {
 	return *r.Scale(f)
 }
 
-func (self *T) Scaling() vec3d.T {
-	return vec3d.T{self[0][0], self[1][1], self[2][2]}
+func (self *T) Scaling() vec3.T {
+	return vec3.T{self[0][0], self[1][1], self[2][2]}
 }
 
-func (self *T) SetScaling(s *vec3d.T) *T {
+func (self *T) SetScaling(s *vec3.T) *T {
 	self[0][0] = s[0]
 	self[1][1] = s[1]
 	self[2][2] = s[2]
 	return self
 }
 
-func (self *T) ScaleVec3(s *vec3d.T) *T {
+func (self *T) ScaleVec3(s *vec3.T) *T {
 	self[0][0] *= s[0]
 	self[1][1] *= s[1]
 	self[2][2] *= s[2]
@@ -133,31 +133,31 @@ func (self *T) AssignMul(a, b *T) *T {
 	return self
 }
 
-func (self *T) AssignMat2x2(m *mat2x2d.T) *T {
+func (self *T) AssignMat2x2(m *mat2x2.T) *T {
 	*self = T{
-		vec3d.T{m[0][0], m[1][0], 0},
-		vec3d.T{m[0][1], m[1][1], 0},
-		vec3d.T{0, 0, 1},
+		vec3.T{m[0][0], m[1][0], 0},
+		vec3.T{m[0][1], m[1][1], 0},
+		vec3.T{0, 0, 1},
 	}
 	return self
 }
 
-func (self *T) MulVec3(vec *vec3d.T) vec3d.T {
-	return vec3d.T{
+func (self *T) MulVec3(vec *vec3.T) vec3.T {
+	return vec3.T{
 		self[0][0]*vec[0] + self[1][0]*vec[1] + self[2][0]*vec[2],
 		self[0][1]*vec[1] + self[1][1]*vec[1] + self[2][1]*vec[2],
 		self[0][2]*vec[2] + self[1][2]*vec[1] + self[2][2]*vec[2],
 	}
 }
 
-func (self *T) Quaternion() quaterniond.T {
+func (self *T) Quaternion() quaternion.T {
 	tr := self.Trace()
 
 	s := math.Sqrt(tr + 1)
 	w := s * 0.5
 	s = 0.5 / s
 
-	q := quaterniond.T{
+	q := quaternion.T{
 		(self[1][2] - self[2][1]) * s,
 		(self[2][0] - self[0][2]) * s,
 		(self[0][1] - self[1][0]) * s,
@@ -166,7 +166,7 @@ func (self *T) Quaternion() quaterniond.T {
 	return q.Normalized()
 }
 
-func (self *T) AssignQuaternion(q *quaterniond.T) *T {
+func (self *T) AssignQuaternion(q *quaternion.T) *T {
 	xx := q[0] * q[0] * 2
 	yy := q[1] * q[1] * 2
 	zz := q[2] * q[2] * 2
@@ -249,7 +249,7 @@ func (self *T) AssignZRotation(angle float64) *T {
 	return self
 }
 
-func (self *T) AssignCoordinateSystem(x, y, z *vec3d.T) *T {
+func (self *T) AssignCoordinateSystem(x, y, z *vec3.T) *T {
 	self[0][0] = x[0]
 	self[1][0] = x[1]
 	self[2][0] = x[2]

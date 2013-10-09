@@ -1,11 +1,11 @@
-package vec4d
+package vec4
 
 import (
 	"fmt"
 	"math"
 
-	"github.com/ungerik/go3d/genericd"
-	"github.com/ungerik/go3d/vec3d"
+	"github.com/ungerik/go3d/float64/generic"
+	"github.com/ungerik/go3d/float64/vec3"
 )
 
 var (
@@ -28,7 +28,7 @@ var (
 type T [4]float64
 
 // From copies a T from a generic.T implementation.
-func From(other genericd.T) T {
+func From(other generic.T) T {
 	switch other.Size() {
 	case 2:
 		return T{other.Get(0, 0), other.Get(0, 1), 0, 1}
@@ -41,7 +41,7 @@ func From(other genericd.T) T {
 	}
 }
 
-func FromVec3(other *vec3d.T) T {
+func FromVec3(other *vec3.T) T {
 	return T{other[0], other[1], other[2], 1}
 }
 
@@ -159,16 +159,16 @@ func (self *T) DividedByW() T {
 	return T{self[0] * oow, self[1] * oow, self[2] * oow, 1}
 }
 
-func (self *T) Vec3DividedByW() vec3d.T {
+func (self *T) Vec3DividedByW() vec3.T {
 	oow := 1 / self[3]
-	return vec3d.T{self[0] * oow, self[1] * oow, self[2] * oow}
+	return vec3.T{self[0] * oow, self[1] * oow, self[2] * oow}
 }
 
-func (self *T) Vec3() vec3d.T {
-	return vec3d.T{self[0], self[1], self[2]}
+func (self *T) Vec3() vec3.T {
+	return vec3.T{self[0], self[1], self[2]}
 }
 
-func (self *T) AssignVec3(v *vec3d.T) *T {
+func (self *T) AssignVec3(v *vec3.T) *T {
 	self[0] = v[0]
 	self[1] = v[1]
 	self[2] = v[2]
@@ -229,7 +229,7 @@ func Sub(a, b *T) T {
 func Dot(a, b *T) float64 {
 	a3 := a.Vec3DividedByW()
 	b3 := b.Vec3DividedByW()
-	return vec3d.Dot(&a3, &b3)
+	return vec3.Dot(&a3, &b3)
 }
 
 func Dot4(a, b *T) float64 {
@@ -239,7 +239,7 @@ func Dot4(a, b *T) float64 {
 func Cross(a, b *T) T {
 	a3 := a.Vec3DividedByW()
 	b3 := b.Vec3DividedByW()
-	c3 := vec3d.Cross(&a3, &b3)
+	c3 := vec3.Cross(&a3, &b3)
 	return T{c3[0], c3[1], c3[2], 1}
 }
 
