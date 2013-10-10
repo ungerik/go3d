@@ -4,10 +4,10 @@ go3d is a performance oriented vector and matrix math package for 2D and 3D grap
 
 Every type has its own sub-package and is named T. So vec3.T is the 3D vector type.
 Fore every vector and matrix type there is a String method and a Parse function.
-Packages named with the postfix 'd' are using float64 "double" values instead of float32.
+Packages under the float64 directory are using float64 values instead of float32.
 
 Matrices are organized as arrays of columns which is also the way OpenGL expects matrices.
-DirectX expects arrays of rows matrices.
+DirectX expects "arrays of rows" matrices.
 
 Methods that don't return a specific value return a pointer to the struct to allow method call chaining.
 
@@ -30,7 +30,8 @@ package go3d
 // Import all sub-packages for build
 import (
 	_ "github.com/ungerik/go3d/float64/generic"
-	_ "github.com/ungerik/go3d/float64/hermit"
+	_ "github.com/ungerik/go3d/float64/hermit2"
+	_ "github.com/ungerik/go3d/float64/hermit3"
 	_ "github.com/ungerik/go3d/float64/mat2x2"
 	_ "github.com/ungerik/go3d/float64/mat3x3"
 	_ "github.com/ungerik/go3d/float64/mat4x4"
@@ -39,7 +40,8 @@ import (
 	_ "github.com/ungerik/go3d/float64/vec3"
 	_ "github.com/ungerik/go3d/float64/vec4"
 	_ "github.com/ungerik/go3d/generic"
-	_ "github.com/ungerik/go3d/hermit"
+	_ "github.com/ungerik/go3d/hermit2"
+	_ "github.com/ungerik/go3d/hermit3"
 	_ "github.com/ungerik/go3d/mat2x2"
 	_ "github.com/ungerik/go3d/mat3x3"
 	_ "github.com/ungerik/go3d/mat4x4"

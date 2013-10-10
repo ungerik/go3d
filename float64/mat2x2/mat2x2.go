@@ -97,16 +97,31 @@ func (self *T) Scaled(f float64) T {
 	return *r.Scale(f)
 }
 
+// Scaling returns the scaling diagonal of the matrix.
+func (self *T) Scaling() vec2.T {
+	return vec2.T{self[0][0], self[1][1]}
+}
+
+// SetScaling sets the scaling diagonal of the matrix.
+func (self *T) SetScaling(s *vec2.T) *T {
+	self[0][0] = s[0]
+	self[1][1] = s[1]
+	return self
+}
+
+// Trace returns the trace value for the matrix.
 func (self *T) Trace() float64 {
 	return self[0][0] + self[1][1]
 }
 
+// AssignMul multiplies a and b and assigns the result to self.
 func (self *T) AssignMul(a, b *T) *T {
 	self[0] = a.MulVec2(&b[0])
 	self[1] = a.MulVec2(&b[1])
 	return self
 }
 
+// MulVec2 multiplies vec with self.
 func (self *T) MulVec2(vec *vec2.T) vec2.T {
 	return vec2.T{
 		self[0][0]*vec[0] + self[1][0]*vec[1],

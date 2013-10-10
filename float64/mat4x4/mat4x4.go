@@ -106,14 +106,17 @@ func (self *T) Scaled(f float64) T {
 	return *r.Scale(f)
 }
 
+// Trace returns the trace value for the matrix.
 func (self *T) Trace() float64 {
 	return self[0][0] + self[1][1] + self[2][2] + self[3][3]
 }
 
+// Trace3 returns the trace value for the 3x3 sub-matrix.
 func (self *T) Trace3() float64 {
 	return self[0][0] + self[1][1] + self[2][2]
 }
 
+// AssignMat2x2 assigns a 2x2 sub-matrix and sets the rest of the matrix to the ident value.
 func (self *T) AssignMat2x2(m *mat2x2.T) *T {
 	*self = T{
 		vec4.T{m[0][0], m[1][0], 0, 0},
@@ -124,6 +127,7 @@ func (self *T) AssignMat2x2(m *mat2x2.T) *T {
 	return self
 }
 
+// AssignMat2x2 assigns a 3x3 sub-matrix and sets the rest of the matrix to the ident value.
 func (self *T) AssignMat3x3(m *mat3x3.T) *T {
 	*self = T{
 		vec4.T{m[0][0], m[1][0], m[2][0], 0},
@@ -134,6 +138,7 @@ func (self *T) AssignMat3x3(m *mat3x3.T) *T {
 	return self
 }
 
+// AssignMul multiplies a and b and assigns the result to self.
 func (self *T) AssignMul(a, b *T) *T {
 	self[0] = a.MulVec4(&b[0])
 	self[1] = a.MulVec4(&b[1])
@@ -142,21 +147,24 @@ func (self *T) AssignMul(a, b *T) *T {
 	return self
 }
 
-func (self *T) MulVec4(vec *vec4.T) vec4.T {
+// MulVec4 multiplies v with self.
+func (self *T) MulVec4(v *vec4.T) vec4.T {
 	return vec4.T{
-		self[0][0]*vec[0] + self[1][0]*vec[1] + self[2][0]*vec[2] + self[3][0]*vec[3],
-		self[0][1]*vec[1] + self[1][1]*vec[1] + self[2][1]*vec[2] + self[3][1]*vec[3],
-		self[0][2]*vec[2] + self[1][2]*vec[1] + self[2][2]*vec[2] + self[3][2]*vec[3],
-		self[0][3]*vec[3] + self[1][3]*vec[1] + self[2][3]*vec[2] + self[3][3]*vec[3],
+		self[0][0]*v[0] + self[1][0]*v[1] + self[2][0]*v[2] + self[3][0]*v[3],
+		self[0][1]*v[1] + self[1][1]*v[1] + self[2][1]*v[2] + self[3][1]*v[3],
+		self[0][2]*v[2] + self[1][2]*v[1] + self[2][2]*v[2] + self[3][2]*v[3],
+		self[0][3]*v[3] + self[1][3]*v[1] + self[2][3]*v[2] + self[3][3]*v[3],
 	}
 }
 
+// MulVec3 multiplies v with self and divides the result by w.
 func (self *T) MulVec3(v *vec3.T) vec3.T {
 	v4 := vec4.FromVec3(v)
 	v4 = self.MulVec4(&v4)
 	return v4.Vec3DividedByW()
 }
 
+// SetTranslation sets the translation elements of the matrix.
 func (self *T) SetTranslation(v *vec3.T) *T {
 	self[3][0] = v[0]
 	self[3][1] = v[1]
@@ -164,6 +172,7 @@ func (self *T) SetTranslation(v *vec3.T) *T {
 	return self
 }
 
+// Translate adds v to the translation part of the matrix.
 func (self *T) Translate(v *vec3.T) *T {
 	self[3][0] += v[0]
 	self[3][1] += v[1]
@@ -171,25 +180,30 @@ func (self *T) Translate(v *vec3.T) *T {
 	return self
 }
 
-func (self *T) TranslateX(d float64) *T {
-	self[3][0] += d
+// Translate adds dx to the X-translation element of the matrix.
+func (self *T) TranslateX(dx float64) *T {
+	self[3][0] += dx
 	return self
 }
 
-func (self *T) TranslateY(d float64) *T {
-	self[3][1] += d
+// Translate adds dy to the Y-translation element of the matrix.
+func (self *T) TranslateY(dy float64) *T {
+	self[3][1] += dy
 	return self
 }
 
-func (self *T) TranslateZ(d float64) *T {
-	self[3][2] += d
+// Translate adds dz to the Z-translation element of the matrix.
+func (self *T) TranslateZ(dz float64) *T {
+	self[3][2] += dz
 	return self
 }
 
+// Scaling returns the scaling diagonal of the matrix.
 func (self *T) Scaling() vec4.T {
 	return vec4.T{self[0][0], self[1][1], self[2][2], self[3][3]}
 }
 
+// SetScaling sets the scaling diagonal of the matrix.
 func (self *T) SetScaling(s *vec4.T) *T {
 	self[0][0] = s[0]
 	self[1][1] = s[1]
@@ -198,6 +212,7 @@ func (self *T) SetScaling(s *vec4.T) *T {
 	return self
 }
 
+// ScaleVec3 multiplies the scaling diagonal of the matrix by s.
 func (self *T) ScaleVec3(s *vec3.T) *T {
 	self[0][0] *= s[0]
 	self[1][1] *= s[1]

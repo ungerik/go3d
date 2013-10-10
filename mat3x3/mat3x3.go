@@ -7,6 +7,7 @@ import (
 	"github.com/ungerik/go3d/generic"
 	"github.com/ungerik/go3d/mat2x2"
 	"github.com/ungerik/go3d/quaternion"
+	"github.com/ungerik/go3d/vec2"
 	"github.com/ungerik/go3d/vec3"
 )
 
@@ -104,10 +105,12 @@ func (self *T) Scaled(f float32) T {
 	return *r.Scale(f)
 }
 
+// Scaling returns the scaling diagonal of the matrix.
 func (self *T) Scaling() vec3.T {
 	return vec3.T{self[0][0], self[1][1], self[2][2]}
 }
 
+// SetScaling sets the scaling diagonal of the matrix.
 func (self *T) SetScaling(s *vec3.T) *T {
 	self[0][0] = s[0]
 	self[1][1] = s[1]
@@ -115,17 +118,45 @@ func (self *T) SetScaling(s *vec3.T) *T {
 	return self
 }
 
-func (self *T) ScaleVec3(s *vec3.T) *T {
+// ScaleVec3 multiplies the 2D scaling diagonal of the matrix by s.
+func (self *T) ScaleVec2(s *vec2.T) *T {
 	self[0][0] *= s[0]
 	self[1][1] *= s[1]
-	self[2][2] *= s[2]
 	return self
 }
 
+// SetTranslation sets the 2D translation elements of the matrix.
+func (self *T) SetTranslation(v *vec2.T) *T {
+	self[2][0] = v[0]
+	self[2][1] = v[1]
+	return self
+}
+
+// Translate adds v to the 2D translation part of the matrix.
+func (self *T) Translate(v *vec2.T) *T {
+	self[2][0] += v[0]
+	self[2][1] += v[1]
+	return self
+}
+
+// Translate adds dx to the 2D X-translation element of the matrix.
+func (self *T) TranslateX(dx float32) *T {
+	self[2][0] += dx
+	return self
+}
+
+// Translate adds dy to the 2D Y-translation element of the matrix.
+func (self *T) TranslateY(dy float32) *T {
+	self[2][1] += dy
+	return self
+}
+
+// Trace returns the trace value for the matrix.
 func (self *T) Trace() float32 {
 	return self[0][0] + self[1][1] + self[2][2]
 }
 
+// AssignMul multiplies a and b and assigns the result to self.
 func (self *T) AssignMul(a, b *T) *T {
 	self[0] = a.MulVec3(&b[0])
 	self[1] = a.MulVec3(&b[1])
@@ -133,6 +164,7 @@ func (self *T) AssignMul(a, b *T) *T {
 	return self
 }
 
+// AssignMat2x2 assigns a 2x2 sub-matrix and sets the rest of the matrix to the ident value.
 func (self *T) AssignMat2x2(m *mat2x2.T) *T {
 	*self = T{
 		vec3.T{m[0][0], m[1][0], 0},
