@@ -3,6 +3,7 @@
 package hermit2
 
 import (
+	"fmt"
 	"github.com/ungerik/go3d/vec2"
 )
 
@@ -15,6 +16,26 @@ type PointTangent struct {
 type T struct {
 	A PointTangent
 	B PointTangent
+}
+
+// Parse parses T from a string. See also String()
+func Parse(s string) (r T, err error) {
+	_, err = fmt.Sscanf(s,
+		"%f %f %f %f %f %f %f %f",
+		&r.A.Point[0], &r.A.Point[1],
+		&r.A.Tangent[0], &r.A.Tangent[1],
+		&r.B.Point[0], &r.B.Point[1],
+		&r.B.Tangent[0], &r.B.Tangent[1],
+	)
+	return r, err
+}
+
+// String formats T as string. See also Parse().
+func (self *T) String() string {
+	return fmt.Sprintf("%s %s %s %s",
+		self.A.Point.String(), self.A.Tangent.String(),
+		self.B.Point.String(), self.B.Tangent.String(),
+	)
 }
 
 // Point returns a point on a hermit spline at t (0,1).
