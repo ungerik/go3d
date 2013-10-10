@@ -128,3 +128,11 @@ func (self *T) MulVec2(vec *vec2.T) vec2.T {
 		self[0][1]*vec[1] + self[1][1]*vec[1],
 	}
 }
+
+// Transpose transposes the matrix.
+func (self *T) Transpose() *T {
+	temp := self[0][1]
+	self[0][1] = self[1][0]
+	self[1][0] = temp
+	return self
+}

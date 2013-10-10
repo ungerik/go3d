@@ -220,6 +220,7 @@ func (self *T) ScaleVec3(s *vec3.T) *T {
 	return self
 }
 
+// Quaternion extracts a quaternion from the rotation part of the matrix.
 func (self *T) Quaternion() quaternion.T {
 	tr := self.Trace()
 
@@ -236,6 +237,7 @@ func (self *T) Quaternion() quaternion.T {
 	return q.Normalized()
 }
 
+// AssignQuaternion assigns a quaternion to the rotations part of the matrix and sets the other elements to their ident value.
 func (self *T) AssignQuaternion(q *quaternion.T) *T {
 	xx := q[0] * q[0] * 2
 	yy := q[1] * q[1] * 2
@@ -270,6 +272,7 @@ func (self *T) AssignQuaternion(q *quaternion.T) *T {
 	return self
 }
 
+// AssignXRotation assigns a rotation around the x axis to the rotation part of the matrix and sets the remaining elements to their ident value.
 func (self *T) AssignXRotation(angle float32) *T {
 	cosine := fmath.Cos(angle)
 	sine := fmath.Sin(angle)
@@ -297,6 +300,7 @@ func (self *T) AssignXRotation(angle float32) *T {
 	return self
 }
 
+// AssignYRotation assigns a rotation around the y axis to the rotation part of the matrix and sets the remaining elements to their ident value.
 func (self *T) AssignYRotation(angle float32) *T {
 	cosine := fmath.Cos(angle)
 	sine := fmath.Sin(angle)
@@ -324,6 +328,7 @@ func (self *T) AssignYRotation(angle float32) *T {
 	return self
 }
 
+// AssignZRotation assigns a rotation around the z axis to the rotation part of the matrix and sets the remaining elements to their ident value.
 func (self *T) AssignZRotation(angle float32) *T {
 	cosine := fmath.Cos(angle)
 	sine := fmath.Sin(angle)
@@ -351,6 +356,7 @@ func (self *T) AssignZRotation(angle float32) *T {
 	return self
 }
 
+// AssignCoordinateSystem assigns the rotation of a orthogonal coordinates system to the rotation part of the matrix and sets the remaining elements to their ident value.
 func (self *T) AssignCoordinateSystem(x, y, z *vec3.T) *T {
 	self[0][0] = x[0]
 	self[1][0] = x[1]
@@ -375,6 +381,7 @@ func (self *T) AssignCoordinateSystem(x, y, z *vec3.T) *T {
 	return self
 }
 
+// AssignEulerRotation assigns Euler angle rotations to the rotation part of the matrix and sets the remaining elements to their ident value.
 func (self *T) AssignEulerRotation(yHead, xPitch, zRoll float32) *T {
 	sinH := fmath.Sin(yHead)
 	cosH := fmath.Cos(yHead)
@@ -406,6 +413,21 @@ func (self *T) AssignEulerRotation(yHead, xPitch, zRoll float32) *T {
 	return self
 }
 
+// ExtractEulerAngles extracts the rotation part of the matrix as Euler angle rotation values.
+func (self *T) ExtractEulerAngles() (yHead, xPitch, zRoll float32) {
+	xPitch = fmath.Asin(self[1][2])
+	f12 := fmath.Abs(self[1][2])
+	if f12 > (1.0-0.0001) && f12 < (1.0+0.0001) { // f12 == 1.0
+		yHead = 0.0
+		zRoll = fmath.Atan2(self[0][1], self[0][0])
+	} else {
+		yHead = fmath.Atan2(-self[0][2], self[2][2])
+		zRoll = fmath.Atan2(-self[1][0], self[1][1])
+	}
+	return yHead, xPitch, zRoll
+}
+
+// AssignPerspectiveProjection assigns a perspective projection transformation.
 func (self *T) AssignPerspectiveProjection(left, right, bottom, top, znear, zfar float32) *T {
 	near2 := znear + znear
 	oo_far_near := 1 / (zfar - znear)
@@ -433,6 +455,7 @@ func (self *T) AssignPerspectiveProjection(left, right, bottom, top, znear, zfar
 	return self
 }
 
+// AssignPerspectiveProjection assigns an orthogonal projection transformation.
 func (self *T) AssignOrthogonalProjection(left, right, bottom, top, znear, zfar float32) *T {
 	oo_right_left := 1 / (right - left)
 	oo_top_bottom := 1 / (top - bottom)
@@ -461,19 +484,7 @@ func (self *T) AssignOrthogonalProjection(left, right, bottom, top, znear, zfar 
 	return self
 }
 
-func (self *T) ExtractEulerAngles() (yHead, xPitch, zRoll float32) {
-	xPitch = fmath.Asin(self[1][2])
-	f12 := fmath.Abs(self[1][2])
-	if f12 > (1.0-0.0001) && f12 < (1.0+0.0001) { // f12 == 1.0
-		yHead = 0.0
-		zRoll = fmath.Atan2(self[0][1], self[0][0])
-	} else {
-		yHead = fmath.Atan2(-self[0][2], self[2][2])
-		zRoll = fmath.Atan2(-self[1][0], self[1][1])
-	}
-	return yHead, xPitch, zRoll
-}
-
+// Determinant3x3 returns the determinant of the 3x3 sub-matrix.
 func (self *T) Determinant3x3() float32 {
 	return self[0][0]*self[1][1]*self[2][2] +
 		self[1][0]*self[2][1]*self[0][2] +
@@ -483,6 +494,7 @@ func (self *T) Determinant3x3() float32 {
 		self[0][0]*self[2][1]*self[1][2]
 }
 
+// IsReflective returns true if the matrix can be reflected by a plane.
 func (self *T) IsReflective() bool {
 	return self.Determinant3x3() < 0
 }
@@ -493,6 +505,7 @@ func swap(a, b *float32) {
 	*b = temp
 }
 
+// Transpose transposes the matrix.
 func (self *T) Transpose() *T {
 	swap(&self[3][0], &self[0][3])
 	swap(&self[3][1], &self[1][3])
@@ -500,6 +513,7 @@ func (self *T) Transpose() *T {
 	return self.Transpose3x3()
 }
 
+// Transpose3x3 transposes the 3x3 sub-matrix.
 func (self *T) Transpose3x3() *T {
 	swap(&self[1][0], &self[0][1])
 	swap(&self[2][0], &self[0][2])

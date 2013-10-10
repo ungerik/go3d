@@ -151,6 +151,7 @@ func (self *T) TranslateY(dy float64) *T {
 	return self
 }
 
+// Trace returns the trace value for the matrix.
 func (self *T) Trace() float64 {
 	return self[0][0] + self[1][1] + self[2][2]
 }
@@ -173,14 +174,16 @@ func (self *T) AssignMat2x2(m *mat2x2.T) *T {
 	return self
 }
 
-func (self *T) MulVec3(vec *vec3.T) vec3.T {
+// MulVec3 multiplies v with T.
+func (self *T) MulVec3(v *vec3.T) vec3.T {
 	return vec3.T{
-		self[0][0]*vec[0] + self[1][0]*vec[1] + self[2][0]*vec[2],
-		self[0][1]*vec[1] + self[1][1]*vec[1] + self[2][1]*vec[2],
-		self[0][2]*vec[2] + self[1][2]*vec[1] + self[2][2]*vec[2],
+		self[0][0]*v[0] + self[1][0]*v[1] + self[2][0]*v[2],
+		self[0][1]*v[1] + self[1][1]*v[1] + self[2][1]*v[2],
+		self[0][2]*v[2] + self[1][2]*v[1] + self[2][2]*v[2],
 	}
 }
 
+// Quaternion extracts a quaternion from the rotation part of the matrix.
 func (self *T) Quaternion() quaternion.T {
 	tr := self.Trace()
 
@@ -197,6 +200,7 @@ func (self *T) Quaternion() quaternion.T {
 	return q.Normalized()
 }
 
+// AssignQuaternion assigns a quaternion to the rotations part of the matrix and sets the other elements to their ident value.
 func (self *T) AssignQuaternion(q *quaternion.T) *T {
 	xx := q[0] * q[0] * 2
 	yy := q[1] * q[1] * 2
@@ -223,6 +227,7 @@ func (self *T) AssignQuaternion(q *quaternion.T) *T {
 	return self
 }
 
+// AssignXRotation assigns a rotation around the x axis to the rotation part of the matrix and sets the remaining elements to their ident value.
 func (self *T) AssignXRotation(angle float64) *T {
 	cosine := math.Cos(angle)
 	sine := math.Sin(angle)
@@ -242,6 +247,7 @@ func (self *T) AssignXRotation(angle float64) *T {
 	return self
 }
 
+// AssignYRotation assigns a rotation around the y axis to the rotation part of the matrix and sets the remaining elements to their ident value.
 func (self *T) AssignYRotation(angle float64) *T {
 	cosine := math.Cos(angle)
 	sine := math.Sin(angle)
@@ -261,6 +267,7 @@ func (self *T) AssignYRotation(angle float64) *T {
 	return self
 }
 
+// AssignZRotation assigns a rotation around the z axis to the rotation part of the matrix and sets the remaining elements to their ident value.
 func (self *T) AssignZRotation(angle float64) *T {
 	cosine := math.Cos(angle)
 	sine := math.Sin(angle)
@@ -280,6 +287,7 @@ func (self *T) AssignZRotation(angle float64) *T {
 	return self
 }
 
+// AssignCoordinateSystem assigns the rotation of a orthogonal coordinates system to the rotation part of the matrix and sets the remaining elements to their ident value.
 func (self *T) AssignCoordinateSystem(x, y, z *vec3.T) *T {
 	self[0][0] = x[0]
 	self[1][0] = x[1]
@@ -296,6 +304,7 @@ func (self *T) AssignCoordinateSystem(x, y, z *vec3.T) *T {
 	return self
 }
 
+// AssignEulerRotation assigns Euler angle rotations to the rotation part of the matrix and sets the remaining elements to their ident value.
 func (self *T) AssignEulerRotation(yHead, xPitch, zRoll float64) *T {
 	sinH := math.Sin(yHead)
 	cosH := math.Cos(yHead)
@@ -319,6 +328,7 @@ func (self *T) AssignEulerRotation(yHead, xPitch, zRoll float64) *T {
 	return self
 }
 
+// ExtractEulerAngles extracts the rotation part of the matrix as Euler angle rotation values.
 func (self *T) ExtractEulerAngles() (yHead, xPitch, zRoll float64) {
 	xPitch = math.Asin(self[1][2])
 	f12 := math.Abs(self[1][2])
@@ -332,6 +342,7 @@ func (self *T) ExtractEulerAngles() (yHead, xPitch, zRoll float64) {
 	return yHead, xPitch, zRoll
 }
 
+// Determinant returns the determinant of the matrix.
 func (self *T) Determinant() float64 {
 	return self[0][0]*self[1][1]*self[2][2] +
 		self[1][0]*self[2][1]*self[0][2] +
@@ -341,6 +352,7 @@ func (self *T) Determinant() float64 {
 		self[0][0]*self[2][1]*self[1][2]
 }
 
+// IsReflective returns true if the matrix can be reflected by a plane.
 func (self *T) IsReflective() bool {
 	return self.Determinant() < 0
 }
@@ -351,6 +363,7 @@ func swap(a, b *float64) {
 	*b = temp
 }
 
+// Transpose transposes the matrix.
 func (self *T) Transpose() *T {
 	swap(&self[1][0], &self[0][1])
 	swap(&self[2][0], &self[0][2])
