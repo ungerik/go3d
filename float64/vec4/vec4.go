@@ -20,6 +20,7 @@ var (
 	Green = T{0, 1, 0, 1}
 	Blue  = T{0, 0, 1, 1}
 	Black = T{0, 0, 0, 1}
+	White = T{1, 1, 1, 1}
 
 	MinVal = T{-math.MaxFloat64, -math.MaxFloat64, -math.MaxFloat64, 1}
 	MaxVal = T{+math.MaxFloat64, +math.MaxFloat64, +math.MaxFloat64, 1}
@@ -113,16 +114,19 @@ func (self *T) Scaled(f float64) T {
 	return T{self[0] * f, self[1] * f, self[2] * f, self[3]}
 }
 
+// Invert inverts the vector.
 func (self *T) Invert() {
 	self[0] = -self[0]
 	self[1] = -self[1]
 	self[2] = -self[2]
 }
 
+// Inverted returns an inverted copy of the vector.
 func (self *T) Inverted() T {
 	return T{-self[0], -self[1], -self[2], self[3]}
 }
 
+// Normalize normalizes the vector to unit length.
 func (self *T) Normalize() *T {
 	v3 := self.Vec3DividedByW()
 	v3.Normalize()
@@ -133,18 +137,21 @@ func (self *T) Normalize() *T {
 	return self
 }
 
+// Normalized returns a unit length normalized copy of the vector.
 func (self *T) Normalized() T {
 	v := *self
 	v.Normalize()
 	return v
 }
 
+// Normal returns an orthogonal vector.
 func (self *T) Normal() T {
 	v3 := self.Vec3()
 	n3 := v3.Normal()
 	return T{n3[0], n3[1], n3[2], 1}
 }
 
+// DivideByW divides the first three components (XYZ) by the last one (W).
 func (self *T) DivideByW() *T {
 	oow := 1 / self[3]
 	self[0] *= oow
@@ -154,20 +161,25 @@ func (self *T) DivideByW() *T {
 	return self
 }
 
+// DividedByW returns a copy of the vector with the first three components (XYZ) divided by the last one (W).
 func (self *T) DividedByW() T {
 	oow := 1 / self[3]
 	return T{self[0] * oow, self[1] * oow, self[2] * oow, 1}
 }
 
+// Vec3DividedByW returns a vec3.T version of the vector by dividing the first three vector components (XYZ) by the last one (W).
 func (self *T) Vec3DividedByW() vec3.T {
 	oow := 1 / self[3]
 	return vec3.T{self[0] * oow, self[1] * oow, self[2] * oow}
 }
 
+// Vec3 returns a vec3.T with the first three components of the vector.
+// See also Vec3DividedByW
 func (self *T) Vec3() vec3.T {
 	return vec3.T{self[0], self[1], self[2]}
 }
 
+// AssignVec3 assigns v to the first three components and sets the fourth to 1.
 func (self *T) AssignVec3(v *vec3.T) *T {
 	self[0] = v[0]
 	self[1] = v[1]
@@ -176,6 +188,7 @@ func (self *T) AssignVec3(v *vec3.T) *T {
 	return self
 }
 
+// Add adds another vector to self.
 func (self *T) Add(v *T) *T {
 	if v[3] == self[3] {
 		self[0] += v[0]
@@ -191,6 +204,7 @@ func (self *T) Add(v *T) *T {
 	return self
 }
 
+// Sub subtracts another vector from self.
 func (self *T) Sub(v *T) *T {
 	if v[3] == self[3] {
 		self[0] -= v[0]
@@ -206,6 +220,7 @@ func (self *T) Sub(v *T) *T {
 	return self
 }
 
+// Add returns the sum of two vectors.
 func Add(a, b *T) T {
 	if a[3] == b[3] {
 		return T{a[0] + b[0], a[1] + b[1], a[2] + b[2], 1}
@@ -216,6 +231,7 @@ func Add(a, b *T) T {
 	}
 }
 
+// Add returns the difference of two vectors.
 func Sub(a, b *T) T {
 	if a[3] == b[3] {
 		return T{a[0] - b[0], a[1] - b[1], a[2] - b[2], 1}
@@ -226,16 +242,19 @@ func Sub(a, b *T) T {
 	}
 }
 
+// Dot returns the dot product of two (dived by w) vectors.
 func Dot(a, b *T) float64 {
 	a3 := a.Vec3DividedByW()
 	b3 := b.Vec3DividedByW()
 	return vec3.Dot(&a3, &b3)
 }
 
+// Dot returns the 4 element vdot product of two vectors.
 func Dot4(a, b *T) float64 {
 	return a[0]*b[0] + a[1]*b[1] + a[2]*b[2] + a[3]*b[3]
 }
 
+// Cross returns the cross product of two vectors.
 func Cross(a, b *T) T {
 	a3 := a.Vec3DividedByW()
 	b3 := b.Vec3DividedByW()
@@ -243,6 +262,7 @@ func Cross(a, b *T) T {
 	return T{c3[0], c3[1], c3[2], 1}
 }
 
+// Angle returns the angle between two vectors.
 func Angle(a, b *T) float64 {
 	return math.Acos(Dot(a, b))
 }

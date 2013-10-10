@@ -4,6 +4,7 @@ import (
 	"fmt"
 )
 
+// Rect is a rectangle defined by Min and Max vector corners.
 type Rect struct {
 	Min T
 	Max T
@@ -20,6 +21,7 @@ func (self *Rect) String() string {
 	return self.Min.String() + " " + self.Max.String()
 }
 
+// ContainsPoint returns if a point is within the rectangle.
 func (self *Rect) ContainsPoint(p *T) bool {
 	return p[0] >= self.Min[0] && p[0] <= self.Max[0] &&
 		p[1] >= self.Min[1] && p[1] <= self.Max[1]

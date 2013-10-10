@@ -90,16 +90,19 @@ func (self *T) Scaled(f float32) T {
 	return T{self[0] * f, self[1] * f}
 }
 
+// Invert inverts the vector.
 func (self *T) Invert() *T {
 	self[0] = -self[0]
 	self[1] = -self[1]
 	return self
 }
 
+// Inverted returns an inverted copy of the vector.
 func (self *T) Inverted() T {
 	return T{-self[0], -self[1]}
 }
 
+// Normalize normalizes the vector to unit length.
 func (self *T) Normalize() *T {
 	sl := self.LengthSqr()
 	if sl == 0 || sl == 1 {
@@ -108,30 +111,41 @@ func (self *T) Normalize() *T {
 	return self.Scale(1 / fmath.Sqrt(sl))
 }
 
+// Normalized returns a unit length normalized copy of the vector.
 func (self *T) Normalized() T {
 	v := *self
 	v.Normalize()
 	return v
 }
 
+// Add adds another vector to self.
 func (self *T) Add(v *T) *T {
 	self[0] += v[0]
 	self[1] += v[1]
 	return self
 }
 
+// Sub subtracts another vector from self.
 func (self *T) Sub(v *T) *T {
 	self[0] -= v[0]
 	self[1] -= v[1]
 	return self
 }
 
+// Mul multiplies the components of the vector with the respective components of v.
 func (self *T) Mul(v *T) *T {
 	self[0] *= v[0]
 	self[1] *= v[1]
 	return self
 }
 
+// Rotate rotates the vector counter-clockwise by angle.
+func (self *T) Rotate(angle float32) *T {
+	*self = self.Rotated(angle)
+	return self
+}
+
+// Rotated returns a counter-clockwise rotated copy of the vector.
 func (self *T) Rotated(angle float32) T {
 	sinus := fmath.Sin(angle)
 	cosinus := fmath.Cos(angle)
@@ -141,15 +155,12 @@ func (self *T) Rotated(angle float32) T {
 	}
 }
 
-func (self *T) Rotate(angle float32) *T {
-	*self = self.Rotated(angle)
-	return self
-}
-
+// RotateAroundPoint rotates the vector counter-clockwise around a point.
 func (self *T) RotateAroundPoint(point *T, angle float32) *T {
 	return self.Sub(point).Rotate(angle).Add(point)
 }
 
+// Rotate90DegLeft rotates the vector 90 degrees left (counter-clockwise).
 func (self *T) Rotate90DegLeft() *T {
 	temp := self[0]
 	self[0] = -self[1]
@@ -157,6 +168,7 @@ func (self *T) Rotate90DegLeft() *T {
 	return self
 }
 
+// Rotate90DegRight rotates the vector 90 degrees right (clockwise).
 func (self *T) Rotate90DegRight() *T {
 	temp := self[0]
 	self[0] = self[1]
@@ -164,26 +176,32 @@ func (self *T) Rotate90DegRight() *T {
 	return self
 }
 
+// Angle returns the counter-clockwise angle of the vector from the x axis.
 func (self *T) Angle() float32 {
 	return fmath.Atan2(self[1], self[0])
 }
 
+// Add returns the sum of two vectors.
 func Add(a, b *T) T {
 	return T{a[0] + b[0], a[1] + b[1]}
 }
 
+// Add returns the difference of two vectors.
 func Sub(a, b *T) T {
 	return T{a[0] - b[0], a[1] - b[1]}
 }
 
+// Mul returns the component wise product of two vectors.
 func Mul(a, b *T) T {
 	return T{a[0] * b[0], a[1] * b[1]}
 }
 
+// Dot returns the dot product of two vectors.
 func Dot(a, b *T) float32 {
 	return a[0]*b[0] + a[1]*b[1]
 }
 
+// Cross returns the cross product of two vectors.
 func Cross(a, b *T) T {
 	return T{
 		a[1]*b[0] - a[0]*b[1],
@@ -191,20 +209,24 @@ func Cross(a, b *T) T {
 	}
 }
 
+// Angle returns the angle between two vectors.
 func Angle(a, b *T) float32 {
 	return fmath.Acos(Dot(a, b))
 }
 
+// IsLeftWinding returns if the angle from a to b is left winding.
 func IsLeftWinding(a, b *T) bool {
 	ab := b.Rotated(-a.Angle())
 	return ab.Angle() > 0
 }
 
+// IsRightWinding returns if the angle from a to b is right winding.
 func IsRightWinding(a, b *T) bool {
 	ab := b.Rotated(-a.Angle())
 	return ab.Angle() < 0
 }
 
+// Min returns the component wise minimum of two vectors.
 func Min(a, b *T) T {
 	min := *a
 	if b[0] < min[0] {
@@ -216,6 +238,7 @@ func Min(a, b *T) T {
 	return min
 }
 
+// Max returns the component wise maximum of two vectors.
 func Max(a, b *T) T {
 	max := *a
 	if b[0] > max[0] {
