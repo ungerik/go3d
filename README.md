@@ -9,7 +9,7 @@ Packages under the float64 directory are using float64 values instead of float32
 Matrices are organized as arrays of columns which is also the way OpenGL expects matrices.
 DirectX expects "arrays of rows" matrices, use the Transpose() to convert.
 
-Methods that don't return a specific value return a pointer to the struct to allow method call chaining.
+Methods that don't return a specific value, return a pointer to the struct to allow method call chaining.
 
 Example:
 

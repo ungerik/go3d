@@ -9,3 +9,4 @@ _cgo_*
 _obj
 _test
 
+.DS_Store
