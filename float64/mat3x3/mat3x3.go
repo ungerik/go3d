@@ -123,7 +123,7 @@ func (mat *T) SetScaling(s *vec3.T) *T {
 	return mat
 }
 
-// ScaleVec3 multiplies the 2D scaling diagonal of the matrix by s.
+// ScaleVec2 multiplies the 2D scaling diagonal of the matrix by s.
 func (mat *T) ScaleVec2(s *vec2.T) *T {
 	mat[0][0] *= s[0]
 	mat[1][1] *= s[1]
@@ -144,13 +144,13 @@ func (mat *T) Translate(v *vec2.T) *T {
 	return mat
 }
 
-// Translate adds dx to the 2D X-translation element of the matrix.
+// TranslateX adds dx to the 2D X-translation element of the matrix.
 func (mat *T) TranslateX(dx float64) *T {
 	mat[2][0] += dx
 	return mat
 }
 
-// Translate adds dy to the 2D Y-translation element of the matrix.
+// TranslateY adds dy to the 2D Y-translation element of the matrix.
 func (mat *T) TranslateY(dy float64) *T {
 	mat[2][1] += dy
 	return mat
