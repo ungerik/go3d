@@ -15,8 +15,8 @@ import (
 
 var (
 	// Zero holds a zero matrix.
-	Zero  = T{}
-	
+	Zero = T{}
+
 	// Ident holds an ident matrix.
 	Ident = T{
 		vec4.T{1, 0, 0, 0},
@@ -132,7 +132,7 @@ func (mat *T) AssignMat2x2(m *mat2x2.T) *T {
 	return mat
 }
 
-// AssignMat2x2 assigns a 3x3 sub-matrix and sets the rest of the matrix to the ident value.
+// AssignMat3x3 assigns a 3x3 sub-matrix and sets the rest of the matrix to the ident value.
 func (mat *T) AssignMat3x3(m *mat3x3.T) *T {
 	*mat = T{
 		vec4.T{m[0][0], m[1][0], m[2][0], 0},
@@ -185,19 +185,19 @@ func (mat *T) Translate(v *vec3.T) *T {
 	return mat
 }
 
-// Translate adds dx to the X-translation element of the matrix.
+// TranslateX adds dx to the X-translation element of the matrix.
 func (mat *T) TranslateX(dx float32) *T {
 	mat[3][0] += dx
 	return mat
 }
 
-// Translate adds dy to the Y-translation element of the matrix.
+// TranslateY adds dy to the Y-translation element of the matrix.
 func (mat *T) TranslateY(dy float32) *T {
 	mat[3][1] += dy
 	return mat
 }
 
-// Translate adds dz to the Z-translation element of the matrix.
+// TranslateZ adds dz to the Z-translation element of the matrix.
 func (mat *T) TranslateZ(dz float32) *T {
 	mat[3][2] += dz
 	return mat
@@ -435,7 +435,7 @@ func (mat *T) ExtractEulerAngles() (yHead, xPitch, zRoll float32) {
 // AssignPerspectiveProjection assigns a perspective projection transformation.
 func (mat *T) AssignPerspectiveProjection(left, right, bottom, top, znear, zfar float32) *T {
 	near2 := znear + znear
-	oo_far_near := 1 / (zfar - znear)
+	ooFarNear := 1 / (zfar - znear)
 
 	mat[0][0] = near2 / (right - left)
 	mat[1][0] = 0
@@ -449,8 +449,8 @@ func (mat *T) AssignPerspectiveProjection(left, right, bottom, top, znear, zfar 
 
 	mat[0][2] = 0
 	mat[1][2] = 0
-	mat[2][2] = -(zfar + znear) * oo_far_near
-	mat[3][2] = -2 * zfar * znear * oo_far_near
+	mat[2][2] = -(zfar + znear) * ooFarNear
+	mat[3][2] = -2 * zfar * znear * ooFarNear
 
 	mat[0][3] = 0
 	mat[1][3] = 0
@@ -460,26 +460,26 @@ func (mat *T) AssignPerspectiveProjection(left, right, bottom, top, znear, zfar 
 	return mat
 }
 
-// AssignPerspectiveProjection assigns an orthogonal projection transformation.
+// AssignOrthogonalProjection assigns an orthogonal projection transformation.
 func (mat *T) AssignOrthogonalProjection(left, right, bottom, top, znear, zfar float32) *T {
-	oo_right_left := 1 / (right - left)
-	oo_top_bottom := 1 / (top - bottom)
-	oo_far_near := 1 / (zfar - znear)
+	ooRightLeft := 1 / (right - left)
+	ooTopBottom := 1 / (top - bottom)
+	ooFarNear := 1 / (zfar - znear)
 
-	mat[0][0] = 2 * oo_right_left
+	mat[0][0] = 2 * ooRightLeft
 	mat[1][0] = 0
 	mat[2][0] = 0
-	mat[3][0] = -(right + left) * oo_right_left
+	mat[3][0] = -(right + left) * ooRightLeft
 
 	mat[0][1] = 0
-	mat[1][1] = 2 * oo_top_bottom
+	mat[1][1] = 2 * ooTopBottom
 	mat[2][1] = 0
-	mat[3][1] = -(top + bottom) * oo_top_bottom
+	mat[3][1] = -(top + bottom) * ooTopBottom
 
 	mat[0][2] = 0
 	mat[1][2] = 0
-	mat[2][2] = -2 * oo_far_near
-	mat[3][2] = -(zfar + znear) * oo_far_near
+	mat[2][2] = -2 * ooFarNear
+	mat[3][2] = -(zfar + znear) * ooFarNear
 
 	mat[0][3] = 0
 	mat[1][3] = 0
