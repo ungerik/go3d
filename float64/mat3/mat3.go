@@ -1,16 +1,15 @@
-// Package mat4x4 contains a 4x4 float64 matrix type T and functions.
-package mat4x4
+// Package mat3 contains a 3x3 float64 matrix type T and functions.
+package mat3
 
 import (
 	"fmt"
 	"math"
 
 	"github.com/ungerik/go3d/float64/generic"
-	"github.com/ungerik/go3d/float64/mat2x2"
-	"github.com/ungerik/go3d/float64/mat3x3"
+	"github.com/ungerik/go3d/float64/mat2"
 	"github.com/ungerik/go3d/float64/quaternion"
+	"github.com/ungerik/go3d/float64/vec2"
 	"github.com/ungerik/go3d/float64/vec3"
-	"github.com/ungerik/go3d/float64/vec4"
 )
 
 var (
@@ -19,22 +18,24 @@ var (
 
 	// Ident holds an ident matrix.
 	Ident = T{
-		vec4.T{1, 0, 0, 0},
-		vec4.T{0, 1, 0, 0},
-		vec4.T{0, 0, 1, 0},
-		vec4.T{0, 0, 0, 1},
+		vec3.T{1, 0, 0},
+		vec3.T{0, 1, 0},
+		vec3.T{0, 0, 1},
 	}
 )
 
-// T represents a 4x4 matrix.
-type T [4]vec4.T
+// T represents a 3x3 matrix.
+type T [3]vec3.T
 
 // From copies a T from a generic.T implementation.
 func From(other generic.T) T {
 	r := Ident
 	cols := other.Cols()
 	rows := other.Rows()
-	if !((cols == 2 && rows == 2) || (cols == 3 && rows == 3) || (cols == 4 && rows == 4)) {
+	if cols == 4 && rows == 4 {
+		cols = 3
+		rows = 3
+	} else if !((cols == 2 && rows == 2) || (cols == 3 && rows == 3)) {
 		panic("Unsupported type")
 	}
 	for col := 0; col < cols; col++ {
@@ -48,42 +49,40 @@ func From(other generic.T) T {
 // Parse parses T from a string. See also String()
 func Parse(s string) (r T, err error) {
 	_, err = fmt.Sscanf(s,
-		"%f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f",
-		&r[0][0], &r[0][1], &r[0][2], &r[0][3],
-		&r[1][0], &r[1][1], &r[1][2], &r[1][3],
-		&r[2][0], &r[2][1], &r[2][2], &r[2][3],
-		&r[3][0], &r[3][1], &r[3][2], &r[3][3],
+		"%f %f %f %f %f %f %f %f %f",
+		&r[0][0], &r[0][1], &r[0][2],
+		&r[1][0], &r[1][1], &r[1][2],
+		&r[2][0], &r[2][1], &r[2][2],
 	)
 	return r, err
 }
 
 // String formats T as string. See also Parse().
 func (mat *T) String() string {
-	return fmt.Sprintf("%s %s %s %s", mat[0].String(), mat[1].String(), mat[2].String(), mat[3].String())
+	return fmt.Sprintf("%s %s %s", mat[0].String(), mat[1].String(), mat[2].String())
 }
 
 // Rows returns the number of rows of the matrix.
 func (mat *T) Rows() int {
-	return 4
+	return 3
 }
 
 // Cols returns the number of columns of the matrix.
 func (mat *T) Cols() int {
-	return 4
+	return 3
 }
 
 // Size returns the number elements of the matrix.
 func (mat *T) Size() int {
-	return 16
+	return 9
 }
 
 // Slice returns the elements of the matrix as slice.
 func (mat *T) Slice() []float64 {
 	return []float64{
-		mat[0][0], mat[0][1], mat[0][2], mat[0][3],
-		mat[1][0], mat[1][1], mat[1][2], mat[1][3],
-		mat[2][0], mat[2][1], mat[2][2], mat[2][3],
-		mat[3][0], mat[3][1], mat[3][2], mat[3][3],
+		mat[0][0], mat[0][1], mat[0][2],
+		mat[1][0], mat[1][1], mat[1][2],
+		mat[2][0], mat[2][1], mat[2][2],
 	}
 }
 
@@ -111,118 +110,82 @@ func (mat *T) Scaled(f float64) T {
 	return *r.Scale(f)
 }
 
-// Trace returns the trace value for the matrix.
-func (mat *T) Trace() float64 {
-	return mat[0][0] + mat[1][1] + mat[2][2] + mat[3][3]
-}
-
-// Trace3 returns the trace value for the 3x3 sub-matrix.
-func (mat *T) Trace3() float64 {
-	return mat[0][0] + mat[1][1] + mat[2][2]
-}
-
-// AssignMat2x2 assigns a 2x2 sub-matrix and sets the rest of the matrix to the ident value.
-func (mat *T) AssignMat2x2(m *mat2x2.T) *T {
-	*mat = T{
-		vec4.T{m[0][0], m[1][0], 0, 0},
-		vec4.T{m[0][1], m[1][1], 0, 0},
-		vec4.T{0, 0, 1, 0},
-		vec4.T{0, 0, 0, 1},
-	}
-	return mat
-}
-
-// AssignMat3x3 assigns a 3x3 sub-matrix and sets the rest of the matrix to the ident value.
-func (mat *T) AssignMat3x3(m *mat3x3.T) *T {
-	*mat = T{
-		vec4.T{m[0][0], m[1][0], m[2][0], 0},
-		vec4.T{m[0][1], m[1][1], m[2][1], 0},
-		vec4.T{m[0][2], m[1][2], m[2][2], 0},
-		vec4.T{0, 0, 0, 1},
-	}
-	return mat
-}
-
-// AssignMul multiplies a and b and assigns the result to T.
-func (mat *T) AssignMul(a, b *T) *T {
-	mat[0] = a.MulVec4(&b[0])
-	mat[1] = a.MulVec4(&b[1])
-	mat[2] = a.MulVec4(&b[2])
-	mat[3] = a.MulVec4(&b[3])
-	return mat
-}
-
-// MulVec4 multiplies v with T.
-func (mat *T) MulVec4(v *vec4.T) vec4.T {
-	return vec4.T{
-		mat[0][0]*v[0] + mat[1][0]*v[1] + mat[2][0]*v[2] + mat[3][0]*v[3],
-		mat[0][1]*v[1] + mat[1][1]*v[1] + mat[2][1]*v[2] + mat[3][1]*v[3],
-		mat[0][2]*v[2] + mat[1][2]*v[1] + mat[2][2]*v[2] + mat[3][2]*v[3],
-		mat[0][3]*v[3] + mat[1][3]*v[1] + mat[2][3]*v[2] + mat[3][3]*v[3],
-	}
-}
-
-// MulVec3 multiplies v with T and divides the result by w.
-func (mat *T) MulVec3(v *vec3.T) vec3.T {
-	v4 := vec4.FromVec3(v)
-	v4 = mat.MulVec4(&v4)
-	return v4.Vec3DividedByW()
-}
-
-// SetTranslation sets the translation elements of the matrix.
-func (mat *T) SetTranslation(v *vec3.T) *T {
-	mat[3][0] = v[0]
-	mat[3][1] = v[1]
-	mat[3][2] = v[2]
-	return mat
-}
-
-// Translate adds v to the translation part of the matrix.
-func (mat *T) Translate(v *vec3.T) *T {
-	mat[3][0] += v[0]
-	mat[3][1] += v[1]
-	mat[3][2] += v[2]
-	return mat
-}
-
-// TranslateX adds dx to the X-translation element of the matrix.
-func (mat *T) TranslateX(dx float64) *T {
-	mat[3][0] += dx
-	return mat
-}
-
-// TranslateY adds dy to the Y-translation element of the matrix.
-func (mat *T) TranslateY(dy float64) *T {
-	mat[3][1] += dy
-	return mat
-}
-
-// TranslateZ adds dz to the Z-translation element of the matrix.
-func (mat *T) TranslateZ(dz float64) *T {
-	mat[3][2] += dz
-	return mat
-}
-
 // Scaling returns the scaling diagonal of the matrix.
-func (mat *T) Scaling() vec4.T {
-	return vec4.T{mat[0][0], mat[1][1], mat[2][2], mat[3][3]}
+func (mat *T) Scaling() vec3.T {
+	return vec3.T{mat[0][0], mat[1][1], mat[2][2]}
 }
 
 // SetScaling sets the scaling diagonal of the matrix.
-func (mat *T) SetScaling(s *vec4.T) *T {
+func (mat *T) SetScaling(s *vec3.T) *T {
 	mat[0][0] = s[0]
 	mat[1][1] = s[1]
 	mat[2][2] = s[2]
-	mat[3][3] = s[3]
 	return mat
 }
 
-// ScaleVec3 multiplies the scaling diagonal of the matrix by s.
-func (mat *T) ScaleVec3(s *vec3.T) *T {
+// ScaleVec2 multiplies the 2D scaling diagonal of the matrix by s.
+func (mat *T) ScaleVec2(s *vec2.T) *T {
 	mat[0][0] *= s[0]
 	mat[1][1] *= s[1]
-	mat[2][2] *= s[2]
 	return mat
+}
+
+// SetTranslation sets the 2D translation elements of the matrix.
+func (mat *T) SetTranslation(v *vec2.T) *T {
+	mat[2][0] = v[0]
+	mat[2][1] = v[1]
+	return mat
+}
+
+// Translate adds v to the 2D translation part of the matrix.
+func (mat *T) Translate(v *vec2.T) *T {
+	mat[2][0] += v[0]
+	mat[2][1] += v[1]
+	return mat
+}
+
+// TranslateX adds dx to the 2D X-translation element of the matrix.
+func (mat *T) TranslateX(dx float64) *T {
+	mat[2][0] += dx
+	return mat
+}
+
+// TranslateY adds dy to the 2D Y-translation element of the matrix.
+func (mat *T) TranslateY(dy float64) *T {
+	mat[2][1] += dy
+	return mat
+}
+
+// Trace returns the trace value for the matrix.
+func (mat *T) Trace() float64 {
+	return mat[0][0] + mat[1][1] + mat[2][2]
+}
+
+// AssignMul multiplies a and b and assigns the result to mat.
+func (mat *T) AssignMul(a, b *T) *T {
+	mat[0] = a.MulVec3(&b[0])
+	mat[1] = a.MulVec3(&b[1])
+	mat[2] = a.MulVec3(&b[2])
+	return mat
+}
+
+// AssignMat2x2 assigns a 2x2 sub-matrix and sets the rest of the matrix to the ident value.
+func (mat *T) AssignMat2x2(m *mat2.T) *T {
+	*mat = T{
+		vec3.T{m[0][0], m[1][0], 0},
+		vec3.T{m[0][1], m[1][1], 0},
+		vec3.T{0, 0, 1},
+	}
+	return mat
+}
+
+// MulVec3 multiplies v with T.
+func (mat *T) MulVec3(v *vec3.T) vec3.T {
+	return vec3.T{
+		mat[0][0]*v[0] + mat[1][0]*v[1] + mat[2][0]*v[2],
+		mat[0][1]*v[1] + mat[1][1]*v[1] + mat[2][1]*v[2],
+		mat[0][2]*v[2] + mat[1][2]*v[1] + mat[2][2]*v[2],
+	}
 }
 
 // Quaternion extracts a quaternion from the rotation part of the matrix.
@@ -257,22 +220,14 @@ func (mat *T) AssignQuaternion(q *quaternion.T) *T {
 	mat[0][0] = 1 - (yy + zz)
 	mat[1][0] = xy - wz
 	mat[2][0] = xz + wy
-	mat[3][0] = 0
 
 	mat[0][1] = xy + wz
 	mat[1][1] = 1 - (xx + zz)
 	mat[2][1] = yz - wx
-	mat[3][1] = 0
 
 	mat[0][2] = xz - wy
 	mat[1][2] = yz + wx
 	mat[2][2] = 1 - (xx + yy)
-	mat[3][2] = 0
-
-	mat[0][3] = 0
-	mat[1][3] = 0
-	mat[2][3] = 0
-	mat[3][3] = 1
 
 	return mat
 }
@@ -285,22 +240,14 @@ func (mat *T) AssignXRotation(angle float64) *T {
 	mat[0][0] = 1
 	mat[1][0] = 0
 	mat[2][0] = 0
-	mat[3][0] = 0
 
 	mat[0][1] = 0
 	mat[1][1] = cosine
 	mat[2][1] = -sine
-	mat[3][1] = 0
 
 	mat[0][2] = 0
 	mat[1][2] = sine
 	mat[2][2] = cosine
-	mat[3][2] = 0
-
-	mat[0][3] = 0
-	mat[1][3] = 0
-	mat[2][3] = 0
-	mat[3][3] = 1
 
 	return mat
 }
@@ -313,22 +260,14 @@ func (mat *T) AssignYRotation(angle float64) *T {
 	mat[0][0] = cosine
 	mat[1][0] = 0
 	mat[2][0] = sine
-	mat[3][0] = 0
 
 	mat[0][1] = 0
 	mat[1][1] = 1
 	mat[2][1] = 0
-	mat[3][1] = 0
 
 	mat[0][2] = -sine
 	mat[1][2] = 0
 	mat[2][2] = cosine
-	mat[3][2] = 0
-
-	mat[0][3] = 0
-	mat[1][3] = 0
-	mat[2][3] = 0
-	mat[3][3] = 1
 
 	return mat
 }
@@ -341,22 +280,14 @@ func (mat *T) AssignZRotation(angle float64) *T {
 	mat[0][0] = cosine
 	mat[1][0] = -sine
 	mat[2][0] = 0
-	mat[3][0] = 0
 
 	mat[0][1] = sine
 	mat[1][1] = cosine
 	mat[2][1] = 0
-	mat[3][1] = 0
 
 	mat[0][2] = 0
 	mat[1][2] = 0
 	mat[2][2] = 1
-	mat[3][2] = 0
-
-	mat[0][3] = 0
-	mat[1][3] = 0
-	mat[2][3] = 0
-	mat[3][3] = 1
 
 	return mat
 }
@@ -366,22 +297,14 @@ func (mat *T) AssignCoordinateSystem(x, y, z *vec3.T) *T {
 	mat[0][0] = x[0]
 	mat[1][0] = x[1]
 	mat[2][0] = x[2]
-	mat[3][0] = 0
 
 	mat[0][1] = y[0]
 	mat[1][1] = y[1]
 	mat[2][1] = y[2]
-	mat[3][1] = 0
 
 	mat[0][2] = z[0]
 	mat[1][2] = z[1]
 	mat[2][2] = z[2]
-	mat[3][2] = 0
-
-	mat[0][3] = 0
-	mat[1][3] = 0
-	mat[2][3] = 0
-	mat[3][3] = 1
 
 	return mat
 }
@@ -398,22 +321,14 @@ func (mat *T) AssignEulerRotation(yHead, xPitch, zRoll float64) *T {
 	mat[0][0] = cosR*cosH - sinR*sinP*sinH
 	mat[1][0] = -sinR * cosP
 	mat[2][0] = cosR*sinH + sinR*sinP*cosH
-	mat[3][0] = 0
 
 	mat[0][1] = sinR*cosH + cosR*sinP*sinH
 	mat[1][1] = cosR * cosP
 	mat[2][1] = sinR*sinH - cosR*sinP*cosH
-	mat[3][1] = 0
 
 	mat[0][2] = -cosP * sinH
 	mat[1][2] = sinP
 	mat[2][2] = cosP * cosH
-	mat[3][2] = 0
-
-	mat[0][3] = 0
-	mat[1][3] = 0
-	mat[2][3] = 0
-	mat[3][3] = 1
 
 	return mat
 }
@@ -432,65 +347,8 @@ func (mat *T) ExtractEulerAngles() (yHead, xPitch, zRoll float64) {
 	return yHead, xPitch, zRoll
 }
 
-// AssignPerspectiveProjection assigns a perspective projection transformation.
-func (mat *T) AssignPerspectiveProjection(left, right, bottom, top, znear, zfar float64) *T {
-	near2 := znear + znear
-	ooFarNear := 1 / (zfar - znear)
-
-	mat[0][0] = near2 / (right - left)
-	mat[1][0] = 0
-	mat[2][0] = (right + left) / (right - left)
-	mat[3][0] = 0
-
-	mat[0][1] = 0
-	mat[1][1] = near2 / (top - bottom)
-	mat[2][1] = (top + bottom) / (top - bottom)
-	mat[3][1] = 0
-
-	mat[0][2] = 0
-	mat[1][2] = 0
-	mat[2][2] = -(zfar + znear) * ooFarNear
-	mat[3][2] = -2 * zfar * znear * ooFarNear
-
-	mat[0][3] = 0
-	mat[1][3] = 0
-	mat[2][3] = -1
-	mat[3][3] = 0
-
-	return mat
-}
-
-// AssignOrthogonalProjection assigns an orthogonal projection transformation.
-func (mat *T) AssignOrthogonalProjection(left, right, bottom, top, znear, zfar float64) *T {
-	ooRightLeft := 1 / (right - left)
-	ooTopBottom := 1 / (top - bottom)
-	ooFarNear := 1 / (zfar - znear)
-
-	mat[0][0] = 2 * ooRightLeft
-	mat[1][0] = 0
-	mat[2][0] = 0
-	mat[3][0] = -(right + left) * ooRightLeft
-
-	mat[0][1] = 0
-	mat[1][1] = 2 * ooTopBottom
-	mat[2][1] = 0
-	mat[3][1] = -(top + bottom) * ooTopBottom
-
-	mat[0][2] = 0
-	mat[1][2] = 0
-	mat[2][2] = -2 * ooFarNear
-	mat[3][2] = -(zfar + znear) * ooFarNear
-
-	mat[0][3] = 0
-	mat[1][3] = 0
-	mat[2][3] = 0
-	mat[3][3] = 1
-
-	return mat
-}
-
-// Determinant3x3 returns the determinant of the 3x3 sub-matrix.
-func (mat *T) Determinant3x3() float64 {
+// Determinant returns the determinant of the matrix.
+func (mat *T) Determinant() float64 {
 	return mat[0][0]*mat[1][1]*mat[2][2] +
 		mat[1][0]*mat[2][1]*mat[0][2] +
 		mat[2][0]*mat[0][1]*mat[1][2] -
@@ -501,7 +359,7 @@ func (mat *T) Determinant3x3() float64 {
 
 // IsReflective returns true if the matrix can be reflected by a plane.
 func (mat *T) IsReflective() bool {
-	return mat.Determinant3x3() < 0
+	return mat.Determinant() < 0
 }
 
 func swap(a, b *float64) {
@@ -512,14 +370,6 @@ func swap(a, b *float64) {
 
 // Transpose transposes the matrix.
 func (mat *T) Transpose() *T {
-	swap(&mat[3][0], &mat[0][3])
-	swap(&mat[3][1], &mat[1][3])
-	swap(&mat[3][2], &mat[2][3])
-	return mat.Transpose3x3()
-}
-
-// Transpose3x3 transposes the 3x3 sub-matrix.
-func (mat *T) Transpose3x3() *T {
 	swap(&mat[1][0], &mat[0][1])
 	swap(&mat[2][0], &mat[0][2])
 	swap(&mat[2][1], &mat[1][2])

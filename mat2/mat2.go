@@ -1,5 +1,5 @@
-// Package mat2x2 contains a 2x2 float32 matrix type T and functions.
-package mat2x2
+// Package mat2 contains a 2x2 float32 matrix type T and functions.
+package mat2
 
 import (
 	"fmt"
