@@ -255,3 +255,12 @@ func Max(a, b *T) T {
 	}
 	return max
 }
+
+// Interpolate interpolates between a and b at t (0,1).
+func Interpolate(a, b *T, t float64) T {
+	t1 := 1 - t
+	return T{
+		a[0]*t1 + b[0]*t,
+		a[1]*t1 + b[1]*t,
+	}
+}
