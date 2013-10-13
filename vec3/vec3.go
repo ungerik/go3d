@@ -99,7 +99,7 @@ func (vec *T) Length() float32 {
 	return float32(fmath.Sqrt(vec.LengthSqr()))
 }
 
-// Length returns the squared length of the vector.
+// LengthSqr returns the squared length of the vector.
 // See also Length and Normalize.
 func (vec *T) LengthSqr() float32 {
 	return vec[0]*vec[0] + vec[1]*vec[1] + vec[2]*vec[2]
@@ -185,7 +185,7 @@ func Add(a, b *T) T {
 	return T{a[0] + b[0], a[1] + b[1], a[2] + b[2]}
 }
 
-// Add returns the difference of two vectors.
+// Sub returns the difference of two vectors.
 func Sub(a, b *T) T {
 	return T{a[0] - b[0], a[1] - b[1], a[2] - b[2]}
 }

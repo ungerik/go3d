@@ -185,7 +185,7 @@ func Add(a, b *T) T {
 	return T{a[0] + b[0], a[1] + b[1], a[2] + b[2]}
 }
 
-// Add returns the difference of two vectors.
+// Sub returns the difference of two vectors.
 func Sub(a, b *T) T {
 	return T{a[0] - b[0], a[1] - b[1], a[2] - b[2]}
 }
