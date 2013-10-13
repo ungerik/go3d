@@ -4,7 +4,7 @@ package vec3
 import (
 	"fmt"
 
-	math "github.com/ungerik/fmath"
+	math "github.com/barnex/fmath"
 	"github.com/ungerik/go3d/generic"
 )
 

@@ -4,7 +4,7 @@ package mat4
 import (
 	"fmt"
 
-	math "github.com/ungerik/fmath"
+	math "github.com/barnex/fmath"
 	"github.com/ungerik/go3d/generic"
 	"github.com/ungerik/go3d/mat2"
 	"github.com/ungerik/go3d/mat3"
