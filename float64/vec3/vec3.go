@@ -1,3 +1,4 @@
+// Package vec3 contains a 3D float64 vector type T and functions.
 package vec3
 
 import (
@@ -8,22 +9,34 @@ import (
 )
 
 var (
+	// Zero holds a zero vector.
 	Zero = T{}
 
+	// UnitX holds a vector with X to one.
 	UnitX = T{1, 0, 0}
+	// UnitY holds a vector with Y to one.
 	UnitY = T{0, 1, 0}
+	// UnitZ holds a vector with Z to one.
 	UnitZ = T{0, 0, 1}
 
-	Red   = T{1, 0, 0}
+	// Red holds the color red.
+	Red = T{1, 0, 0}
+	// Green holds the color green.
 	Green = T{0, 1, 0}
-	Blue  = T{0, 0, 1}
+	// Black holds the color black.
+	Blue = T{0, 0, 1}
+	// Black holds the color black.
 	Black = T{0, 0, 0}
+	// White holds the color white.
 	White = T{1, 1, 1}
 
+	// MinVal holds a vector with the smallest possible component values.
 	MinVal = T{-math.MaxFloat64, -math.MaxFloat64, -math.MaxFloat64}
+	// MaxVal holds a vector with the highest possible component values.
 	MaxVal = T{+math.MaxFloat64, +math.MaxFloat64, +math.MaxFloat64}
 )
 
+// T represents a 3D vector.
 type T [3]float64
 
 // From copies a T from a generic.T implementation.
@@ -45,126 +58,126 @@ func Parse(s string) (r T, err error) {
 }
 
 // String formats T as string. See also Parse().
-func (self *T) String() string {
-	return fmt.Sprintf("%f %f %f", self[0], self[1], self[2])
+func (vec *T) String() string {
+	return fmt.Sprintf("%f %f %f", vec[0], vec[1], vec[2])
 }
 
 // Rows returns the number of rows of the vector.
-func (self *T) Rows() int {
+func (vec *T) Rows() int {
 	return 3
 }
 
 // Cols returns the number of columns of the vector.
-func (self *T) Cols() int {
+func (vec *T) Cols() int {
 	return 1
 }
 
 // Size returns the number elements of the vector.
-func (self *T) Size() int {
+func (vec *T) Size() int {
 	return 3
 }
 
 // Slice returns the elements of the vector as slice.
-func (self *T) Slice() []float64 {
-	return []float64{self[0], self[1], self[2]}
+func (vec *T) Slice() []float64 {
+	return []float64{vec[0], vec[1], vec[2]}
 }
 
 // Get returns one element of the vector.
-func (self *T) Get(col, row int) float64 {
-	return self[row]
+func (vec *T) Get(col, row int) float64 {
+	return vec[row]
 }
 
 // IsZero checks if all elements of the vector are zero.
-func (self *T) IsZero() bool {
-	return self[0] == 0 && self[1] == 0 && self[2] == 0
+func (vec *T) IsZero() bool {
+	return vec[0] == 0 && vec[1] == 0 && vec[2] == 0
 }
 
 // Length returns the length of the vector.
 // See also LengthSqr and Normalize.
-func (self *T) Length() float64 {
-	return float64(math.Sqrt(self.LengthSqr()))
+func (vec *T) Length() float64 {
+	return float64(math.Sqrt(vec.LengthSqr()))
 }
 
 // Length returns the squared length of the vector.
 // See also Length and Normalize.
-func (self *T) LengthSqr() float64 {
-	return self[0]*self[0] + self[1]*self[1] + self[2]*self[2]
+func (vec *T) LengthSqr() float64 {
+	return vec[0]*vec[0] + vec[1]*vec[1] + vec[2]*vec[2]
 }
 
-// Scale multiplies all element of the vector by f and returns self.
-func (self *T) Scale(f float64) *T {
-	self[0] *= f
-	self[1] *= f
-	self[2] *= f
-	return self
+// Scale multiplies all element of the vector by f and returns vec.
+func (vec *T) Scale(f float64) *T {
+	vec[0] *= f
+	vec[1] *= f
+	vec[2] *= f
+	return vec
 }
 
-// Scaled returns a copy of self with all elements multiplies by f.
-func (self *T) Scaled(f float64) T {
-	return T{self[0] * f, self[1] * f, self[2] * f}
+// Scaled returns a copy of vec with all elements multiplies by f.
+func (vec *T) Scaled(f float64) T {
+	return T{vec[0] * f, vec[1] * f, vec[2] * f}
 }
 
 // Invert inverts the vector.
-func (self *T) Invert() *T {
-	self[0] = -self[0]
-	self[1] = -self[1]
-	self[2] = -self[2]
-	return self
+func (vec *T) Invert() *T {
+	vec[0] = -vec[0]
+	vec[1] = -vec[1]
+	vec[2] = -vec[2]
+	return vec
 }
 
 // Inverted returns an inverted copy of the vector.
-func (self *T) Inverted() T {
-	return T{-self[0], -self[1], -self[2]}
+func (vec *T) Inverted() T {
+	return T{-vec[0], -vec[1], -vec[2]}
 }
 
 // Normalize normalizes the vector to unit length.
-func (self *T) Normalize() *T {
-	sl := self.LengthSqr()
+func (vec *T) Normalize() *T {
+	sl := vec.LengthSqr()
 	if sl == 0 || sl == 1 {
-		return self
+		return vec
 	}
-	self.Scale(1 / math.Sqrt(sl))
-	return self
+	vec.Scale(1 / math.Sqrt(sl))
+	return vec
 }
 
 // Normalized returns a unit length normalized copy of the vector.
-func (self *T) Normalized() T {
-	v := *self
+func (vec *T) Normalized() T {
+	v := *vec
 	v.Normalize()
 	return v
 }
 
 // Normal returns an orthogonal vector.
-func (self *T) Normal() T {
-	n := Cross(self, &UnitZ)
+func (vec *T) Normal() T {
+	n := Cross(vec, &UnitZ)
 	if n.IsZero() {
 		return UnitX
 	}
 	return n.Normalized()
 }
 
-// Add adds another vector to self.
-func (self *T) Add(v *T) *T {
-	self[0] += v[0]
-	self[1] += v[1]
-	self[2] += v[2]
-	return self
+// Add adds another vector to vec.
+func (vec *T) Add(v *T) *T {
+	vec[0] += v[0]
+	vec[1] += v[1]
+	vec[2] += v[2]
+	return vec
 }
 
-// Sub subtracts another vector from self.
-func (self *T) Sub(v *T) *T {
-	self[0] -= v[0]
-	self[1] -= v[1]
-	self[2] -= v[2]
-	return self
+// Sub subtracts another vector from vec.
+func (vec *T) Sub(v *T) *T {
+	vec[0] -= v[0]
+	vec[1] -= v[1]
+	vec[2] -= v[2]
+	return vec
 }
 
 // Mul multiplies the components of the vector with the respective components of v.
-func (self *T) Mul(v *T) *T {
-	self[0] *= v[0]
-	self[1] *= v[1]
-	self[2] *= v[2]
-	return self
+func (vec *T) Mul(v *T) *T {
+	vec[0] *= v[0]
+	vec[1] *= v[1]
+	vec[2] *= v[2]
+	return vec
 }
 
 // Add returns the sum of two vectors.

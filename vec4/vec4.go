@@ -1,3 +1,4 @@
+// Package vec4 contains a 4 float32 components vector type T and functions.
 package vec4
 
 import (
@@ -10,23 +11,36 @@ import (
 )
 
 var (
+	// Zero holds a zero vector.
 	Zero = T{}
 
+	// UnitXW holds a vector with X and W set to one.
 	UnitXW = T{1, 0, 0, 1}
+	// UnitYW holds a vector with Y and W set to one.
 	UnitYW = T{0, 1, 0, 1}
+	// UnitZW holds a vector with Z and W set to one.
 	UnitZW = T{0, 0, 1, 1}
-	UnitW  = T{0, 0, 0, 1}
+	// UnitW holds a vector with W set to one.
+	UnitW = T{0, 0, 0, 1}
 
-	Red   = T{1, 0, 0, 1}
+	// Red holds the color red.
+	Red = T{1, 0, 0, 1}
+	// Green holds the color green.
 	Green = T{0, 1, 0, 1}
-	Blue  = T{0, 0, 1, 1}
+	// Blue holds the color blue.
+	Blue = T{0, 0, 1, 1}
+	// Black holds the color black.
 	Black = T{0, 0, 0, 1}
+	// White holds the color white.
 	White = T{1, 1, 1, 1}
 
+	// MinVal holds a vector with the smallest possible component values.
 	MinVal = T{-math.MaxFloat32, -math.MaxFloat32, -math.MaxFloat32, 1}
+	// MaxVal holds a vector with the highest possible component values.
 	MaxVal = T{+math.MaxFloat32, +math.MaxFloat32, +math.MaxFloat32, 1}
 )
 
+// T represents a 4 component vector.
 type T [4]float32
 
 // From copies a T from a generic.T implementation.
@@ -43,6 +57,7 @@ func From(other generic.T) T {
 	}
 }
 
+// FromVec3 returns a vector with the first 3 components copied from a vec3.T.
 func FromVec3(other *vec3.T) T {
 	return T{other[0], other[1], other[2], 1}
 }
@@ -54,172 +69,172 @@ func Parse(s string) (r T, err error) {
 }
 
 // String formats T as string. See also Parse().
-func (self *T) String() string {
-	return fmt.Sprintf("%f %f %f %f", self[0], self[1], self[2], self[3])
+func (vec *T) String() string {
+	return fmt.Sprintf("%f %f %f %f", vec[0], vec[1], vec[2], vec[3])
 }
 
 // Rows returns the number of rows of the vector.
-func (self *T) Rows() int {
+func (vec *T) Rows() int {
 	return 4
 }
 
 // Cols returns the number of columns of the vector.
-func (self *T) Cols() int {
+func (vec *T) Cols() int {
 	return 1
 }
 
 // Size returns the number elements of the vector.
-func (self *T) Size() int {
+func (vec *T) Size() int {
 	return 4
 }
 
 // Slice returns the elements of the vector as slice.
-func (self *T) Slice() []float32 {
-	return []float32{self[0], self[1], self[2], self[3]}
+func (vec *T) Slice() []float32 {
+	return []float32{vec[0], vec[1], vec[2], vec[3]}
 }
 
 // Get returns one element of the vector.
-func (self *T) Get(col, row int) float32 {
-	return self[row]
+func (vec *T) Get(col, row int) float32 {
+	return vec[row]
 }
 
 // IsZero checks if all elements of the vector are zero.
-func (self *T) IsZero() bool {
-	return self[0] == 0 && self[1] == 0 && self[2] == 0 && self[3] == 0
+func (vec *T) IsZero() bool {
+	return vec[0] == 0 && vec[1] == 0 && vec[2] == 0 && vec[3] == 0
 }
 
 // Length returns the length of the vector.
 // See also LengthSqr and Normalize.
-func (self *T) Length() float32 {
-	v3 := self.Vec3DividedByW()
+func (vec *T) Length() float32 {
+	v3 := vec.Vec3DividedByW()
 	return v3.Length()
 }
 
 // Length returns the squared length of the vector.
 // See also Length and Normalize.
-func (self *T) LengthSqr() float32 {
-	v3 := self.Vec3DividedByW()
+func (vec *T) LengthSqr() float32 {
+	v3 := vec.Vec3DividedByW()
 	return v3.LengthSqr()
 }
 
-// Scale multiplies the first 3 element of the vector by f and returns self.
-func (self *T) Scale(f float32) *T {
-	self[0] *= f
-	self[1] *= f
-	self[2] *= f
-	return self
+// Scale multiplies the first 3 element of the vector by f and returns vec.
+func (vec *T) Scale(f float32) *T {
+	vec[0] *= f
+	vec[1] *= f
+	vec[2] *= f
+	return vec
 }
 
-// Scaled returns a copy of self with the first 3 elements multiplies by f.
-func (self *T) Scaled(f float32) T {
-	return T{self[0] * f, self[1] * f, self[2] * f, self[3]}
+// Scaled returns a copy of vec with the first 3 elements multiplies by f.
+func (vec *T) Scaled(f float32) T {
+	return T{vec[0] * f, vec[1] * f, vec[2] * f, vec[3]}
 }
 
 // Invert inverts the vector.
-func (self *T) Invert() *T {
-	self[0] = -self[0]
-	self[1] = -self[1]
-	self[2] = -self[2]
-	return self
+func (vec *T) Invert() *T {
+	vec[0] = -vec[0]
+	vec[1] = -vec[1]
+	vec[2] = -vec[2]
+	return vec
 }
 
 // Inverted returns an inverted copy of the vector.
-func (self *T) Inverted() T {
-	return T{-self[0], -self[1], -self[2], self[3]}
+func (vec *T) Inverted() T {
+	return T{-vec[0], -vec[1], -vec[2], vec[3]}
 }
 
 // Normalize normalizes the vector to unit length.
-func (self *T) Normalize() *T {
-	v3 := self.Vec3DividedByW()
+func (vec *T) Normalize() *T {
+	v3 := vec.Vec3DividedByW()
 	v3.Normalize()
-	self[0] = v3[0]
-	self[1] = v3[1]
-	self[2] = v3[2]
-	self[3] = 1
-	return self
+	vec[0] = v3[0]
+	vec[1] = v3[1]
+	vec[2] = v3[2]
+	vec[3] = 1
+	return vec
 }
 
 // Normalized returns a unit length normalized copy of the vector.
-func (self *T) Normalized() T {
-	v := *self
+func (vec *T) Normalized() T {
+	v := *vec
 	v.Normalize()
 	return v
 }
 
 // Normal returns an orthogonal vector.
-func (self *T) Normal() T {
-	v3 := self.Vec3()
+func (vec *T) Normal() T {
+	v3 := vec.Vec3()
 	n3 := v3.Normal()
 	return T{n3[0], n3[1], n3[2], 1}
 }
 
 // DivideByW divides the first three components (XYZ) by the last one (W).
-func (self *T) DivideByW() *T {
-	oow := 1 / self[3]
-	self[0] *= oow
-	self[1] *= oow
-	self[2] *= oow
-	self[3] = 1
-	return self
+func (vec *T) DivideByW() *T {
+	oow := 1 / vec[3]
+	vec[0] *= oow
+	vec[1] *= oow
+	vec[2] *= oow
+	vec[3] = 1
+	return vec
 }
 
 // DividedByW returns a copy of the vector with the first three components (XYZ) divided by the last one (W).
-func (self *T) DividedByW() T {
-	oow := 1 / self[3]
-	return T{self[0] * oow, self[1] * oow, self[2] * oow, 1}
+func (vec *T) DividedByW() T {
+	oow := 1 / vec[3]
+	return T{vec[0] * oow, vec[1] * oow, vec[2] * oow, 1}
 }
 
 // Vec3DividedByW returns a vec3.T version of the vector by dividing the first three vector components (XYZ) by the last one (W).
-func (self *T) Vec3DividedByW() vec3.T {
-	oow := 1 / self[3]
-	return vec3.T{self[0] * oow, self[1] * oow, self[2] * oow}
+func (vec *T) Vec3DividedByW() vec3.T {
+	oow := 1 / vec[3]
+	return vec3.T{vec[0] * oow, vec[1] * oow, vec[2] * oow}
 }
 
 // Vec3 returns a vec3.T with the first three components of the vector.
 // See also Vec3DividedByW
-func (self *T) Vec3() vec3.T {
-	return vec3.T{self[0], self[1], self[2]}
+func (vec *T) Vec3() vec3.T {
+	return vec3.T{vec[0], vec[1], vec[2]}
 }
 
 // AssignVec3 assigns v to the first three components and sets the fourth to 1.
-func (self *T) AssignVec3(v *vec3.T) *T {
-	self[0] = v[0]
-	self[1] = v[1]
-	self[2] = v[2]
-	self[3] = 1
-	return self
+func (vec *T) AssignVec3(v *vec3.T) *T {
+	vec[0] = v[0]
+	vec[1] = v[1]
+	vec[2] = v[2]
+	vec[3] = 1
+	return vec
 }
 
-// Add adds another vector to self.
-func (self *T) Add(v *T) *T {
-	if v[3] == self[3] {
-		self[0] += v[0]
-		self[1] += v[1]
-		self[2] += v[2]
+// Add adds another vector to vec.
+func (vec *T) Add(v *T) *T {
+	if v[3] == vec[3] {
+		vec[0] += v[0]
+		vec[1] += v[1]
+		vec[2] += v[2]
 	} else {
-		self.DividedByW()
+		vec.DividedByW()
 		v3 := v.Vec3DividedByW()
-		self[0] += v3[0]
-		self[1] += v3[1]
-		self[2] += v3[2]
+		vec[0] += v3[0]
+		vec[1] += v3[1]
+		vec[2] += v3[2]
 	}
-	return self
+	return vec
 }
 
-// Sub subtracts another vector from self.
-func (self *T) Sub(v *T) *T {
-	if v[3] == self[3] {
-		self[0] -= v[0]
-		self[1] -= v[1]
-		self[2] -= v[2]
+// Sub subtracts another vector from vec.
+func (vec *T) Sub(v *T) *T {
+	if v[3] == vec[3] {
+		vec[0] -= v[0]
+		vec[1] -= v[1]
+		vec[2] -= v[2]
 	} else {
-		self.DividedByW()
+		vec.DividedByW()
 		v3 := v.Vec3DividedByW()
-		self[0] -= v3[0]
-		self[1] -= v3[1]
-		self[2] -= v3[2]
+		vec[0] -= v3[0]
+		vec[1] -= v3[1]
+		vec[2] -= v3[2]
 	}
-	return self
+	return vec
 }
 
 // Add returns the sum of two vectors.

@@ -1,4 +1,4 @@
-// The package hermit3 contains functions for 3D cubic hermit splines.
+// Package hermit3 contains functions for 3D cubic hermit splines.
 // See: http://en.wikipedia.org/wiki/Cubic_Hermite_spline
 package hermit
 
@@ -7,6 +7,8 @@ import (
 	"github.com/ungerik/go3d/vec3"
 )
 
+// PointTangent contains a point and a tangent at that point.
+// This is a helper sub-struct for T.
 type PointTangent struct {
 	Point   vec3.T
 	Tangent vec3.T
@@ -31,26 +33,26 @@ func Parse(s string) (r T, err error) {
 }
 
 // String formats T as string. See also Parse().
-func (self *T) String() string {
+func (herm *T) String() string {
 	return fmt.Sprintf("%s %s %s %s",
-		self.A.Point.String(), self.A.Tangent.String(),
-		self.B.Point.String(), self.B.Tangent.String(),
+		herm.A.Point.String(), herm.A.Tangent.String(),
+		herm.B.Point.String(), herm.B.Tangent.String(),
 	)
 }
 
 // Point returns a point on a hermit spline at t (0,1).
-func (self *T) Point(t float32) vec3.T {
-	return Point(&self.A.Point, &self.A.Tangent, &self.B.Point, &self.B.Tangent, t)
+func (herm *T) Point(t float32) vec3.T {
+	return Point(&herm.A.Point, &herm.A.Tangent, &herm.B.Point, &herm.B.Tangent, t)
 }
 
 // Tangent returns a tangent on a hermit spline at t (0,1).
-func (self *T) Tangent(t float32) vec3.T {
-	return Tangent(&self.A.Point, &self.A.Tangent, &self.B.Point, &self.B.Tangent, t)
+func (herm *T) Tangent(t float32) vec3.T {
+	return Tangent(&herm.A.Point, &herm.A.Tangent, &herm.B.Point, &herm.B.Tangent, t)
 }
 
 // Length returns the length of a hermit spline from A.Point to t (0,1).
-func (self *T) Length(t float32) float32 {
-	return Length(&self.A.Point, &self.A.Tangent, &self.B.Point, &self.B.Tangent, t)
+func (herm *T) Length(t float32) float32 {
+	return Length(&herm.A.Point, &herm.A.Tangent, &herm.B.Point, &herm.B.Tangent, t)
 }
 
 // Point returns a point on a hermit spline at t (0,1).

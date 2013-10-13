@@ -1,5 +1,5 @@
 /*
-go3d is a performance oriented vector and matrix math package for 2D and 3D graphics.
+Package go3d is a performance oriented vector and matrix math package for 2D and 3D graphics.
 
 Every type has its own sub-package and is named T. So vec3.T is the 3D vector type.
 For every vector and matrix type there is a String() method and a Parse() function.

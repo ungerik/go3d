@@ -1,4 +1,4 @@
-// The package generic contains an interface T that
+// Package generic contains an interface T that
 // that all float32 vector and matrix types implement.
 package generic
 

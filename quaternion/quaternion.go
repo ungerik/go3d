@@ -1,3 +1,4 @@
+// Package quaternion contains a float32 unit-quaternion type T and functions.
 package quaternion
 
 import (
@@ -9,7 +10,10 @@ import (
 )
 
 var (
-	Zero  = T{}
+	// Zero holds a zero quaternion.
+	Zero = T{}
+
+	// Ident holds an ident quaternion.
 	Ident = T{0, 0, 0, 1}
 )
 
@@ -57,8 +61,8 @@ func FromVec4(v *vec4.T) T {
 }
 
 // Vec4 converts the quaternion into a vec4.T.
-func (self *T) Vec4() vec4.T {
-	return vec4.T(*self)
+func (quat *T) Vec4() vec4.T {
+	return vec4.T(*quat)
 }
 
 // Parse parses T from a string. See also String()
@@ -68,13 +72,13 @@ func Parse(s string) (r T, err error) {
 }
 
 // String formats T as string. See also Parse().
-func (self *T) String() string {
-	return fmt.Sprintf("%f %f %f %f", self[0], self[1], self[2], self[3])
+func (quat *T) String() string {
+	return fmt.Sprintf("%f %f %f %f", quat[0], quat[1], quat[2], quat[3])
 }
 
 // AxisAngle extracts the rotation in form of an axis and a rotation angle.
-func (self *T) AxisAngle() (axis vec3.T, angle float32) {
-	cos := self[3]
+func (quat *T) AxisAngle() (axis vec3.T, angle float32) {
+	cos := quat[3]
 	sin := fmath.Sqrt(1 - cos*cos)
 	angle = fmath.Acos(cos)
 
@@ -84,112 +88,112 @@ func (self *T) AxisAngle() (axis vec3.T, angle float32) {
 	} else {
 		ooSin = 1 / sin
 	}
-	axis[0] = self[0] * ooSin
-	axis[1] = self[1] * ooSin
-	axis[2] = self[2] * ooSin
+	axis[0] = quat[0] * ooSin
+	axis[1] = quat[1] * ooSin
+	axis[2] = quat[2] * ooSin
 
 	return axis, angle
 }
 
 // Norm returns the norm value of the quaternion.
-func (self *T) Norm() float32 {
-	return self[0]*self[0] + self[1]*self[1] + self[2]*self[2] + self[3]*self[3]
+func (quat *T) Norm() float32 {
+	return quat[0]*quat[0] + quat[1]*quat[1] + quat[2]*quat[2] + quat[3]*quat[3]
 }
 
 // Normalize normalizes to a unit quaternation.
-func (self *T) Normalize() *T {
-	norm := self.Norm()
+func (quat *T) Normalize() *T {
+	norm := quat.Norm()
 	if norm != 1 && norm != 0 {
 		ool := 1 / fmath.Sqrt(norm)
-		self[0] *= ool
-		self[1] *= ool
-		self[2] *= ool
-		self[3] *= ool
+		quat[0] *= ool
+		quat[1] *= ool
+		quat[2] *= ool
+		quat[3] *= ool
 	}
-	return self
+	return quat
 }
 
 // Normalized returns a copy normalized to a unit quaternation.
-func (self *T) Normalized() T {
-	norm := self.Norm()
+func (quat *T) Normalized() T {
+	norm := quat.Norm()
 	if norm != 1 && norm != 0 {
 		ool := 1 / fmath.Sqrt(norm)
 		return T{
-			self[0] * ool,
-			self[1] * ool,
-			self[2] * ool,
-			self[3] * ool,
+			quat[0] * ool,
+			quat[1] * ool,
+			quat[2] * ool,
+			quat[3] * ool,
 		}
 	} else {
-		return *self
+		return *quat
 	}
 }
 
 // Negate negates the quaternion.
-func (self *T) Negate() *T {
-	self[0] = -self[0]
-	self[1] = -self[1]
-	self[2] = -self[2]
-	self[3] = -self[3]
-	return self
+func (quat *T) Negate() *T {
+	quat[0] = -quat[0]
+	quat[1] = -quat[1]
+	quat[2] = -quat[2]
+	quat[3] = -quat[3]
+	return quat
 }
 
 // Negated returns a negated copy of the quaternion.
-func (self *T) Negated() T {
-	return T{-self[0], -self[1], -self[2], -self[3]}
+func (quat *T) Negated() T {
+	return T{-quat[0], -quat[1], -quat[2], -quat[3]}
 }
 
 // Invert inverts the quaterion.
-func (self *T) Invert() *T {
-	self[0] = -self[0]
-	self[1] = -self[1]
-	self[2] = -self[2]
-	return self
+func (quat *T) Invert() *T {
+	quat[0] = -quat[0]
+	quat[1] = -quat[1]
+	quat[2] = -quat[2]
+	return quat
 }
 
 // Inverted returns an inverted copy of the quaternion.
-func (self *T) Inverted() T {
-	return T{-self[0], -self[1], -self[2], self[3]}
+func (quat *T) Inverted() T {
+	return T{-quat[0], -quat[1], -quat[2], quat[3]}
 }
 
-// SetShortestRotation negates the quaternion if it does not represent the shortest rotation from self to the orientation of other.
-// (there are two directions to rotate from the orientation of self to the orientation of other)
+// SetShortestRotation negates the quaternion if it does not represent the shortest rotation from quat to the orientation of other.
+// (there are two directions to rotate from the orientation of quat to the orientation of other)
 // See IsShortestRotation()
-func (self *T) SetShortestRotation(other *T) *T {
-	if !IsShortestRotation(self, other) {
-		self.Negate()
+func (quat *T) SetShortestRotation(other *T) *T {
+	if !IsShortestRotation(quat, other) {
+		quat.Negate()
 	}
-	return self
+	return quat
 }
 
 // IsShortestRotation returns if the rotation from a to b is the shortest possible rotation.
-// (there are two directions to rotate from the orientation of self to the orientation of other)
+// (there are two directions to rotate from the orientation of quat to the orientation of other)
 // See T.SetShortestRotation
 func IsShortestRotation(a, b *T) bool {
 	return Dot(a, b) >= 0
 }
 
 // IsUnitQuat returns if the quaternion is within tolerance of the unit quaternion.
-func (self *T) IsUnitQuat(tolerance float32) bool {
-	norm := self.Norm()
+func (quat *T) IsUnitQuat(tolerance float32) bool {
+	norm := quat.Norm()
 	return norm >= (1.0-tolerance) && norm <= (1.0+tolerance)
 }
 
 // RotateVec3 rotates v by the rotation represented by the quaternion.
-func (self *T) RotateVec3(v *vec3.T) {
+func (quat *T) RotateVec3(v *vec3.T) {
 	qv := T{v[0], v[1], v[2], 0}
-	inv := self.Inverted()
-	q := Mul3(self, &qv, &inv)
+	inv := quat.Inverted()
+	q := Mul3(quat, &qv, &inv)
 	v[0] = q[0]
 	v[1] = q[1]
 	v[2] = q[2]
 }
 
 // RotatedVec3 returns a rotated copy of v.
-func (self *T) RotatedVec3(v *vec3.T) vec3.T {
+func (quat *T) RotatedVec3(v *vec3.T) vec3.T {
 	qv := T{v[0], v[1], v[2], 0}
-	inv := self.Inverted()
-	q := Mul3(self, &qv, &inv)
+	inv := quat.Inverted()
+	q := Mul3(quat, &qv, &inv)
 	return vec3.T{q[0], q[1], q[2]}
 }
 

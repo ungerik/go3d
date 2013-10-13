@@ -4,7 +4,7 @@ import (
 	"fmt"
 )
 
-// Rect is a rectangle defined by Min and Max vector corners.
+// Rect is a coordinate system aligned rectangle defined by a Min and Max vector.
 type Rect struct {
 	Min T
 	Max T
@@ -21,24 +21,24 @@ func (self *Rect) String() string {
 	return self.Min.String() + " " + self.Max.String()
 }
 
-// ContainsPoint returns if a point is within the rectangle.
+// ContainsPoint returns if a point is contained within the rectangle.
 func (self *Rect) ContainsPoint(p *T) bool {
 	return p[0] >= self.Min[0] && p[0] <= self.Max[0] &&
 		p[1] >= self.Min[1] && p[1] <= self.Max[1]
 }
 
-func (self *Rect) Contains(other *Rect) bool {
-	panic("not implemented")
-}
+// func (self *Rect) Contains(other *Rect) bool {
+// 	panic("not implemented")
+// }
 
-func (self *Rect) Intersects(other *Rect) bool {
-	panic("not implemented")
-}
+// func (self *Rect) Intersects(other *Rect) bool {
+// 	panic("not implemented")
+// }
 
-func Intersect(a, b *Rect) Rect {
-	panic("not implemented")
-}
+// func Intersect(a, b *Rect) Rect {
+// 	panic("not implemented")
+// }
 
-func Join(a, b *Rect) Rect {
-	panic("not implemented")
-}
+// func Join(a, b *Rect) Rect {
+// 	panic("not implemented")
+// }

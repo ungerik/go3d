@@ -1,3 +1,4 @@
+// Package mat3x3 contains a 3x3 float32 matrix type T and functions.
 package mat3x3
 
 import (
@@ -12,7 +13,10 @@ import (
 )
 
 var (
-	Zero  = T{}
+	// Zero holds a zero matrix.
+	Zero = T{}
+
+	// Ident holds an ident matrix.
 	Ident = T{
 		vec3.T{1, 0, 0},
 		vec3.T{0, 1, 0},
@@ -20,6 +24,7 @@ var (
 	}
 )
 
+// T represents a 3x3 matrix.
 type T [3]vec3.T
 
 // From copies a T from a generic.T implementation.
@@ -53,155 +58,155 @@ func Parse(s string) (r T, err error) {
 }
 
 // String formats T as string. See also Parse().
-func (self *T) String() string {
-	return fmt.Sprintf("%s %s %s", self[0].String(), self[1].String(), self[2].String())
+func (mat *T) String() string {
+	return fmt.Sprintf("%s %s %s", mat[0].String(), mat[1].String(), mat[2].String())
 }
 
 // Rows returns the number of rows of the matrix.
-func (self *T) Rows() int {
+func (mat *T) Rows() int {
 	return 3
 }
 
 // Cols returns the number of columns of the matrix.
-func (self *T) Cols() int {
+func (mat *T) Cols() int {
 	return 3
 }
 
 // Size returns the number elements of the matrix.
-func (self *T) Size() int {
+func (mat *T) Size() int {
 	return 9
 }
 
 // Slice returns the elements of the matrix as slice.
-func (self *T) Slice() []float32 {
+func (mat *T) Slice() []float32 {
 	return []float32{
-		self[0][0], self[0][1], self[0][2],
-		self[1][0], self[1][1], self[1][2],
-		self[2][0], self[2][1], self[2][2],
+		mat[0][0], mat[0][1], mat[0][2],
+		mat[1][0], mat[1][1], mat[1][2],
+		mat[2][0], mat[2][1], mat[2][2],
 	}
 }
 
 // Get returns one element of the matrix.
-func (self *T) Get(col, row int) float32 {
-	return self[col][row]
+func (mat *T) Get(col, row int) float32 {
+	return mat[col][row]
 }
 
 // IsZero checks if all elements of the matrix are zero.
-func (self *T) IsZero() bool {
-	return *self == Zero
+func (mat *T) IsZero() bool {
+	return *mat == Zero
 }
 
-// Scale multiplies the diagonal scale elements by f returns self.
-func (self *T) Scale(f float32) *T {
-	self[0][0] *= f
-	self[1][1] *= f
-	self[2][2] *= f
-	return self
+// Scale multiplies the diagonal scale elements by f returns mat.
+func (mat *T) Scale(f float32) *T {
+	mat[0][0] *= f
+	mat[1][1] *= f
+	mat[2][2] *= f
+	return mat
 }
 
 // Scaled returns a copy of the matrix with the diagonal scale elements multiplied by f.
-func (self *T) Scaled(f float32) T {
-	r := *self
+func (mat *T) Scaled(f float32) T {
+	r := *mat
 	return *r.Scale(f)
 }
 
 // Scaling returns the scaling diagonal of the matrix.
-func (self *T) Scaling() vec3.T {
-	return vec3.T{self[0][0], self[1][1], self[2][2]}
+func (mat *T) Scaling() vec3.T {
+	return vec3.T{mat[0][0], mat[1][1], mat[2][2]}
 }
 
 // SetScaling sets the scaling diagonal of the matrix.
-func (self *T) SetScaling(s *vec3.T) *T {
-	self[0][0] = s[0]
-	self[1][1] = s[1]
-	self[2][2] = s[2]
-	return self
+func (mat *T) SetScaling(s *vec3.T) *T {
+	mat[0][0] = s[0]
+	mat[1][1] = s[1]
+	mat[2][2] = s[2]
+	return mat
 }
 
 // ScaleVec3 multiplies the 2D scaling diagonal of the matrix by s.
-func (self *T) ScaleVec2(s *vec2.T) *T {
-	self[0][0] *= s[0]
-	self[1][1] *= s[1]
-	return self
+func (mat *T) ScaleVec2(s *vec2.T) *T {
+	mat[0][0] *= s[0]
+	mat[1][1] *= s[1]
+	return mat
 }
 
 // SetTranslation sets the 2D translation elements of the matrix.
-func (self *T) SetTranslation(v *vec2.T) *T {
-	self[2][0] = v[0]
-	self[2][1] = v[1]
-	return self
+func (mat *T) SetTranslation(v *vec2.T) *T {
+	mat[2][0] = v[0]
+	mat[2][1] = v[1]
+	return mat
 }
 
 // Translate adds v to the 2D translation part of the matrix.
-func (self *T) Translate(v *vec2.T) *T {
-	self[2][0] += v[0]
-	self[2][1] += v[1]
-	return self
+func (mat *T) Translate(v *vec2.T) *T {
+	mat[2][0] += v[0]
+	mat[2][1] += v[1]
+	return mat
 }
 
 // Translate adds dx to the 2D X-translation element of the matrix.
-func (self *T) TranslateX(dx float32) *T {
-	self[2][0] += dx
-	return self
+func (mat *T) TranslateX(dx float32) *T {
+	mat[2][0] += dx
+	return mat
 }
 
 // Translate adds dy to the 2D Y-translation element of the matrix.
-func (self *T) TranslateY(dy float32) *T {
-	self[2][1] += dy
-	return self
+func (mat *T) TranslateY(dy float32) *T {
+	mat[2][1] += dy
+	return mat
 }
 
 // Trace returns the trace value for the matrix.
-func (self *T) Trace() float32 {
-	return self[0][0] + self[1][1] + self[2][2]
+func (mat *T) Trace() float32 {
+	return mat[0][0] + mat[1][1] + mat[2][2]
 }
 
-// AssignMul multiplies a and b and assigns the result to self.
-func (self *T) AssignMul(a, b *T) *T {
-	self[0] = a.MulVec3(&b[0])
-	self[1] = a.MulVec3(&b[1])
-	self[2] = a.MulVec3(&b[2])
-	return self
+// AssignMul multiplies a and b and assigns the result to mat.
+func (mat *T) AssignMul(a, b *T) *T {
+	mat[0] = a.MulVec3(&b[0])
+	mat[1] = a.MulVec3(&b[1])
+	mat[2] = a.MulVec3(&b[2])
+	return mat
 }
 
 // AssignMat2x2 assigns a 2x2 sub-matrix and sets the rest of the matrix to the ident value.
-func (self *T) AssignMat2x2(m *mat2x2.T) *T {
-	*self = T{
+func (mat *T) AssignMat2x2(m *mat2x2.T) *T {
+	*mat = T{
 		vec3.T{m[0][0], m[1][0], 0},
 		vec3.T{m[0][1], m[1][1], 0},
 		vec3.T{0, 0, 1},
 	}
-	return self
+	return mat
 }
 
 // MulVec3 multiplies v with T.
-func (self *T) MulVec3(v *vec3.T) vec3.T {
+func (mat *T) MulVec3(v *vec3.T) vec3.T {
 	return vec3.T{
-		self[0][0]*v[0] + self[1][0]*v[1] + self[2][0]*v[2],
-		self[0][1]*v[1] + self[1][1]*v[1] + self[2][1]*v[2],
-		self[0][2]*v[2] + self[1][2]*v[1] + self[2][2]*v[2],
+		mat[0][0]*v[0] + mat[1][0]*v[1] + mat[2][0]*v[2],
+		mat[0][1]*v[1] + mat[1][1]*v[1] + mat[2][1]*v[2],
+		mat[0][2]*v[2] + mat[1][2]*v[1] + mat[2][2]*v[2],
 	}
 }
 
 // Quaternion extracts a quaternion from the rotation part of the matrix.
-func (self *T) Quaternion() quaternion.T {
-	tr := self.Trace()
+func (mat *T) Quaternion() quaternion.T {
+	tr := mat.Trace()
 
 	s := fmath.Sqrt(tr + 1)
 	w := s * 0.5
 	s = 0.5 / s
 
 	q := quaternion.T{
-		(self[1][2] - self[2][1]) * s,
-		(self[2][0] - self[0][2]) * s,
-		(self[0][1] - self[1][0]) * s,
+		(mat[1][2] - mat[2][1]) * s,
+		(mat[2][0] - mat[0][2]) * s,
+		(mat[0][1] - mat[1][0]) * s,
 		w,
 	}
 	return q.Normalized()
 }
 
 // AssignQuaternion assigns a quaternion to the rotations part of the matrix and sets the other elements to their ident value.
-func (self *T) AssignQuaternion(q *quaternion.T) *T {
+func (mat *T) AssignQuaternion(q *quaternion.T) *T {
 	xx := q[0] * q[0] * 2
 	yy := q[1] * q[1] * 2
 	zz := q[2] * q[2] * 2
@@ -212,100 +217,100 @@ func (self *T) AssignQuaternion(q *quaternion.T) *T {
 	wy := q[3] * q[1] * 2
 	wz := q[3] * q[2] * 2
 
-	self[0][0] = 1 - (yy + zz)
-	self[1][0] = xy - wz
-	self[2][0] = xz + wy
+	mat[0][0] = 1 - (yy + zz)
+	mat[1][0] = xy - wz
+	mat[2][0] = xz + wy
 
-	self[0][1] = xy + wz
-	self[1][1] = 1 - (xx + zz)
-	self[2][1] = yz - wx
+	mat[0][1] = xy + wz
+	mat[1][1] = 1 - (xx + zz)
+	mat[2][1] = yz - wx
 
-	self[0][2] = xz - wy
-	self[1][2] = yz + wx
-	self[2][2] = 1 - (xx + yy)
+	mat[0][2] = xz - wy
+	mat[1][2] = yz + wx
+	mat[2][2] = 1 - (xx + yy)
 
-	return self
+	return mat
 }
 
 // AssignXRotation assigns a rotation around the x axis to the rotation part of the matrix and sets the remaining elements to their ident value.
-func (self *T) AssignXRotation(angle float32) *T {
+func (mat *T) AssignXRotation(angle float32) *T {
 	cosine := fmath.Cos(angle)
 	sine := fmath.Sin(angle)
 
-	self[0][0] = 1
-	self[1][0] = 0
-	self[2][0] = 0
+	mat[0][0] = 1
+	mat[1][0] = 0
+	mat[2][0] = 0
 
-	self[0][1] = 0
-	self[1][1] = cosine
-	self[2][1] = -sine
+	mat[0][1] = 0
+	mat[1][1] = cosine
+	mat[2][1] = -sine
 
-	self[0][2] = 0
-	self[1][2] = sine
-	self[2][2] = cosine
+	mat[0][2] = 0
+	mat[1][2] = sine
+	mat[2][2] = cosine
 
-	return self
+	return mat
 }
 
 // AssignYRotation assigns a rotation around the y axis to the rotation part of the matrix and sets the remaining elements to their ident value.
-func (self *T) AssignYRotation(angle float32) *T {
+func (mat *T) AssignYRotation(angle float32) *T {
 	cosine := fmath.Cos(angle)
 	sine := fmath.Sin(angle)
 
-	self[0][0] = cosine
-	self[1][0] = 0
-	self[2][0] = sine
+	mat[0][0] = cosine
+	mat[1][0] = 0
+	mat[2][0] = sine
 
-	self[0][1] = 0
-	self[1][1] = 1
-	self[2][1] = 0
+	mat[0][1] = 0
+	mat[1][1] = 1
+	mat[2][1] = 0
 
-	self[0][2] = -sine
-	self[1][2] = 0
-	self[2][2] = cosine
+	mat[0][2] = -sine
+	mat[1][2] = 0
+	mat[2][2] = cosine
 
-	return self
+	return mat
 }
 
 // AssignZRotation assigns a rotation around the z axis to the rotation part of the matrix and sets the remaining elements to their ident value.
-func (self *T) AssignZRotation(angle float32) *T {
+func (mat *T) AssignZRotation(angle float32) *T {
 	cosine := fmath.Cos(angle)
 	sine := fmath.Sin(angle)
 
-	self[0][0] = cosine
-	self[1][0] = -sine
-	self[2][0] = 0
+	mat[0][0] = cosine
+	mat[1][0] = -sine
+	mat[2][0] = 0
 
-	self[0][1] = sine
-	self[1][1] = cosine
-	self[2][1] = 0
+	mat[0][1] = sine
+	mat[1][1] = cosine
+	mat[2][1] = 0
 
-	self[0][2] = 0
-	self[1][2] = 0
-	self[2][2] = 1
+	mat[0][2] = 0
+	mat[1][2] = 0
+	mat[2][2] = 1
 
-	return self
+	return mat
 }
 
 // AssignCoordinateSystem assigns the rotation of a orthogonal coordinates system to the rotation part of the matrix and sets the remaining elements to their ident value.
-func (self *T) AssignCoordinateSystem(x, y, z *vec3.T) *T {
-	self[0][0] = x[0]
-	self[1][0] = x[1]
-	self[2][0] = x[2]
+func (mat *T) AssignCoordinateSystem(x, y, z *vec3.T) *T {
+	mat[0][0] = x[0]
+	mat[1][0] = x[1]
+	mat[2][0] = x[2]
 
-	self[0][1] = y[0]
-	self[1][1] = y[1]
-	self[2][1] = y[2]
+	mat[0][1] = y[0]
+	mat[1][1] = y[1]
+	mat[2][1] = y[2]
 
-	self[0][2] = z[0]
-	self[1][2] = z[1]
-	self[2][2] = z[2]
+	mat[0][2] = z[0]
+	mat[1][2] = z[1]
+	mat[2][2] = z[2]
 
-	return self
+	return mat
 }
 
 // AssignEulerRotation assigns Euler angle rotations to the rotation part of the matrix and sets the remaining elements to their ident value.
-func (self *T) AssignEulerRotation(yHead, xPitch, zRoll float32) *T {
+func (mat *T) AssignEulerRotation(yHead, xPitch, zRoll float32) *T {
 	sinH := fmath.Sin(yHead)
 	cosH := fmath.Cos(yHead)
 	sinP := fmath.Sin(xPitch)
@@ -313,48 +318,48 @@ func (self *T) AssignEulerRotation(yHead, xPitch, zRoll float32) *T {
 	sinR := fmath.Sin(zRoll)
 	cosR := fmath.Cos(zRoll)
 
-	self[0][0] = cosR*cosH - sinR*sinP*sinH
-	self[1][0] = -sinR * cosP
-	self[2][0] = cosR*sinH + sinR*sinP*cosH
+	mat[0][0] = cosR*cosH - sinR*sinP*sinH
+	mat[1][0] = -sinR * cosP
+	mat[2][0] = cosR*sinH + sinR*sinP*cosH
 
-	self[0][1] = sinR*cosH + cosR*sinP*sinH
-	self[1][1] = cosR * cosP
-	self[2][1] = sinR*sinH - cosR*sinP*cosH
+	mat[0][1] = sinR*cosH + cosR*sinP*sinH
+	mat[1][1] = cosR * cosP
+	mat[2][1] = sinR*sinH - cosR*sinP*cosH
 
-	self[0][2] = -cosP * sinH
-	self[1][2] = sinP
-	self[2][2] = cosP * cosH
+	mat[0][2] = -cosP * sinH
+	mat[1][2] = sinP
+	mat[2][2] = cosP * cosH
 
-	return self
+	return mat
 }
 
 // ExtractEulerAngles extracts the rotation part of the matrix as Euler angle rotation values.
-func (self *T) ExtractEulerAngles() (yHead, xPitch, zRoll float32) {
-	xPitch = fmath.Asin(self[1][2])
-	f12 := fmath.Abs(self[1][2])
+func (mat *T) ExtractEulerAngles() (yHead, xPitch, zRoll float32) {
+	xPitch = fmath.Asin(mat[1][2])
+	f12 := fmath.Abs(mat[1][2])
 	if f12 > (1.0-0.0001) && f12 < (1.0+0.0001) { // f12 == 1.0
 		yHead = 0.0
-		zRoll = fmath.Atan2(self[0][1], self[0][0])
+		zRoll = fmath.Atan2(mat[0][1], mat[0][0])
 	} else {
-		yHead = fmath.Atan2(-self[0][2], self[2][2])
-		zRoll = fmath.Atan2(-self[1][0], self[1][1])
+		yHead = fmath.Atan2(-mat[0][2], mat[2][2])
+		zRoll = fmath.Atan2(-mat[1][0], mat[1][1])
 	}
 	return yHead, xPitch, zRoll
 }
 
 // Determinant returns the determinant of the matrix.
-func (self *T) Determinant() float32 {
-	return self[0][0]*self[1][1]*self[2][2] +
-		self[1][0]*self[2][1]*self[0][2] +
-		self[2][0]*self[0][1]*self[1][2] -
-		self[2][0]*self[1][1]*self[0][2] -
-		self[1][0]*self[0][1]*self[2][2] -
-		self[0][0]*self[2][1]*self[1][2]
+func (mat *T) Determinant() float32 {
+	return mat[0][0]*mat[1][1]*mat[2][2] +
+		mat[1][0]*mat[2][1]*mat[0][2] +
+		mat[2][0]*mat[0][1]*mat[1][2] -
+		mat[2][0]*mat[1][1]*mat[0][2] -
+		mat[1][0]*mat[0][1]*mat[2][2] -
+		mat[0][0]*mat[2][1]*mat[1][2]
 }
 
 // IsReflective returns true if the matrix can be reflected by a plane.
-func (self *T) IsReflective() bool {
-	return self.Determinant() < 0
+func (mat *T) IsReflective() bool {
+	return mat.Determinant() < 0
 }
 
 func swap(a, b *float32) {
@@ -364,9 +369,9 @@ func swap(a, b *float32) {
 }
 
 // Transpose transposes the matrix.
-func (self *T) Transpose() *T {
-	swap(&self[1][0], &self[0][1])
-	swap(&self[2][0], &self[0][2])
-	swap(&self[2][1], &self[1][2])
-	return self
+func (mat *T) Transpose() *T {
+	swap(&mat[1][0], &mat[0][1])
+	swap(&mat[2][0], &mat[0][2])
+	swap(&mat[2][1], &mat[1][2])
+	return mat
 }

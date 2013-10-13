@@ -1,3 +1,4 @@
+// Package vec2 contains a 2D float32 vector type T and functions.
 package vec2
 
 import (
@@ -9,15 +10,21 @@ import (
 )
 
 var (
+	// Zero holds a zero vector.
 	Zero = T{}
 
+	// UnitX holds a vector with X to one.
 	UnitX = T{1, 0}
+	// UnitZ holds a vector with Z to one.
 	UnitY = T{0, 1}
 
+	// MinVal holds a vector with the smallest possible component values.
 	MinVal = T{-math.MaxFloat32, -math.MaxFloat32}
+	// MaxVal holds a vector with the highest possible component values.
 	MaxVal = T{+math.MaxFloat32, +math.MaxFloat32}
 )
 
+// T represents a 2D vector.
 type T [2]float32
 
 // From copies a T from a generic.T implementation.
@@ -32,153 +39,153 @@ func Parse(s string) (r T, err error) {
 }
 
 // String formats T as string. See also Parse().
-func (self *T) String() string {
-	return fmt.Sprintf("%f %f", self[0], self[1])
+func (vec *T) String() string {
+	return fmt.Sprintf("%f %f", vec[0], vec[1])
 }
 
 // Rows returns the number of rows of the vector.
-func (self *T) Rows() int {
+func (vec *T) Rows() int {
 	return 2
 }
 
 // Cols returns the number of columns of the vector.
-func (self *T) Cols() int {
+func (vec *T) Cols() int {
 	return 1
 }
 
 // Size returns the number elements of the vector.
-func (self *T) Size() int {
+func (vec *T) Size() int {
 	return 2
 }
 
 // Slice returns the elements of the vector as slice.
-func (self *T) Slice() []float32 {
-	return []float32{self[0], self[1]}
+func (vec *T) Slice() []float32 {
+	return []float32{vec[0], vec[1]}
 }
 
 // Get returns one element of the vector.
-func (self *T) Get(col, row int) float32 {
-	return self[row]
+func (vec *T) Get(col, row int) float32 {
+	return vec[row]
 }
 
 // IsZero checks if all elements of the vector are zero.
-func (self *T) IsZero() bool {
-	return self[0] == 0 && self[1] == 0
+func (vec *T) IsZero() bool {
+	return vec[0] == 0 && vec[1] == 0
 }
 
 // Length returns the length of the vector.
 // See also LengthSqr and Normalize.
-func (self *T) Length() float32 {
-	return float32(fmath.Sqrt(self.LengthSqr()))
+func (vec *T) Length() float32 {
+	return float32(fmath.Sqrt(vec.LengthSqr()))
 }
 
 // Length returns the squared length of the vector.
 // See also Length and Normalize.
-func (self *T) LengthSqr() float32 {
-	return self[0]*self[0] + self[1]*self[1]
+func (vec *T) LengthSqr() float32 {
+	return vec[0]*vec[0] + vec[1]*vec[1]
 }
 
-// Scale multiplies all element of the vector by f and returns self.
-func (self *T) Scale(f float32) *T {
-	self[0] *= f
-	self[1] *= f
-	return self
+// Scale multiplies all element of the vector by f and returns vec.
+func (vec *T) Scale(f float32) *T {
+	vec[0] *= f
+	vec[1] *= f
+	return vec
 }
 
-// Scaled returns a copy of self with all elements multiplies by f.
-func (self *T) Scaled(f float32) T {
-	return T{self[0] * f, self[1] * f}
+// Scaled returns a copy of vec with all elements multiplies by f.
+func (vec *T) Scaled(f float32) T {
+	return T{vec[0] * f, vec[1] * f}
 }
 
 // Invert inverts the vector.
-func (self *T) Invert() *T {
-	self[0] = -self[0]
-	self[1] = -self[1]
-	return self
+func (vec *T) Invert() *T {
+	vec[0] = -vec[0]
+	vec[1] = -vec[1]
+	return vec
 }
 
 // Inverted returns an inverted copy of the vector.
-func (self *T) Inverted() T {
-	return T{-self[0], -self[1]}
+func (vec *T) Inverted() T {
+	return T{-vec[0], -vec[1]}
 }
 
 // Normalize normalizes the vector to unit length.
-func (self *T) Normalize() *T {
-	sl := self.LengthSqr()
+func (vec *T) Normalize() *T {
+	sl := vec.LengthSqr()
 	if sl == 0 || sl == 1 {
-		return self
+		return vec
 	}
-	return self.Scale(1 / fmath.Sqrt(sl))
+	return vec.Scale(1 / fmath.Sqrt(sl))
 }
 
 // Normalized returns a unit length normalized copy of the vector.
-func (self *T) Normalized() T {
-	v := *self
+func (vec *T) Normalized() T {
+	v := *vec
 	v.Normalize()
 	return v
 }
 
-// Add adds another vector to self.
-func (self *T) Add(v *T) *T {
-	self[0] += v[0]
-	self[1] += v[1]
-	return self
+// Add adds another vector to vec.
+func (vec *T) Add(v *T) *T {
+	vec[0] += v[0]
+	vec[1] += v[1]
+	return vec
 }
 
-// Sub subtracts another vector from self.
-func (self *T) Sub(v *T) *T {
-	self[0] -= v[0]
-	self[1] -= v[1]
-	return self
+// Sub subtracts another vector from vec.
+func (vec *T) Sub(v *T) *T {
+	vec[0] -= v[0]
+	vec[1] -= v[1]
+	return vec
 }
 
 // Mul multiplies the components of the vector with the respective components of v.
-func (self *T) Mul(v *T) *T {
-	self[0] *= v[0]
-	self[1] *= v[1]
-	return self
+func (vec *T) Mul(v *T) *T {
+	vec[0] *= v[0]
+	vec[1] *= v[1]
+	return vec
 }
 
 // Rotate rotates the vector counter-clockwise by angle.
-func (self *T) Rotate(angle float32) *T {
-	*self = self.Rotated(angle)
-	return self
+func (vec *T) Rotate(angle float32) *T {
+	*vec = vec.Rotated(angle)
+	return vec
 }
 
 // Rotated returns a counter-clockwise rotated copy of the vector.
-func (self *T) Rotated(angle float32) T {
+func (vec *T) Rotated(angle float32) T {
 	sinus := fmath.Sin(angle)
 	cosinus := fmath.Cos(angle)
 	return T{
-		self[0]*cosinus - self[1]*sinus,
-		self[0]*sinus + self[1]*cosinus,
+		vec[0]*cosinus - vec[1]*sinus,
+		vec[0]*sinus + vec[1]*cosinus,
 	}
 }
 
 // RotateAroundPoint rotates the vector counter-clockwise around a point.
-func (self *T) RotateAroundPoint(point *T, angle float32) *T {
-	return self.Sub(point).Rotate(angle).Add(point)
+func (vec *T) RotateAroundPoint(point *T, angle float32) *T {
+	return vec.Sub(point).Rotate(angle).Add(point)
 }
 
 // Rotate90DegLeft rotates the vector 90 degrees left (counter-clockwise).
-func (self *T) Rotate90DegLeft() *T {
-	temp := self[0]
-	self[0] = -self[1]
-	self[1] = temp
-	return self
+func (vec *T) Rotate90DegLeft() *T {
+	temp := vec[0]
+	vec[0] = -vec[1]
+	vec[1] = temp
+	return vec
 }
 
 // Rotate90DegRight rotates the vector 90 degrees right (clockwise).
-func (self *T) Rotate90DegRight() *T {
-	temp := self[0]
-	self[0] = self[1]
-	self[1] = -temp
-	return self
+func (vec *T) Rotate90DegRight() *T {
+	temp := vec[0]
+	vec[0] = vec[1]
+	vec[1] = -temp
+	return vec
 }
 
 // Angle returns the counter-clockwise angle of the vector from the x axis.
-func (self *T) Angle() float32 {
-	return fmath.Atan2(self[1], self[0])
+func (vec *T) Angle() float32 {
+	return fmath.Atan2(vec[1], vec[0])
 }
 
 // Add returns the sum of two vectors.
