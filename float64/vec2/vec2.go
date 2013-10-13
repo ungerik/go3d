@@ -14,7 +14,7 @@ var (
 
 	// UnitX holds a vector with X to one.
 	UnitX = T{1, 0}
-	// UnitZ holds a vector with Z to one.
+	// UnitY holds a vector with Y to one.
 	UnitY = T{0, 1}
 
 	// MinVal holds a vector with the smallest possible component values.
@@ -78,7 +78,7 @@ func (vec *T) Length() float64 {
 	return float64(math.Sqrt(vec.LengthSqr()))
 }
 
-// Length returns the squared length of the vector.
+// LengthSqr returns the squared length of the vector.
 // See also Length and Normalize.
 func (vec *T) LengthSqr() float64 {
 	return vec[0]*vec[0] + vec[1]*vec[1]
@@ -192,7 +192,7 @@ func Add(a, b *T) T {
 	return T{a[0] + b[0], a[1] + b[1]}
 }
 
-// Add returns the difference of two vectors.
+// Sub returns the difference of two vectors.
 func Sub(a, b *T) T {
 	return T{a[0] - b[0], a[1] - b[1]}
 }
