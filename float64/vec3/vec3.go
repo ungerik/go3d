@@ -23,7 +23,7 @@ var (
 	Red = T{1, 0, 0}
 	// Green holds the color green.
 	Green = T{0, 1, 0}
-	// Black holds the color black.
+	// Blue holds the color black.
 	Blue = T{0, 0, 1}
 	// Black holds the color black.
 	Black = T{0, 0, 0}
@@ -98,7 +98,7 @@ func (vec *T) Length() float64 {
 	return float64(math.Sqrt(vec.LengthSqr()))
 }
 
-// Length returns the squared length of the vector.
+// LengthSqr returns the squared length of the vector.
 // See also Length and Normalize.
 func (vec *T) LengthSqr() float64 {
 	return vec[0]*vec[0] + vec[1]*vec[1] + vec[2]*vec[2]
