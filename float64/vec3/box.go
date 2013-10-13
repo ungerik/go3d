@@ -17,22 +17,22 @@ func ParseBox(s string) (r Box, err error) {
 }
 
 // String formats Box as string. See also ParseBox().
-func (self *Box) String() string {
-	return self.Min.String() + " " + self.Max.String()
+func (box *Box) String() string {
+	return box.Min.String() + " " + box.Max.String()
 }
 
 // ContainsPoint returns if a point is contained within the box.
-func (self *Box) ContainsPoint(p *T) bool {
-	return p[0] >= self.Min[0] && p[0] <= self.Max[0] &&
-		p[1] >= self.Min[1] && p[1] <= self.Max[1] &&
-		p[2] >= self.Min[2] && p[2] <= self.Max[2]
+func (box *Box) ContainsPoint(p *T) bool {
+	return p[0] >= box.Min[0] && p[0] <= box.Max[0] &&
+		p[1] >= box.Min[1] && p[1] <= box.Max[1] &&
+		p[2] >= box.Min[2] && p[2] <= box.Max[2]
 }
 
-// func (self *Box) Contains(other *Box) bool {
+// func (box *Box) Contains(other *Box) bool {
 // 	panic("not implemented")
 // }
 
-// func (self *Box) Intersects(other *Box) bool {
+// func (box *Box) Intersects(other *Box) bool {
 // 	panic("not implemented")
 // }
 

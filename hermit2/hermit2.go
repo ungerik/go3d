@@ -1,4 +1,4 @@
-// Package hermit2 contains functions for 2D cubic hermit splines.
+// Package hermit2 contains a float32 type T and functions for 2D cubic hermit splines.
 // See: http://en.wikipedia.org/wiki/Cubic_Hermite_spline
 package hermit2
 

@@ -17,21 +17,21 @@ func ParseRect(s string) (r Rect, err error) {
 }
 
 // String formats Rect as string. See also ParseRect().
-func (self *Rect) String() string {
-	return self.Min.String() + " " + self.Max.String()
+func (rect *Rect) String() string {
+	return rect.Min.String() + " " + rect.Max.String()
 }
 
 // ContainsPoint returns if a point is contained within the rectangle.
-func (self *Rect) ContainsPoint(p *T) bool {
-	return p[0] >= self.Min[0] && p[0] <= self.Max[0] &&
-		p[1] >= self.Min[1] && p[1] <= self.Max[1]
+func (rect *Rect) ContainsPoint(p *T) bool {
+	return p[0] >= rect.Min[0] && p[0] <= rect.Max[0] &&
+		p[1] >= rect.Min[1] && p[1] <= rect.Max[1]
 }
 
-// func (self *Rect) Contains(other *Rect) bool {
+// func (rect *Rect) Contains(other *Rect) bool {
 // 	panic("not implemented")
 // }
 
-// func (self *Rect) Intersects(other *Rect) bool {
+// func (rect *Rect) Intersects(other *Rect) bool {
 // 	panic("not implemented")
 // }
 
