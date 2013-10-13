@@ -56,6 +56,7 @@ func From(other generic.T) T {
 	}
 }
 
+// FromVec3 returns a vector with the first 3 components copied from a vec3.T.
 func FromVec3(other *vec3.T) T {
 	return T{other[0], other[1], other[2], 1}
 }
@@ -108,7 +109,7 @@ func (vec *T) Length() float64 {
 	return v3.Length()
 }
 
-// Length returns the squared length of the vector.
+// LengthSqr returns the squared length of the vector.
 // See also Length and Normalize.
 func (vec *T) LengthSqr() float64 {
 	v3 := vec.Vec3DividedByW()
@@ -245,7 +246,7 @@ func Add(a, b *T) T {
 	}
 }
 
-// Add returns the difference of two vectors.
+// Sub returns the difference of two vectors.
 func Sub(a, b *T) T {
 	if a[3] == b[3] {
 		return T{a[0] - b[0], a[1] - b[1], a[2] - b[2], 1}
@@ -263,7 +264,7 @@ func Dot(a, b *T) float64 {
 	return vec3.Dot(&a3, &b3)
 }
 
-// Dot returns the 4 element vdot product of two vectors.
+// Dot4 returns the 4 element vdot product of two vectors.
 func Dot4(a, b *T) float64 {
 	return a[0]*b[0] + a[1]*b[1] + a[2]*b[2] + a[3]*b[3]
 }

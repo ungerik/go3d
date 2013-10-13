@@ -110,7 +110,7 @@ func (vec *T) Length() float32 {
 	return v3.Length()
 }
 
-// Length returns the squared length of the vector.
+// LengthSqr returns the squared length of the vector.
 // See also Length and Normalize.
 func (vec *T) LengthSqr() float32 {
 	v3 := vec.Vec3DividedByW()
@@ -248,7 +248,7 @@ func Add(a, b *T) T {
 	}
 }
 
-// Add returns the difference of two vectors.
+// Sub returns the difference of two vectors.
 func Sub(a, b *T) T {
 	if a[3] == b[3] {
 		return T{a[0] - b[0], a[1] - b[1], a[2] - b[2], 1}
@@ -266,7 +266,7 @@ func Dot(a, b *T) float32 {
 	return vec3.Dot(&a3, &b3)
 }
 
-// Dot returns the 4 element dot product of two vectors.
+// Dot4 returns the 4 element dot product of two vectors.
 func Dot4(a, b *T) float32 {
 	return a[0]*b[0] + a[1]*b[1] + a[2]*b[2] + a[3]*b[3]
 }
