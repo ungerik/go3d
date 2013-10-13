@@ -3,9 +3,8 @@ package vec3
 
 import (
 	"fmt"
-	"math"
 
-	"github.com/barnex/fmath"
+	math "github.com/ungerik/fmath"
 	"github.com/ungerik/go3d/generic"
 )
 
@@ -96,7 +95,7 @@ func (vec *T) IsZero() bool {
 // Length returns the length of the vector.
 // See also LengthSqr and Normalize.
 func (vec *T) Length() float32 {
-	return float32(fmath.Sqrt(vec.LengthSqr()))
+	return float32(math.Sqrt(vec.LengthSqr()))
 }
 
 // LengthSqr returns the squared length of the vector.
@@ -136,7 +135,7 @@ func (vec *T) Normalize() *T {
 	if sl == 0 || sl == 1 {
 		return vec
 	}
-	vec.Scale(1 / fmath.Sqrt(sl))
+	vec.Scale(1 / math.Sqrt(sl))
 	return vec
 }
 
@@ -211,7 +210,7 @@ func Cross(a, b *T) T {
 
 // Angle returns the angle between two vectors.
 func Angle(a, b *T) float32 {
-	return fmath.Acos(Dot(a, b))
+	return math.Acos(Dot(a, b))
 }
 
 // Min returns the component wise minimum of two vectors.

@@ -4,7 +4,7 @@ package quaternion
 import (
 	"fmt"
 
-	"github.com/barnex/fmath"
+	math "github.com/ungerik/fmath"
 	"github.com/ungerik/go3d/vec3"
 	"github.com/ungerik/go3d/vec4"
 )
@@ -24,27 +24,27 @@ type T [4]float32
 // FromAxisAngle returns a quaternion representing a rotation around and axis.
 func FromAxisAngle(axis *vec3.T, angle float32) T {
 	angle *= 0.5
-	sin := fmath.Sin(angle)
-	q := T{axis[0] * sin, axis[1] * sin, axis[2] * sin, fmath.Cos(angle)}
+	sin := math.Sin(angle)
+	q := T{axis[0] * sin, axis[1] * sin, axis[2] * sin, math.Cos(angle)}
 	return q.Normalized()
 }
 
 // FromXAxisAngle returns a quaternion representing a rotation around the x axis.
 func FromXAxisAngle(angle float32) T {
 	angle *= 0.5
-	return T{fmath.Sin(angle), 0, 0, fmath.Cos(angle)}
+	return T{math.Sin(angle), 0, 0, math.Cos(angle)}
 }
 
 // FromYAxisAngle returns a quaternion representing a rotation around the y axis.
 func FromYAxisAngle(angle float32) T {
 	angle *= 0.5
-	return T{0, fmath.Sin(angle), 0, fmath.Cos(angle)}
+	return T{0, math.Sin(angle), 0, math.Cos(angle)}
 }
 
 // FromZAxisAngle returns a quaternion representing a rotation around the z axis.
 func FromZAxisAngle(angle float32) T {
 	angle *= 0.5
-	return T{0, 0, fmath.Sin(angle), fmath.Cos(angle)}
+	return T{0, 0, math.Sin(angle), math.Cos(angle)}
 }
 
 // FromEulerAngles returns a quaternion representing Euler angle rotations.
@@ -79,11 +79,11 @@ func (quat *T) String() string {
 // AxisAngle extracts the rotation in form of an axis and a rotation angle.
 func (quat *T) AxisAngle() (axis vec3.T, angle float32) {
 	cos := quat[3]
-	sin := fmath.Sqrt(1 - cos*cos)
-	angle = fmath.Acos(cos)
+	sin := math.Sqrt(1 - cos*cos)
+	angle = math.Acos(cos)
 
 	var ooSin float32
-	if fmath.Abs(sin) < 0.0005 {
+	if math.Abs(sin) < 0.0005 {
 		ooSin = 1
 	} else {
 		ooSin = 1 / sin
@@ -104,7 +104,7 @@ func (quat *T) Norm() float32 {
 func (quat *T) Normalize() *T {
 	norm := quat.Norm()
 	if norm != 1 && norm != 0 {
-		ool := 1 / fmath.Sqrt(norm)
+		ool := 1 / math.Sqrt(norm)
 		quat[0] *= ool
 		quat[1] *= ool
 		quat[2] *= ool
@@ -117,7 +117,7 @@ func (quat *T) Normalize() *T {
 func (quat *T) Normalized() T {
 	norm := quat.Norm()
 	if norm != 1 && norm != 0 {
-		ool := 1 / fmath.Sqrt(norm)
+		ool := 1 / math.Sqrt(norm)
 		return T{
 			quat[0] * ool,
 			quat[1] * ool,
@@ -229,11 +229,11 @@ func Mul4(a, b, c, d *T) T {
 // Slerp returns the spherical linear interpolation quaternion between a and b at t (0,1).
 // See http://en.wikipedia.org/wiki/Slerp
 func Slerp(a, b *T, t float32) T {
-	d := fmath.Acos(a[0]*b[0] + a[1]*b[1] + a[2]*b[2] + a[3]*b[3])
-	ooSinD := 1 / fmath.Sin(d)
+	d := math.Acos(a[0]*b[0] + a[1]*b[1] + a[2]*b[2] + a[3]*b[3])
+	ooSinD := 1 / math.Sin(d)
 
-	t1 := fmath.Sin(d*(1-t)) * ooSinD
-	t2 := fmath.Sin(d*t) * ooSinD
+	t1 := math.Sin(d*(1-t)) * ooSinD
+	t2 := math.Sin(d*t) * ooSinD
 
 	q := T{
 		a[0]*t1 + b[0]*t2,
@@ -248,7 +248,7 @@ func Slerp(a, b *T, t float32) T {
 // Vec3Diff returns the rotation quaternion between two vectors.
 func Vec3Diff(a, b *vec3.T) T {
 	cr := vec3.Cross(a, b)
-	sr := fmath.Sqrt(2 * (1 + vec3.Dot(a, b)))
+	sr := math.Sqrt(2 * (1 + vec3.Dot(a, b)))
 	oosr := 1 / sr
 
 	q := T{cr[0] * oosr, cr[1] * oosr, cr[2] * oosr, sr * 0.5}

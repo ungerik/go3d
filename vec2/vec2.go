@@ -3,9 +3,8 @@ package vec2
 
 import (
 	"fmt"
-	"math"
 
-	"github.com/barnex/fmath"
+	math "github.com/ungerik/fmath"
 	"github.com/ungerik/go3d/generic"
 )
 
@@ -76,7 +75,7 @@ func (vec *T) IsZero() bool {
 // Length returns the length of the vector.
 // See also LengthSqr and Normalize.
 func (vec *T) Length() float32 {
-	return float32(fmath.Sqrt(vec.LengthSqr()))
+	return float32(math.Sqrt(vec.LengthSqr()))
 }
 
 // LengthSqr returns the squared length of the vector.
@@ -115,7 +114,7 @@ func (vec *T) Normalize() *T {
 	if sl == 0 || sl == 1 {
 		return vec
 	}
-	return vec.Scale(1 / fmath.Sqrt(sl))
+	return vec.Scale(1 / math.Sqrt(sl))
 }
 
 // Normalized returns a unit length normalized copy of the vector.
@@ -154,8 +153,8 @@ func (vec *T) Rotate(angle float32) *T {
 
 // Rotated returns a counter-clockwise rotated copy of the vector.
 func (vec *T) Rotated(angle float32) T {
-	sinus := fmath.Sin(angle)
-	cosinus := fmath.Cos(angle)
+	sinus := math.Sin(angle)
+	cosinus := math.Cos(angle)
 	return T{
 		vec[0]*cosinus - vec[1]*sinus,
 		vec[0]*sinus + vec[1]*cosinus,
@@ -185,7 +184,7 @@ func (vec *T) Rotate90DegRight() *T {
 
 // Angle returns the counter-clockwise angle of the vector from the x axis.
 func (vec *T) Angle() float32 {
-	return fmath.Atan2(vec[1], vec[0])
+	return math.Atan2(vec[1], vec[0])
 }
 
 // Add returns the sum of two vectors.
@@ -218,7 +217,7 @@ func Cross(a, b *T) T {
 
 // Angle returns the angle between two vectors.
 func Angle(a, b *T) float32 {
-	return fmath.Acos(Dot(a, b))
+	return math.Acos(Dot(a, b))
 }
 
 // IsLeftWinding returns if the angle from a to b is left winding.

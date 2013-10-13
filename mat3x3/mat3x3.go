@@ -4,7 +4,7 @@ package mat3x3
 import (
 	"fmt"
 
-	"github.com/barnex/fmath"
+	math "github.com/ungerik/fmath"
 	"github.com/ungerik/go3d/generic"
 	"github.com/ungerik/go3d/mat2x2"
 	"github.com/ungerik/go3d/quaternion"
@@ -192,7 +192,7 @@ func (mat *T) MulVec3(v *vec3.T) vec3.T {
 func (mat *T) Quaternion() quaternion.T {
 	tr := mat.Trace()
 
-	s := fmath.Sqrt(tr + 1)
+	s := math.Sqrt(tr + 1)
 	w := s * 0.5
 	s = 0.5 / s
 
@@ -234,8 +234,8 @@ func (mat *T) AssignQuaternion(q *quaternion.T) *T {
 
 // AssignXRotation assigns a rotation around the x axis to the rotation part of the matrix and sets the remaining elements to their ident value.
 func (mat *T) AssignXRotation(angle float32) *T {
-	cosine := fmath.Cos(angle)
-	sine := fmath.Sin(angle)
+	cosine := math.Cos(angle)
+	sine := math.Sin(angle)
 
 	mat[0][0] = 1
 	mat[1][0] = 0
@@ -254,8 +254,8 @@ func (mat *T) AssignXRotation(angle float32) *T {
 
 // AssignYRotation assigns a rotation around the y axis to the rotation part of the matrix and sets the remaining elements to their ident value.
 func (mat *T) AssignYRotation(angle float32) *T {
-	cosine := fmath.Cos(angle)
-	sine := fmath.Sin(angle)
+	cosine := math.Cos(angle)
+	sine := math.Sin(angle)
 
 	mat[0][0] = cosine
 	mat[1][0] = 0
@@ -274,8 +274,8 @@ func (mat *T) AssignYRotation(angle float32) *T {
 
 // AssignZRotation assigns a rotation around the z axis to the rotation part of the matrix and sets the remaining elements to their ident value.
 func (mat *T) AssignZRotation(angle float32) *T {
-	cosine := fmath.Cos(angle)
-	sine := fmath.Sin(angle)
+	cosine := math.Cos(angle)
+	sine := math.Sin(angle)
 
 	mat[0][0] = cosine
 	mat[1][0] = -sine
@@ -311,12 +311,12 @@ func (mat *T) AssignCoordinateSystem(x, y, z *vec3.T) *T {
 
 // AssignEulerRotation assigns Euler angle rotations to the rotation part of the matrix and sets the remaining elements to their ident value.
 func (mat *T) AssignEulerRotation(yHead, xPitch, zRoll float32) *T {
-	sinH := fmath.Sin(yHead)
-	cosH := fmath.Cos(yHead)
-	sinP := fmath.Sin(xPitch)
-	cosP := fmath.Cos(xPitch)
-	sinR := fmath.Sin(zRoll)
-	cosR := fmath.Cos(zRoll)
+	sinH := math.Sin(yHead)
+	cosH := math.Cos(yHead)
+	sinP := math.Sin(xPitch)
+	cosP := math.Cos(xPitch)
+	sinR := math.Sin(zRoll)
+	cosR := math.Cos(zRoll)
 
 	mat[0][0] = cosR*cosH - sinR*sinP*sinH
 	mat[1][0] = -sinR * cosP
@@ -335,14 +335,14 @@ func (mat *T) AssignEulerRotation(yHead, xPitch, zRoll float32) *T {
 
 // ExtractEulerAngles extracts the rotation part of the matrix as Euler angle rotation values.
 func (mat *T) ExtractEulerAngles() (yHead, xPitch, zRoll float32) {
-	xPitch = fmath.Asin(mat[1][2])
-	f12 := fmath.Abs(mat[1][2])
+	xPitch = math.Asin(mat[1][2])
+	f12 := math.Abs(mat[1][2])
 	if f12 > (1.0-0.0001) && f12 < (1.0+0.0001) { // f12 == 1.0
 		yHead = 0.0
-		zRoll = fmath.Atan2(mat[0][1], mat[0][0])
+		zRoll = math.Atan2(mat[0][1], mat[0][0])
 	} else {
-		yHead = fmath.Atan2(-mat[0][2], mat[2][2])
-		zRoll = fmath.Atan2(-mat[1][0], mat[1][1])
+		yHead = math.Atan2(-mat[0][2], mat[2][2])
+		zRoll = math.Atan2(-mat[1][0], mat[1][1])
 	}
 	return yHead, xPitch, zRoll
 }

@@ -3,9 +3,8 @@ package vec4
 
 import (
 	"fmt"
-	"math"
 
-	"github.com/barnex/fmath"
+	math "github.com/ungerik/fmath"
 	"github.com/ungerik/go3d/generic"
 	"github.com/ungerik/go3d/vec3"
 )
@@ -281,5 +280,5 @@ func Cross(a, b *T) T {
 
 // Angle returns the angle between two vectors.
 func Angle(a, b *T) float32 {
-	return fmath.Acos(Dot(a, b))
+	return math.Acos(Dot(a, b))
 }
