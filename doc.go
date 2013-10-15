@@ -25,6 +25,7 @@ Example:
 	a := vec3.UnitX
 	b := a.Scaled(5) // a still equals vec3.UnitX
 
+Documentation: http://godoc.org/github.com/ungerik/go3d
 */
 package go3d
 
