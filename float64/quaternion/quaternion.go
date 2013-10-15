@@ -11,7 +11,7 @@ import (
 
 var (
 	// Zero holds a zero quaternion.
-	Zero  = T{}
+	Zero = T{}
 
 	// Ident holds an ident quaternion.
 	Ident = T{0, 0, 0, 1}
@@ -130,11 +130,12 @@ func (quat *T) Normalized() T {
 }
 
 // Negate negates the quaternion.
-func (quat *T) Negate() {
+func (quat *T) Negate() *T {
 	quat[0] = -quat[0]
 	quat[1] = -quat[1]
 	quat[2] = -quat[2]
 	quat[3] = -quat[3]
+	return quat
 }
 
 // Negated returns a negated copy of the quaternion.
