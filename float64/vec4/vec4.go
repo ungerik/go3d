@@ -622,11 +622,24 @@ func (vec *T) IsZero() bool {
 	return vec[0] == 0 && vec[1] == 0 && vec[2] == 0 && vec[3] == 0
 }
 
+// Shuffle returns the vector with its components shuffled in the order according to mask.
+//
+// Example:
+// 		vec := vec4.T{1, 2, 3, 4}
+//		vec.Shuffle(vec4.WZYX)
+//		check := vec == T{4, 3, 2, 1} // true
+//
 func (vec *T) Shuffle(mask ShuffleMask) *T {
 	*vec = vec.Shuffled(mask)
 	return vec
 }
 
+// Shuffled returns a copy of the vector with its components shuffled in the order according to mask.
+//
+// Example:
+// 		vec := vec4.T{1, 2, 3, 4}
+//		check := vec.Shuffled(vec4.WZYX) == T{4, 3, 2, 1} // true
+//
 func (vec *T) Shuffled(mask ShuffleMask) (result T) {
 	result[0] = vec[mask&3]
 	result[1] = vec[(mask>>2)&3]
