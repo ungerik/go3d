@@ -12,10 +12,12 @@ var (
 	// Zero holds a zero vector.
 	Zero = T{}
 
-	// UnitX holds a vector with X to one.
+	// UnitX holds a vector with X set to one.
 	UnitX = T{1, 0}
-	// UnitY holds a vector with Y to one.
+	// UnitY holds a vector with Y set to one.
 	UnitY = T{0, 1}
+	// UnitXY holds a vector with X and Y set to one.
+	UnitXY = T{1, 1}
 
 	// MinVal holds a vector with the smallest possible component values.
 	MinVal = T{-math.MaxFloat32, -math.MaxFloat32}
@@ -263,4 +265,35 @@ func Interpolate(a, b *T, t float32) T {
 		a[0]*t1 + b[0]*t,
 		a[1]*t1 + b[1]*t,
 	}
+}
+
+// Clamp clamps the vector's components to be in the range of min to max.
+func (vec *T) Clamp(min, max *T) *T {
+	for i := range vec {
+		if vec[i] < min[i] {
+			vec[i] = min[i]
+		} else if vec[i] > max[i] {
+			vec[i] = max[i]
+		}
+	}
+	return vec
+}
+
+// Clamped returns a copy of the vector with the components clamped to be in the range of min to max.
+func (vec *T) Clamped(min, max *T) T {
+	result := *vec
+	result.Clamp(min, max)
+	return result
+}
+
+// Clamp01 clamps the vector's components to be in the range of 0 to 1.
+func (vec *T) Clamp01() *T {
+	return vec.Clamp(&Zero, &UnitXY)
+}
+
+// Clamped01 returns a copy of the vector with the components clamped to be in the range of 0 to 1.
+func (vec *T) Clamped01() T {
+	result := *vec
+	result.Clamp01()
+	return result
 }

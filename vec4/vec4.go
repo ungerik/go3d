@@ -21,6 +21,8 @@ var (
 	UnitZW = T{0, 0, 1, 1}
 	// UnitW holds a vector with W set to one.
 	UnitW = T{0, 0, 0, 1}
+	// UnitXYZW holds a vector with X, Y, Z, W set to one.
+	UnitXYZW = T{1, 1, 1, 1}
 
 	// Red holds the color red.
 	Red = T{1, 0, 0, 1}
@@ -838,4 +840,35 @@ func Interpolate(a, b *T, t float32) T {
 		a[2]*t1 + b[2]*t,
 		a[3]*t1 + b[3]*t,
 	}
+}
+
+// Clamp clamps the vector's components to be in the range of min to max.
+func (vec *T) Clamp(min, max *T) *T {
+	for i := range vec {
+		if vec[i] < min[i] {
+			vec[i] = min[i]
+		} else if vec[i] > max[i] {
+			vec[i] = max[i]
+		}
+	}
+	return vec
+}
+
+// Clamped returns a copy of the vector with the components clamped to be in the range of min to max.
+func (vec *T) Clamped(min, max *T) T {
+	result := *vec
+	result.Clamp(min, max)
+	return result
+}
+
+// Clamp01 clamps the vector's components to be in the range of 0 to 1.
+func (vec *T) Clamp01() *T {
+	return vec.Clamp(&Zero, &UnitXYZW)
+}
+
+// Clamped01 returns a copy of the vector with the components clamped to be in the range of 0 to 1.
+func (vec *T) Clamped01() T {
+	result := *vec
+	result.Clamp01()
+	return result
 }
