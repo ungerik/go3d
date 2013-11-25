@@ -12,7 +12,7 @@ type Box struct {
 
 // ParseBox parses a Box from a string. See also String()
 func ParseBox(s string) (r Box, err error) {
-	_, err = fmt.Sscanf(s, "%f %f %f %f %f %f", &r.Min[0], &r.Min[1], &r.Min[2], &r.Max[0], &r.Max[1], &r.Max[2])
+	_, err = fmt.Sscan(s, &r.Min[0], &r.Min[1], &r.Min[2], &r.Max[0], &r.Max[1], &r.Max[2])
 	return r, err
 }
 

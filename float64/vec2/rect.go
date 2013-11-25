@@ -12,7 +12,7 @@ type Rect struct {
 
 // ParseRect parses a Rect from a string. See also String()
 func ParseRect(s string) (r Rect, err error) {
-	_, err = fmt.Sscanf(s, "%f %f %f %f", &r.Min[0], &r.Min[1], &r.Max[0], &r.Max[1])
+	_, err = fmt.Sscan(s, &r.Min[0], &r.Min[1], &r.Max[0], &r.Max[1])
 	return r, err
 }
 

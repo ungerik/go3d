@@ -67,7 +67,7 @@ func (quat *T) Vec4() vec4.T {
 
 // Parse parses T from a string. See also String()
 func Parse(s string) (r T, err error) {
-	_, err = fmt.Sscanf(s, "%f %f %f %f", &r[0], &r[1], &r[2], &r[3])
+	_, err = fmt.Sscan(s, &r[0], &r[1], &r[2], &r[3])
 	return r, err
 }
 

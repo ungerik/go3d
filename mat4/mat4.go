@@ -47,8 +47,7 @@ func From(other generic.T) T {
 
 // Parse parses T from a string. See also String()
 func Parse(s string) (r T, err error) {
-	_, err = fmt.Sscanf(s,
-		"%f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f",
+	_, err = fmt.Sscan(s,
 		&r[0][0], &r[0][1], &r[0][2], &r[0][3],
 		&r[1][0], &r[1][1], &r[1][2], &r[1][3],
 		&r[2][0], &r[2][1], &r[2][2], &r[2][3],

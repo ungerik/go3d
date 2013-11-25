@@ -22,8 +22,7 @@ type T struct {
 
 // Parse parses T from a string. See also String()
 func Parse(s string) (r T, err error) {
-	_, err = fmt.Sscanf(s,
-		"%f %f %f %f %f %f %f %f %f %f %f %f",
+	_, err = fmt.Sscan(s,
 		&r.A.Point[0], &r.A.Point[1], &r.A.Point[2],
 		&r.A.Tangent[0], &r.A.Tangent[1], &r.A.Tangent[2],
 		&r.B.Point[0], &r.B.Point[1], &r.B.Point[2],
