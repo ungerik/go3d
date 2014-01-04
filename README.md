@@ -25,3 +25,6 @@ Example:
 	b := a.Scaled(5) // a still equals vec3.UnitX
 
 Documentation: http://godoc.org/github.com/ungerik/go3d
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/ungerik/go3d/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
