@@ -585,3 +585,46 @@ func (mat *T) Transpose3x3() *T {
 	swap(&mat[2][1], &mat[1][2])
 	return mat
 }
+
+// Adjugate computes the adjugate of this matrix and returns mat
+func (mat *T) Adjugate() *T {
+	mat_copy := *mat
+	for i := 0; i < 4; i++ {
+		for j := 0; j < 4; j++ {
+			// - 1 for odd i+j, 1 for even i+j
+			sign := float32(((i + j) % 2)*-2 + 1)
+			mat[i][j] = mat_copy.maskedBlock(i,j).Determinant()*sign
+		}
+	}
+	return mat.Transpose()
+}
+
+// returns a 3x3 matrix without the i-th column and j-th row
+func (mat *T) maskedBlock(block_i, block_j int) *mat3.T {
+	var m mat3.T
+	m_i := 0
+	for i := 0; i < 4; i++ {
+		if i == block_i {
+			continue
+		}
+		m_j := 0
+		for j := 0; j < 4; j++ {
+			if j == block_j {
+				continue
+			}
+			m[m_i][m_j] = mat[i][j]
+			m_j++
+		}
+		m_i++
+	}
+	return &m
+}
+
+// Inverts the given matrix. 
+// Does not check if matrix is singualar and may lead to strange results!
+func (mat *T) Invert() *T {
+	initial_det := mat.Determinant()
+	mat.Adjugate()
+	mat.Mul(1/initial_det)
+	return mat
+}
