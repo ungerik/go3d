@@ -110,6 +110,21 @@ func (mat *T) Scaled(f float32) T {
 	return *r.Scale(f)
 }
 
+// Mul multiplies the every element by f returns mat.
+func (mat *T) Mul(f float32) *T {
+	for i, col := range mat {
+		for j := range col {
+			mat[i][j] *= f
+		}
+	}
+	return mat
+}
+
+// Muled returns a copy of the matrix with every element multiplied by f.
+func (mat *T) Muled(f float32) T {
+	r := *mat
+	return *r.Mul(f)
+}
 
 // Mult multiplies this matrix with the given matrix m and saves the result in this matrix.
 func (mat *T) MultMatrix(m *T) *T {
