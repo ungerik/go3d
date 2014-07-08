@@ -26,7 +26,7 @@ var (
 	}
 )
 
-// T represents a 4x4 matrix.
+// T represents a 4x4 matrix as 4 column vectors.
 type T [4]vec4.T
 
 // From copies a T from a generic.T implementation.
@@ -110,6 +110,34 @@ func (mat *T) Scaled(f float32) T {
 	return *r.Scale(f)
 }
 
+// Mul multiplies the every element by f returns mat.
+func (mat *T) Mul(f float32) *T {
+	for i, col := range mat {
+		for j := range col {
+			mat[i][j] *= f
+		}
+	}
+	return mat
+}
+
+// Muled returns a copy of the matrix with every element multiplied by f.
+func (mat *T) Muled(f float32) T {
+	r := *mat
+	return *r.Mul(f)
+}
+
+// Mult multiplies this matrix with the given matrix m and saves the result in this matrix.
+func (mat *T) MultMatrix(m *T) *T {
+	// iterate over the rows of mat
+	for i := range mat {
+		row := vec4.T{mat[0][i], mat[1][i], mat[2][i], mat[3][i]}
+		mat[0][i] = vec4.Dot4(&row, &m[0])
+		mat[1][i] = vec4.Dot4(&row, &m[1])
+		mat[2][i] = vec4.Dot4(&row, &m[2])
+		mat[3][i] = vec4.Dot4(&row, &m[3])
+	}
+	return mat
+}
 // Trace returns the trace value for the matrix.
 func (mat *T) Trace() float32 {
 	return mat[0][0] + mat[1][1] + mat[2][2] + mat[3][3]
@@ -155,9 +183,9 @@ func (mat *T) AssignMul(a, b *T) *T {
 func (mat *T) MulVec4(v *vec4.T) vec4.T {
 	return vec4.T{
 		mat[0][0]*v[0] + mat[1][0]*v[1] + mat[2][0]*v[2] + mat[3][0]*v[3],
-		mat[0][1]*v[1] + mat[1][1]*v[1] + mat[2][1]*v[2] + mat[3][1]*v[3],
-		mat[0][2]*v[2] + mat[1][2]*v[1] + mat[2][2]*v[2] + mat[3][2]*v[3],
-		mat[0][3]*v[3] + mat[1][3]*v[1] + mat[2][3]*v[2] + mat[3][3]*v[3],
+		mat[0][1]*v[0] + mat[1][1]*v[1] + mat[2][1]*v[2] + mat[3][1]*v[3],
+		mat[0][2]*v[0] + mat[1][2]*v[1] + mat[2][2]*v[2] + mat[3][2]*v[3],
+		mat[0][3]*v[0] + mat[1][3]*v[1] + mat[2][3]*v[2] + mat[3][3]*v[3],
 	}
 }
 
@@ -490,12 +518,45 @@ func (mat *T) AssignOrthogonalProjection(left, right, bottom, top, znear, zfar f
 
 // Determinant3x3 returns the determinant of the 3x3 sub-matrix.
 func (mat *T) Determinant3x3() float32 {
-	return mat[0][0]*mat[1][1]*mat[2][2] +
-		mat[1][0]*mat[2][1]*mat[0][2] +
-		mat[2][0]*mat[0][1]*mat[1][2] -
-		mat[2][0]*mat[1][1]*mat[0][2] -
-		mat[1][0]*mat[0][1]*mat[2][2] -
-		mat[0][0]*mat[2][1]*mat[1][2]
+	return 	mat[0][0]*mat[1][1]*mat[2][2] +
+			mat[1][0]*mat[2][1]*mat[0][2] +
+			mat[2][0]*mat[0][1]*mat[1][2] -
+			mat[2][0]*mat[1][1]*mat[0][2] -
+			mat[1][0]*mat[0][1]*mat[2][2] -
+			mat[0][0]*mat[2][1]*mat[1][2]
+}
+
+func (mat *T) Determinant() float32 {
+	s1 := mat[0][0]
+	det1 := 	mat[1][1]*mat[2][2]*mat[3][3] +
+				mat[2][1]*mat[3][2]*mat[1][3] +
+				mat[3][1]*mat[1][2]*mat[2][3] -
+				mat[3][1]*mat[2][2]*mat[1][3] -
+				mat[2][1]*mat[1][2]*mat[3][3] -
+				mat[1][1]*mat[3][2]*mat[2][3]
+		
+	s2 := mat[0][1]
+	det2 :=  	mat[1][0]*mat[2][2]*mat[3][3] +
+				mat[2][0]*mat[3][2]*mat[1][3] +
+				mat[3][0]*mat[1][2]*mat[2][3] -
+				mat[3][0]*mat[2][2]*mat[1][3] -
+				mat[2][0]*mat[1][2]*mat[3][3] -
+				mat[1][0]*mat[3][2]*mat[2][3]
+	s3 := mat[0][2]
+	det3 :=  	mat[1][0]*mat[2][1]*mat[3][3] +
+				mat[2][0]*mat[3][1]*mat[1][3] +
+				mat[3][0]*mat[1][1]*mat[2][3] -
+				mat[3][0]*mat[2][1]*mat[1][3] -
+				mat[2][0]*mat[1][1]*mat[3][3] -
+				mat[1][0]*mat[3][1]*mat[2][3]
+	s4 := mat[0][3]
+	det4 :=  	mat[1][0]*mat[2][1]*mat[3][2] +
+				mat[2][0]*mat[3][1]*mat[1][2] +
+				mat[3][0]*mat[1][1]*mat[2][2] -
+				mat[3][0]*mat[2][1]*mat[1][2] -
+				mat[2][0]*mat[1][1]*mat[3][2] -
+				mat[1][0]*mat[3][1]*mat[2][2]			
+	return s1*det1 - s2*det2 + s3*det3 - s4*det4
 }
 
 // IsReflective returns true if the matrix can be reflected by a plane.
@@ -522,5 +583,48 @@ func (mat *T) Transpose3x3() *T {
 	swap(&mat[1][0], &mat[0][1])
 	swap(&mat[2][0], &mat[0][2])
 	swap(&mat[2][1], &mat[1][2])
+	return mat
+}
+
+// Adjugate computes the adjugate of this matrix and returns mat
+func (mat *T) Adjugate() *T {
+	mat_copy := *mat
+	for i := 0; i < 4; i++ {
+		for j := 0; j < 4; j++ {
+			// - 1 for odd i+j, 1 for even i+j
+			sign := float32(((i + j) % 2)*-2 + 1)
+			mat[i][j] = mat_copy.maskedBlock(i,j).Determinant()*sign
+		}
+	}
+	return mat.Transpose()
+}
+
+// returns a 3x3 matrix without the i-th column and j-th row
+func (mat *T) maskedBlock(block_i, block_j int) *mat3.T {
+	var m mat3.T
+	m_i := 0
+	for i := 0; i < 4; i++ {
+		if i == block_i {
+			continue
+		}
+		m_j := 0
+		for j := 0; j < 4; j++ {
+			if j == block_j {
+				continue
+			}
+			m[m_i][m_j] = mat[i][j]
+			m_j++
+		}
+		m_i++
+	}
+	return &m
+}
+
+// Inverts the given matrix. 
+// Does not check if matrix is singualar and may lead to strange results!
+func (mat *T) Invert() *T {
+	initial_det := mat.Determinant()
+	mat.Adjugate()
+	mat.Mul(1/initial_det)
 	return mat
 }
