@@ -568,9 +568,7 @@ func (mat *T) IsReflective() bool {
 }
 
 func swap(a, b *float32) {
-	temp := *a
-	*a = *b
-	*b = temp
+	*a, *b = *b, *a
 }
 
 // Transpose transposes the matrix.
