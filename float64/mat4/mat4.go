@@ -155,9 +155,9 @@ func (mat *T) AssignMul(a, b *T) *T {
 func (mat *T) MulVec4(v *vec4.T) vec4.T {
 	return vec4.T{
 		mat[0][0]*v[0] + mat[1][0]*v[1] + mat[2][0]*v[2] + mat[3][0]*v[3],
-		mat[0][1]*v[1] + mat[1][1]*v[1] + mat[2][1]*v[2] + mat[3][1]*v[3],
-		mat[0][2]*v[2] + mat[1][2]*v[1] + mat[2][2]*v[2] + mat[3][2]*v[3],
-		mat[0][3]*v[3] + mat[1][3]*v[1] + mat[2][3]*v[2] + mat[3][3]*v[3],
+		mat[0][1]*v[0] + mat[1][1]*v[1] + mat[2][1]*v[2] + mat[3][1]*v[3],
+		mat[0][2]*v[0] + mat[1][2]*v[1] + mat[2][2]*v[2] + mat[3][2]*v[3],
+		mat[0][3]*v[0] + mat[1][3]*v[1] + mat[2][3]*v[2] + mat[3][3]*v[3],
 	}
 }
 
