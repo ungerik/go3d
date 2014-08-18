@@ -591,7 +591,7 @@ func Parse(s string) (r T, err error) {
 
 // String formats T as string. See also Parse().
 func (vec *T) String() string {
-	return fmt.Sprintf("%f %f %f %f", vec[0], vec[1], vec[2], vec[3])
+	return fmt.Sprint(vec[0], vec[1], vec[2], vec[3])
 }
 
 // Rows returns the number of rows of the vector.
@@ -611,7 +611,7 @@ func (vec *T) Size() int {
 
 // Slice returns the elements of the vector as slice.
 func (vec *T) Slice() []float32 {
-	return []float32{vec[0], vec[1], vec[2], vec[3]}
+	return vec[:]
 }
 
 // Get returns one element of the vector.

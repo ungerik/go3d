@@ -73,7 +73,7 @@ func Parse(s string) (r T, err error) {
 
 // String formats T as string. See also Parse().
 func (quat *T) String() string {
-	return fmt.Sprintf("%f %f %f %f", quat[0], quat[1], quat[2], quat[3])
+	return fmt.Sprint(quat[0], quat[1], quat[2], quat[3])
 }
 
 // AxisAngle extracts the rotation in form of an axis and a rotation angle.
