@@ -4,6 +4,7 @@ package mat4
 import (
 	"fmt"
 	"math"
+	"unsafe"
 
 	"github.com/ungerik/go3d/float64/generic"
 	"github.com/ungerik/go3d/float64/mat2"
