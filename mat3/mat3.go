@@ -3,6 +3,7 @@ package mat3
 
 import (
 	"fmt"
+	"unsafe"
 
 	math "github.com/barnex/fmath"
 	"github.com/ungerik/go3d/generic"
@@ -83,6 +84,11 @@ func (mat *T) Slice() []float32 {
 		mat[1][0], mat[1][1], mat[1][2],
 		mat[2][0], mat[2][1], mat[2][2],
 	}
+}
+
+// Array returns the elements of the matrix as array pointer.
+func (mat *T) Array() *[9]float32 {
+	return (*[9]float32)(unsafe.Pointer(mat))
 }
 
 // Get returns one element of the matrix.

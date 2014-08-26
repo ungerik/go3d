@@ -41,6 +41,7 @@ import (
 	_ "github.com/ungerik/go3d/float64/vec2"
 	_ "github.com/ungerik/go3d/float64/vec3"
 	_ "github.com/ungerik/go3d/float64/vec4"
+
 	_ "github.com/ungerik/go3d/generic"
 	_ "github.com/ungerik/go3d/hermit2"
 	_ "github.com/ungerik/go3d/hermit3"

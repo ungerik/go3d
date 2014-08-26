@@ -85,6 +85,11 @@ func (mat *T) Slice() []float64 {
 	}
 }
 
+// Array returns the elements of the matrix as array pointer.
+func (mat *T) Array() *[9]float64 {
+	return (*[9]float64)(unsafe.Pointer(mat))
+}
+
 // Get returns one element of the matrix.
 func (mat *T) Get(col, row int) float64 {
 	return mat[col][row]
