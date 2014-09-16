@@ -3,7 +3,6 @@ package mat2
 
 import (
 	"fmt"
-	"unsafe"
 
 	"github.com/ungerik/go3d/float64/generic"
 	"github.com/ungerik/go3d/float64/vec2"
@@ -74,11 +73,6 @@ func (mat *T) Size() int {
 // Slice returns the elements of the matrix as slice.
 func (mat *T) Slice() []float64 {
 	return mat.Array()[:]
-}
-
-// Array returns the elements of the matrix as array pointer.
-func (mat *T) Array() *[4]float64 {
-	return (*[4]float64)(unsafe.Pointer(mat))
 }
 
 // Get returns one element of the matrix.

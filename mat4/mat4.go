@@ -3,7 +3,6 @@ package mat4
 
 import (
 	"fmt"
-	"unsafe"
 
 	math "github.com/barnex/fmath"
 	"github.com/ungerik/go3d/generic"
@@ -80,11 +79,6 @@ func (mat *T) Size() int {
 // Slice returns the elements of the matrix as slice.
 func (mat *T) Slice() []float32 {
 	return mat.Array()[:]
-}
-
-// Array returns the elements of the matrix as array pointer.
-func (mat *T) Array() *[16]float32 {
-	return (*[16]float32)(unsafe.Pointer(mat))
 }
 
 // Get returns one element of the matrix.

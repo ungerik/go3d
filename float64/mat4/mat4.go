@@ -4,7 +4,6 @@ package mat4
 import (
 	"fmt"
 	"math"
-	"unsafe"
 
 	"github.com/ungerik/go3d/float64/generic"
 	"github.com/ungerik/go3d/float64/mat2"
@@ -80,11 +79,6 @@ func (mat *T) Size() int {
 // Slice returns the elements of the matrix as slice.
 func (mat *T) Slice() []float64 {
 	return mat.Array()[:]
-}
-
-// Array returns the elements of the matrix as array pointer.
-func (mat *T) Array() *[16]float64 {
-	return (*[16]float64)(unsafe.Pointer(mat))
 }
 
 // Get returns one element of the matrix.
