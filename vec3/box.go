@@ -47,14 +47,31 @@ func (box *Box) Diagonal() T {
 // 	panic("not implemented")
 // }
 
-// func (box *Box) Intersects(other *Box) bool {
-// 	panic("not implemented")
-// }
+// Intersects returns true if this and the given box intersect. 
+// For an explanation of the algorithm, see
+// http://rbrundritt.wordpress.com/2009/10/03/determining-if-two-bounding-boxes-overlap/
+func (box *Box) Intersects(other *Box) bool {
+	d1 := box.Diagonal()
+	d2 := other.Diagonal()
+	sizes := Add(&d1, &d2)
+	c1 := box.Center()
+	c2 := other.Center()
+	distCenters2 := Sub(&c1, &c2)
+	distCenters2.Scale(2)
+	distCenters2.Abs()
+	return distCenters2[0] <= sizes[0] && distCenters2[1] <= sizes[1] && distCenters2[2] <= sizes[2]
+}
 
-// func Intersect(a, b *Box) Box {
-// 	panic("not implemented")
-// }
+// Join enlarges this box to contain also the given box.
+func (box *Box) Join(other *Box) {
+	box.Min = Min(&box.Min, &other.Min)
+	box.Max = Max(&box.Max, &other.Max)
+}
 
-// func Join(a, b *Box) Box {
-// 	panic("not implemented")
-// }
+// Joined returns the minimal box containing both a and b.
+func Joined(a, b *Box) Box {
+	var joined Box
+	joined.Min = Min(&a.Min, &b.Min)
+	joined.Max = Max(&a.Max, &b.Max)
+	return joined
+}
