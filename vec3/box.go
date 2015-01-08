@@ -13,7 +13,7 @@ type Box struct {
 var (
 	// MaxBox holds a box that contains the entire R3 space that can be represented as vec3
 	MaxBox = Box{MinVal, MaxVal}
-) 
+)
 
 // ParseBox parses a Box from a string. See also String()
 func ParseBox(s string) (r Box, err error) {
@@ -42,10 +42,6 @@ func (box *Box) Center() T {
 func (box *Box) Diagonal() T {
 	return Sub(&box.Max, &box.Min)
 }
-
-// func (box *Box) Contains(other *Box) bool {
-// 	panic("not implemented")
-// }
 
 // Intersects returns true if this and the given box intersect. 
 // For an explanation of the algorithm, see

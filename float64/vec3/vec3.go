@@ -132,6 +132,19 @@ func (vec *T) Inverted() T {
 	return T{-vec[0], -vec[1], -vec[2]}
 }
 
+// Abs sets every component of the vector to its absolute value.
+func (vec *T) Abs() *T {
+	vec[0] = math.Abs(vec[0])
+	vec[1] = math.Abs(vec[1])
+	vec[2] = math.Abs(vec[2])
+	return vec
+}
+
+// Absed returns a copy of the vector containing the absolute values.
+func (vec *T) Absed() T {
+	return T{math.Abs(vec[0]), math.Abs(vec[1]), math.Abs(vec[2])}
+}
+
 // Normalize normalizes the vector to unit length.
 func (vec *T) Normalize() *T {
 	sl := vec.LengthSqr()
