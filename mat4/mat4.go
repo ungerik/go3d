@@ -199,7 +199,7 @@ func (mat *T) TransformVec4(v *vec4.T) {
 	v[2] = z
 }
 
-// MulVec3 multiplies v (converted to a vec4 as(v_1, v_2, v_3, 1) 
+// MulVec3 multiplies v (converted to a vec4 as (v_1, v_2, v_3, 1))
 // with mat and divides the result by w. Returns a new vec3.
 func (mat *T) MulVec3(v *vec3.T) vec3.T {
 	v4 := vec4.FromVec3(v)
@@ -207,8 +207,8 @@ func (mat *T) MulVec3(v *vec3.T) vec3.T {
 	return v4.Vec3DividedByW()
 }
 
-// MulVec3 multiplies v (converted to a vec4 as(v_1, v_2, v_3, 1)
-// with mat and divides the result by w and saves the result in v.
+// TransformVec3 multiplies v (converted to a vec4 as (v_1, v_2, v_3, 1))
+// with mat, divides the result by w and saves the result in v.
 func (mat *T) TransformVec3(v *vec3.T) {
 	x := mat[0][0]*v[0] + mat[1][0]*v[1] + mat[2][0]*v[2] + mat[3][0]*1
 	y := mat[0][1]*v[0] + mat[1][1]*v[1] + mat[2][1]*v[2] + mat[3][1]*1
@@ -219,7 +219,7 @@ func (mat *T) TransformVec3(v *vec3.T) {
 	v[2] = z / w
 }
 
-// MulVec3 multiplies v with mat with w as fourth component of the vector.
+// MulVec3W multiplies v with mat with w as fourth component of the vector.
 // Useful to differentiate between vectors (w = 0) and points (w = 1)
 // without transforming them to vec4.
 func (mat *T) MulVec3W(v *vec3.T, w float32) vec3.T {
