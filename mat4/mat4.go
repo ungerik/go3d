@@ -210,13 +210,14 @@ func (mat *T) MulVec3(v *vec3.T) vec3.T {
 // TransformVec3 multiplies v (converted to a vec4 as (v_1, v_2, v_3, 1))
 // with mat, divides the result by w and saves the result in v.
 func (mat *T) TransformVec3(v *vec3.T) {
-	x := mat[0][0]*v[0] + mat[1][0]*v[1] + mat[2][0]*v[2] + mat[3][0]*1
-	y := mat[0][1]*v[0] + mat[1][1]*v[1] + mat[2][1]*v[2] + mat[3][1]*1
-	z := mat[0][2]*v[0] + mat[1][2]*v[1] + mat[2][2]*v[2] + mat[3][2]*1
-	w := mat[0][3]*v[0] + mat[1][3]*v[1] + mat[2][3]*v[2] + mat[3][3]*1
-	v[0] = x / w
-	v[1] = y / w
-	v[2] = z / w
+	x := mat[0][0]*v[0] + mat[1][0]*v[1] + mat[2][0]*v[2] + mat[3][0]
+	y := mat[0][1]*v[0] + mat[1][1]*v[1] + mat[2][1]*v[2] + mat[3][1]
+	z := mat[0][2]*v[0] + mat[1][2]*v[1] + mat[2][2]*v[2] + mat[3][2]
+	w := mat[0][3]*v[0] + mat[1][3]*v[1] + mat[2][3]*v[2] + mat[3][3]
+	oow := 1 / w
+	v[0] = x * oow
+	v[1] = y * oow
+	v[2] = z * oow
 }
 
 // MulVec3W multiplies v with mat with w as fourth component of the vector.
@@ -228,7 +229,7 @@ func (mat *T) MulVec3W(v *vec3.T, w float32) vec3.T {
 	return result
 }
 
-// TransformVec3W multiplies v with mat with w as fourth component of the vector and 
+// TransformVec3W multiplies v with mat with w as fourth component of the vector and
 // saves the result in v.
 // Useful to differentiate between vectors (w = 0) and points (w = 1)
 // without transforming them to vec4.

@@ -130,6 +130,14 @@ func (mat *T) MulVec2(vec *vec2.T) vec2.T {
 	}
 }
 
+// TransformVec2 multiplies v with mat and saves the result in v.
+func (mat *T) TransformVec2(v *vec2.T) {
+	// Use intermediate variables to not alter further computations.
+	x := mat[0][0]*v[0] + mat[1][0]*v[1]
+	v[1] = mat[0][1]*v[0] + mat[1][1]*v[1]
+	v[0] = x
+}
+
 // Transpose transposes the matrix.
 func (mat *T) Transpose() *T {
 	temp := mat[0][1]

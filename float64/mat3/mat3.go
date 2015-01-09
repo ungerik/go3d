@@ -183,6 +183,16 @@ func (mat *T) MulVec3(v *vec3.T) vec3.T {
 	}
 }
 
+// TransformVec3 multiplies v with mat and saves the result in v.
+func (mat *T) TransformVec3(v *vec3.T) {
+	// Use intermediate variables to not alter further computations.
+	x := mat[0][0]*v[0] + mat[1][0]*v[1] + mat[2][0]*v[2]
+	y := mat[0][1]*v[0] + mat[1][1]*v[1] + mat[2][1]*v[2]
+	v[2] = mat[0][2]*v[0] + mat[1][2]*v[1] + mat[2][2]*v[2]
+	v[0] = x
+	v[1] = y
+}
+
 // Quaternion extracts a quaternion from the rotation part of the matrix.
 func (mat *T) Quaternion() quaternion.T {
 	tr := mat.Trace()

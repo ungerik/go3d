@@ -174,13 +174,23 @@ func (mat *T) AssignMat2x2(m *mat2.T) *T {
 	return mat
 }
 
-// MulVec3 multiplies v with T.
+// MulVec3 multiplies v with mat and returns a new vector v' = M * v.
 func (mat *T) MulVec3(v *vec3.T) vec3.T {
 	return vec3.T{
 		mat[0][0]*v[0] + mat[1][0]*v[1] + mat[2][0]*v[2],
 		mat[0][1]*v[1] + mat[1][1]*v[1] + mat[2][1]*v[2],
 		mat[0][2]*v[2] + mat[1][2]*v[1] + mat[2][2]*v[2],
 	}
+}
+
+// TransformVec3 multiplies v with mat and saves the result in v.
+func (mat *T) TransformVec3(v *vec3.T) {
+	// Use intermediate variables to not alter further computations.
+	x := mat[0][0]*v[0] + mat[1][0]*v[1] + mat[2][0]*v[2]
+	y := mat[0][1]*v[0] + mat[1][1]*v[1] + mat[2][1]*v[2]
+	v[2] = mat[0][2]*v[0] + mat[1][2]*v[1] + mat[2][2]*v[2]
+	v[0] = x
+	v[1] = y
 }
 
 // Quaternion extracts a quaternion from the rotation part of the matrix.

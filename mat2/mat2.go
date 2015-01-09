@@ -124,11 +124,19 @@ func (mat *T) AssignMul(a, b *T) *T {
 }
 
 // MulVec2 multiplies vec with mat.
-func (mat *T) MulVec2(vec *vec2.T) vec2.T {
+func (mat *T) MulVec2(v *vec2.T) vec2.T {
 	return vec2.T{
-		mat[0][0]*vec[0] + mat[1][0]*vec[1],
-		mat[0][1]*vec[1] + mat[1][1]*vec[1],
+		mat[0][0]*v[0] + mat[1][0]*v[1],
+		mat[0][1]*v[1] + mat[1][1]*v[1],
 	}
+}
+
+// TransformVec2 multiplies v with mat and saves the result in v.
+func (mat *T) TransformVec2(v *vec2.T) {
+	// Use intermediate variables to not alter further computations.
+	x := mat[0][0]*v[0] + mat[1][0]*v[1]
+	v[1] = mat[0][1]*v[0] + mat[1][1]*v[1]
+	v[0] = x
 }
 
 // Transpose transposes the matrix.
