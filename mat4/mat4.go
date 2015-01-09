@@ -631,16 +631,16 @@ func (mat *T) maskedBlock(blockI, blockJ int) *mat3.T {
 }
 
 // Inverts the given matrix.
-// Does not check if matrix is singualar and may lead to strange results!
+// Does not check if matrix is singular and may lead to strange results!
 func (mat *T) Invert() *T {
-	initial_det := mat.Determinant()
+	initialDet := mat.Determinant()
 	mat.Adjugate()
-	mat.Mul(1 / initial_det)
+	mat.Mul(1 / initialDet)
 	return mat
 }
 
 // Inverted returns an inverted copy of the matrix.
-// Does not check if matrix is singualar and may lead to strange results!
+// Does not check if matrix is singular and may lead to strange results!
 func (mat *T) Inverted() T {
 	result := *mat
 	result.Invert()
