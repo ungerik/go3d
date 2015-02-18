@@ -107,10 +107,12 @@ func (vec *T) LengthSqr() float32 {
 }
 
 // Scale multiplies all element of the vector by f and returns vec.
-func (vec *T) Scale(f float32) {
+func (vec *T) Scale(f float32) *T {
 	vec[0] *= f
 	vec[1] *= f
 	vec[2] *= f
+	
+	return vec
 }
 
 // Scaled returns a copy of vec with all elements multiplies by f.

@@ -178,8 +178,8 @@ func (mat *T) AssignMat2x2(m *mat2.T) *T {
 func (mat *T) MulVec3(v *vec3.T) vec3.T {
 	return vec3.T{
 		mat[0][0]*v[0] + mat[1][0]*v[1] + mat[2][0]*v[2],
-		mat[0][1]*v[1] + mat[1][1]*v[1] + mat[2][1]*v[2],
-		mat[0][2]*v[2] + mat[1][2]*v[1] + mat[2][2]*v[2],
+		mat[0][1]*v[0] + mat[1][1]*v[1] + mat[2][1]*v[2],
+		mat[0][2]*v[0] + mat[1][2]*v[1] + mat[2][2]*v[2],
 	}
 }
 
