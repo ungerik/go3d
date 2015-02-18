@@ -24,6 +24,16 @@ Example:
 	a := vec3.UnitX
 	b := a.Scaled(5) // a still equals vec3.UnitX
 
+
+Note that the package is designed for performance over usability where necessary.
+This is the reason why many arguments are passed by pointer reference instead of by value.
+Sticking either to passing and returning everything by value or by pointer
+would lead to a nicer API, but it would be slower as demonstrated in mat4/mat4_test.go
+
+	cd mat4
+	go test -bench=BenchmarkMulAddVec4_PassBy*
+
+
 Documentation: http://godoc.org/github.com/ungerik/go3d
 
 [![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/ungerik/go3d/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
