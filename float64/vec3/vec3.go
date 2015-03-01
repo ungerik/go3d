@@ -200,6 +200,18 @@ func Add(a, b *T) T {
 	return T{a[0] + b[0], a[1] + b[1], a[2] + b[2]}
 }
 
+// Squared Distance between two vectors
+func SquareDistance(a, b *T) float64 {
+	d := Sub(a, b)
+	return d.LengthSqr()
+}
+
+// Distance between two vectors
+func Distance(a, b *T) float64 {
+	d := Sub(a, b)
+	return d.Length()
+}
+
 // Sub returns the difference of two vectors.
 func Sub(a, b *T) T {
 	return T{a[0] - b[0], a[1] - b[1], a[2] - b[2]}
