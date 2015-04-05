@@ -828,7 +828,7 @@ func Cross(a, b *T) T {
 
 // Angle returns the angle between two vectors.
 func Angle(a, b *T) float32 {
-	return math.Acos(Dot(a, b))
+	return math.Acos(Dot(a, b) / (a.Length() * b.Length()))
 }
 
 // Interpolate interpolates between a and b at t (0,1).

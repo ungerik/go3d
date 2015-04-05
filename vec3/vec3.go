@@ -111,7 +111,7 @@ func (vec *T) Scale(f float32) *T {
 	vec[0] *= f
 	vec[1] *= f
 	vec[2] *= f
-	
+
 	return vec
 }
 
@@ -239,7 +239,7 @@ func Cross(a, b *T) T {
 
 // Angle returns the angle between two vectors.
 func Angle(a, b *T) float32 {
-	return math.Acos(Dot(a, b))
+	return math.Acos(Dot(a, b) / (a.Length() * b.Length()))
 }
 
 // Min returns the component wise minimum of two vectors.
