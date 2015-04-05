@@ -219,7 +219,14 @@ func Cross(a, b *T) T {
 
 // Angle returns the angle between two vectors.
 func Angle(a, b *T) float32 {
-	return math.Acos(Dot(a, b) / (a.Length() * b.Length()))
+	v := Dot(a, b) / (a.Length() * b.Length())
+	// prevent NaN
+	if v > 1. {
+		v = v - 2
+	} else if v < -1. {
+		v = v + 2
+	}
+	return math.Acos(v)
 }
 
 // IsLeftWinding returns if the angle from a to b is left winding.
