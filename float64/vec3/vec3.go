@@ -97,7 +97,7 @@ func (vec *T) IsZero() bool {
 // Length returns the length of the vector.
 // See also LengthSqr and Normalize.
 func (vec *T) Length() float64 {
-	return float64(math.Sqrt(vec.LengthSqr()))
+	return math.Sqrt(vec.LengthSqr())
 }
 
 // LengthSqr returns the squared length of the vector.
