@@ -4,7 +4,7 @@ package hermit
 
 import (
 	"fmt"
-	"github.com/ungerik/go3d/float64/vec3"
+	"github.com/gmlewis/go3d/float64/vec3"
 )
 
 // PointTangent contains a point and a tangent at that point.

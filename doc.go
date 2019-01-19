@@ -25,32 +25,32 @@ Example:
 	a := vec3.UnitX
 	b := a.Scaled(5) // a still equals vec3.UnitX
 
-Documentation: http://godoc.org/github.com/ungerik/go3d
+Documentation: http://godoc.org/github.com/gmlewis/go3d
 */
 package go3d
 
 // Import all sub-packages for build
 import (
-	_ "github.com/ungerik/go3d/float64/bezier2"
-	_ "github.com/ungerik/go3d/float64/generic"
-	_ "github.com/ungerik/go3d/float64/hermit2"
-	_ "github.com/ungerik/go3d/float64/hermit3"
-	_ "github.com/ungerik/go3d/float64/mat2"
-	_ "github.com/ungerik/go3d/float64/mat3"
-	_ "github.com/ungerik/go3d/float64/mat4"
-	_ "github.com/ungerik/go3d/float64/quaternion"
-	_ "github.com/ungerik/go3d/float64/vec2"
-	_ "github.com/ungerik/go3d/float64/vec3"
-	_ "github.com/ungerik/go3d/float64/vec4"
+	_ "github.com/gmlewis/go3d/float64/bezier2"
+	_ "github.com/gmlewis/go3d/float64/generic"
+	_ "github.com/gmlewis/go3d/float64/hermit2"
+	_ "github.com/gmlewis/go3d/float64/hermit3"
+	_ "github.com/gmlewis/go3d/float64/mat2"
+	_ "github.com/gmlewis/go3d/float64/mat3"
+	_ "github.com/gmlewis/go3d/float64/mat4"
+	_ "github.com/gmlewis/go3d/float64/quaternion"
+	_ "github.com/gmlewis/go3d/float64/vec2"
+	_ "github.com/gmlewis/go3d/float64/vec3"
+	_ "github.com/gmlewis/go3d/float64/vec4"
 
-	_ "github.com/ungerik/go3d/generic"
-	_ "github.com/ungerik/go3d/hermit2"
-	_ "github.com/ungerik/go3d/hermit3"
-	_ "github.com/ungerik/go3d/mat2"
-	_ "github.com/ungerik/go3d/mat3"
-	_ "github.com/ungerik/go3d/mat4"
-	_ "github.com/ungerik/go3d/quaternion"
-	_ "github.com/ungerik/go3d/vec2"
-	_ "github.com/ungerik/go3d/vec3"
-	_ "github.com/ungerik/go3d/vec4"
+	_ "github.com/gmlewis/go3d/generic"
+	_ "github.com/gmlewis/go3d/hermit2"
+	_ "github.com/gmlewis/go3d/hermit3"
+	_ "github.com/gmlewis/go3d/mat2"
+	_ "github.com/gmlewis/go3d/mat3"
+	_ "github.com/gmlewis/go3d/mat4"
+	_ "github.com/gmlewis/go3d/quaternion"
+	_ "github.com/gmlewis/go3d/vec2"
+	_ "github.com/gmlewis/go3d/vec3"
+	_ "github.com/gmlewis/go3d/vec4"
 )

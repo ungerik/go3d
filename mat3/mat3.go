@@ -5,11 +5,11 @@ import (
 	"fmt"
 
 	math "github.com/barnex/fmath"
-	"github.com/ungerik/go3d/generic"
-	"github.com/ungerik/go3d/mat2"
-	"github.com/ungerik/go3d/quaternion"
-	"github.com/ungerik/go3d/vec2"
-	"github.com/ungerik/go3d/vec3"
+	"github.com/gmlewis/go3d/generic"
+	"github.com/gmlewis/go3d/mat2"
+	"github.com/gmlewis/go3d/quaternion"
+	"github.com/gmlewis/go3d/vec2"
+	"github.com/gmlewis/go3d/vec3"
 )
 
 var (

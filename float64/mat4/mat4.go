@@ -5,12 +5,12 @@ import (
 	"fmt"
 	"math"
 
-	"github.com/ungerik/go3d/float64/generic"
-	"github.com/ungerik/go3d/float64/mat2"
-	"github.com/ungerik/go3d/float64/mat3"
-	"github.com/ungerik/go3d/float64/quaternion"
-	"github.com/ungerik/go3d/float64/vec3"
-	"github.com/ungerik/go3d/float64/vec4"
+	"github.com/gmlewis/go3d/float64/generic"
+	"github.com/gmlewis/go3d/float64/mat2"
+	"github.com/gmlewis/go3d/float64/mat3"
+	"github.com/gmlewis/go3d/float64/quaternion"
+	"github.com/gmlewis/go3d/float64/vec3"
+	"github.com/gmlewis/go3d/float64/vec4"
 )
 
 var (

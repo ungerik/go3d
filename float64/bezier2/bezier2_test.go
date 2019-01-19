@@ -3,7 +3,7 @@ package bezier2
 import (
 	"testing"
 
-	"github.com/ungerik/go3d/float64/vec2"
+	"github.com/gmlewis/go3d/float64/vec2"
 )
 
 func TestPoint(t *testing.T) {

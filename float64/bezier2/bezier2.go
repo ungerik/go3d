@@ -5,7 +5,7 @@ package bezier2
 import (
 	"fmt"
 
-	"github.com/ungerik/go3d/float64/vec2"
+	"github.com/gmlewis/go3d/float64/vec2"
 )
 
 // T holds the data to define a cubic bezier spline.

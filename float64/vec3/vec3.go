@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"math"
 
-	"github.com/ungerik/go3d/float64/generic"
+	"github.com/gmlewis/go3d/float64/generic"
 )
 
 var (
