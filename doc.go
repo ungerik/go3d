@@ -31,6 +31,7 @@ package go3d
 
 // Import all sub-packages for build
 import (
+	_ "github.com/ungerik/go3d/float64/bezier2"
 	_ "github.com/ungerik/go3d/float64/generic"
 	_ "github.com/ungerik/go3d/float64/hermit2"
 	_ "github.com/ungerik/go3d/float64/hermit3"
