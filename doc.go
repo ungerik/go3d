@@ -38,6 +38,7 @@ import (
 	_ "github.com/ungerik/go3d/float64/mat2"
 	_ "github.com/ungerik/go3d/float64/mat3"
 	_ "github.com/ungerik/go3d/float64/mat4"
+	_ "github.com/ungerik/go3d/float64/qbezier2"
 	_ "github.com/ungerik/go3d/float64/quaternion"
 	_ "github.com/ungerik/go3d/float64/vec2"
 	_ "github.com/ungerik/go3d/float64/vec3"
