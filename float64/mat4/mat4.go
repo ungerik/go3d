@@ -156,7 +156,7 @@ func (mat *T) MulVec4(v *vec4.T) vec4.T {
 	}
 }
 
-// MulVec4 multiplies v with mat and saves the result in v.
+// TransformVec4 multiplies v with mat and saves the result in v.
 func (mat *T) TransformVec4(v *vec4.T) {
 	// Use intermediate variables to not alter further computations.
 	x := mat[0][0]*v[0] + mat[1][0]*v[1] + mat[2][0]*v[2] + mat[3][0]*v[3]
