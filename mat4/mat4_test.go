@@ -1,7 +1,7 @@
 package mat4
 
 import (
-	math "github.com/barnex/fmath"
+	math "github.com/ungerik/go3d/fmath"
 	"github.com/ungerik/go3d/mat3"
 	"github.com/ungerik/go3d/vec3"
 	"github.com/ungerik/go3d/vec4"
