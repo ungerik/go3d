@@ -34,7 +34,5 @@ would lead to a nicer API, but it would be slower as demonstrated in mat4/mat4_t
 	go test -bench=BenchmarkMulAddVec4_PassBy*
 
 
-Documentation: http://godoc.org/github.com/ungerik/go3d
-
-[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/ungerik/go3d/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+Documentation: https://pkg.go.dev/github.com/ungerik/go3d
 
