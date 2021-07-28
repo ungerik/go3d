@@ -80,7 +80,7 @@ func (quat *T) String() string {
 func (quat *T) AxisAngle() (axis vec3.T, angle float64) {
 	cos := quat[3]
 	sin := math.Sqrt(1 - cos*cos)
-	angle = math.Acos(cos)
+	angle = math.Acos(cos) * 2
 
 	var ooSin float64
 	if math.Abs(sin) < 0.0005 {
