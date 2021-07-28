@@ -76,7 +76,7 @@ func (quat *T) String() string {
 	return fmt.Sprint(quat[0], quat[1], quat[2], quat[3])
 }
 
-// AxisAngle extracts the rotation from a normalize quaternion in the form of an axis and a rotation angle.
+// AxisAngle extracts the rotation from a normalized quaternion in the form of an axis and a rotation angle.
 func (quat *T) AxisAngle() (axis vec3.T, angle float64) {
 	cos := quat[3]
 	sin := math.Sqrt(1 - cos*cos)
