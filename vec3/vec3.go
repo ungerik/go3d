@@ -242,9 +242,9 @@ func Angle(a, b *T) float32 {
 	v := Dot(a, b) / (a.Length() * b.Length())
 	// prevent NaN
 	if v > 1. {
-		v = v - 2
+		return 0
 	} else if v < -1. {
-		v = v + 2
+		return math.Pi
 	}
 	return math.Acos(v)
 }
