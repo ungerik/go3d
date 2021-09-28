@@ -47,7 +47,7 @@ func FromZAxisAngle(angle float64) T {
 	return T{0, 0, math.Sin(angle), math.Cos(angle)}
 }
 
-// FromEulerAngles returns a quaternion representing Euler angle rotations.
+// FromEulerAngles returns a quaternion representing Euler angle(in radian) rotations.
 func FromEulerAngles(yHead, xPitch, zRoll float64) T {
 	qy := FromYAxisAngle(yHead)
 	qx := FromXAxisAngle(xPitch)
@@ -180,21 +180,29 @@ func (quat *T) IsUnitQuat(tolerance float64) bool {
 }
 
 // RotateVec3 rotates v by the rotation represented by the quaternion.
+// using the algorithm mentioned here https://gamedev.stackexchange.com/questions/28395/rotating-vector3-by-a-quaternion
 func (quat *T) RotateVec3(v *vec3.T) {
-	qv := T{v[0], v[1], v[2], 0}
-	inv := quat.Inverted()
-	q := Mul3(quat, &qv, &inv)
-	v[0] = q[0]
-	v[1] = q[1]
-	v[2] = q[2]
+	u := vec3.T{quat[0], quat[1], quat[2]}
+	s := quat[3]
+	vt1 := u.Scaled(2 * vec3.Dot(&u, v))
+	vt2 := v.Scaled(s*s - vec3.Dot(&u, &u))
+	vt3 := vec3.Cross(&u, v)
+	vt3 = vt3.Scaled(2 * s)
+	v[0] = vt1[0] + vt2[0] + vt3[0]
+	v[1] = vt1[1] + vt2[1] + vt3[1]
+	v[2] = vt1[2] + vt2[2] + vt3[2]
 }
 
 // RotatedVec3 returns a rotated copy of v.
+// using the algorithm mentioned here https://gamedev.stackexchange.com/questions/28395/rotating-vector3-by-a-quaternion
 func (quat *T) RotatedVec3(v *vec3.T) vec3.T {
-	qv := T{v[0], v[1], v[2], 0}
-	inv := quat.Inverted()
-	q := Mul3(quat, &qv, &inv)
-	return vec3.T{q[0], q[1], q[2]}
+	u := vec3.T{quat[0], quat[1], quat[2]}
+	s := quat[3]
+	vt1 := u.Scaled(2 * vec3.Dot(&u, v))
+	vt2 := v.Scaled(s*s - vec3.Dot(&u, &u))
+	vt3 := vec3.Cross(&u, v)
+	vt3 = vt3.Scaled(2 * s)
+	return vec3.T{vt1[0] + vt2[0] + vt3[0], vt1[1] + vt2[1] + vt3[1], vt1[2] + vt2[2] + vt3[2]}
 }
 
 // Dot returns the dot product of two quaternions.
