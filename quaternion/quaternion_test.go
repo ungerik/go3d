@@ -7,6 +7,7 @@ import (
 
 	quaternion64 "github.com/ungerik/go3d/float64/quaternion"
 	vec364 "github.com/ungerik/go3d/float64/vec3"
+	"github.com/ungerik/go3d/fmath"
 	"github.com/ungerik/go3d/vec3"
 )
 
@@ -94,6 +95,47 @@ func TestQuaternionRotateVec3(t *testing.T) {
 					t.Fail()
 				}
 			}()
+		}
+	}
+}
+
+func TestToEulerAngles(t *testing.T) {
+	specialValues := []float64{-5, -math.Pi, -2, -math.Pi / 2, 0, math.Pi / 2, 2.4, math.Pi, 3.9}
+	for _, x := range specialValues {
+		for _, y := range specialValues {
+			for _, z := range specialValues {
+				quat1 := quaternion64.FromEulerAngles(y, x, z)
+				ry, rx, rz := quat1.ToEulerAngles()
+				quat2 := quaternion64.FromEulerAngles(ry, rx, rz)
+				// quat must be equivalent
+				const e64 = 1e-14
+				cond1 := math.Abs(quat1[0]-quat2[0]) < e64 && math.Abs(quat1[1]-quat2[1]) < e64 && math.Abs(quat1[2]-quat2[2]) < e64 && math.Abs(quat1[3]-quat2[3]) < e64
+				cond2 := math.Abs(quat1[0]+quat2[0]) < e64 && math.Abs(quat1[1]+quat2[1]) < e64 && math.Abs(quat1[2]+quat2[2]) < e64 && math.Abs(quat1[3]+quat2[3]) < e64
+				if !cond1 && !cond2 {
+					fmt.Printf("test case %v, %v, %v failed\n", x, y, z)
+					fmt.Printf("result is %v, %v, % v\n", rx, ry, rz)
+					fmt.Printf("quat1 is %v\n", quat1)
+					fmt.Printf("quat2 is %v\n", quat2)
+					t.Fail()
+				}
+				x32 := float32(x)
+				y32 := float32(y)
+				z32 := float32(z)
+				quat132 := FromEulerAngles(x32, y32, z32)
+				ry32, rx32, rz32 := quat132.ToEulerAngles()
+				quat232 := FromEulerAngles(ry32, rx32, rz32)
+				// quat must be equivalent
+				const e32 = 1e-6
+				cond1 = fmath.Abs(quat132[0]-quat232[0]) < e32 && fmath.Abs(quat132[1]-quat232[1]) < e32 && fmath.Abs(quat132[2]-quat232[2]) < e32 && fmath.Abs(quat132[3]-quat232[3]) < e32
+				cond2 = fmath.Abs(quat132[0]+quat232[0]) < e32 && fmath.Abs(quat132[1]+quat232[1]) < e32 && fmath.Abs(quat132[2]+quat232[2]) < e32 && fmath.Abs(quat132[3]+quat232[3]) < e32
+				if !cond1 && !cond2 {
+					fmt.Printf("test case %v, %v, %v failed\n", x32, y32, z32)
+					fmt.Printf("result is %v, %v, % v\n", rx32, ry32, rz32)
+					fmt.Printf("quat1 is %v\n", quat132)
+					fmt.Printf("quat2 is %v\n", quat232)
+					t.Fail()
+				}
+			}
 		}
 	}
 }
