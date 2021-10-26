@@ -55,6 +55,23 @@ func FromEulerAngles(yHead, xPitch, zRoll float64) T {
 	return Mul3(&qy, &qx, &qz)
 }
 
+// ToEulerAngles returns the euler angle(in radian) rotations of the quaternion.
+func (quat *T) ToEulerAngles() (yHead, xPitch, zRoll float64) {
+	z := quat.RotatedVec3(&vec3.T{0, 0, 1})
+	yHead = math.Atan2(z[0], z[2])
+	xPitch = -math.Atan2(z[1], math.Sqrt(z[0]*z[0]+z[2]*z[2]))
+
+	quatNew := FromEulerAngles(yHead, xPitch, 0)
+
+	x2 := quatNew.RotatedVec3(&vec3.T{1, 0, 0})
+	x := quat.RotatedVec3(&vec3.T{1, 0, 0})
+	r := vec3.Cross(&x, &x2)
+	sin := vec3.Dot(&r, &z)
+	cos := vec3.Dot(&x, &x2)
+	zRoll = -math.Atan2(sin, cos)
+	return
+}
+
 // FromVec4 converts a vec4.T into a quaternion.
 func FromVec4(v *vec4.T) T {
 	return T(*v)
