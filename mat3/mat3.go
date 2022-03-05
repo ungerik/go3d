@@ -2,6 +2,7 @@
 package mat3
 
 import (
+	"errors"
 	"fmt"
 
 	math "github.com/ungerik/go3d/fmath"
@@ -14,7 +15,11 @@ import (
 
 var (
 	// Zero holds a zero matrix.
-	Zero = T{}
+	Zero = T{
+		vec3.T{0, 0, 0},
+		vec3.T{0, 0, 0},
+		vec3.T{0, 0, 0},
+	}
 
 	// Ident holds an ident matrix.
 	Ident = T{
@@ -172,6 +177,23 @@ func (mat *T) AssignMat2x2(m *mat2.T) *T {
 		vec3.T{0, 0, 1},
 	}
 	return mat
+}
+
+// Mul multiplies every element by f and returns mat.
+func (mat *T) Mul(f float32) *T {
+	for i, col := range mat {
+		for j := range col {
+			mat[i][j] *= f
+		}
+	}
+	return mat
+}
+
+// Muled returns a copy of the matrix with every element multiplied by f.
+func (mat *T) Muled(f float32) T {
+	result := *mat
+	result.Mul(f)
+	return result
 }
 
 // MulVec3 multiplies v with mat and returns a new vector v' = M * v.
@@ -354,12 +376,15 @@ func (mat *T) ExtractEulerAngles() (yHead, xPitch, zRoll float32) {
 
 // Determinant returns the determinant of the matrix.
 func (mat *T) Determinant() float32 {
-	return mat[0][0]*mat[1][1]*mat[2][2] +
-		mat[1][0]*mat[2][1]*mat[0][2] +
-		mat[2][0]*mat[0][1]*mat[1][2] -
-		mat[2][0]*mat[1][1]*mat[0][2] -
-		mat[1][0]*mat[0][1]*mat[2][2] -
-		mat[0][0]*mat[2][1]*mat[1][2]
+	// | a b c |
+	// | d e f | = det A
+	// | g h i |
+	return mat[0][0]*mat[1][1]*mat[2][2] + // aei
+		mat[1][0]*mat[2][1]*mat[0][2] + // dhc
+		mat[2][0]*mat[0][1]*mat[1][2] - // gbf
+		mat[2][0]*mat[1][1]*mat[0][2] - // gec
+		mat[1][0]*mat[0][1]*mat[2][2] - // dbi
+		mat[0][0]*mat[2][1]*mat[1][2] // ahf
 }
 
 // IsReflective returns true if the matrix can be reflected by a plane.
@@ -379,4 +404,66 @@ func (mat *T) Transpose() *T {
 	swap(&mat[2][0], &mat[0][2])
 	swap(&mat[2][1], &mat[1][2])
 	return mat
+}
+
+// Adjugate computes the adjugate of this matrix and returns mat
+func (mat *T) Adjugate() *T {
+	matOrig := *mat
+	for i := 0; i < 3; i++ {
+		for j := 0; j < 3; j++ {
+			// -1 for odd i+j, 1 for even i+j
+			sign := float32(((i+j)%2)*-2 + 1)
+			mat[i][j] = matOrig.maskedBlock(i, j).Determinant() * sign
+		}
+	}
+	return mat.Transpose()
+}
+
+// Adjugated returns an adjugated copy of the matrix.
+func (mat *T) Adjugated() T {
+	result := *mat
+	result.Adjugate()
+	return result
+}
+
+// returns a 3x3 matrix without the i-th column and j-th row
+func (mat *T) maskedBlock(blockI, blockJ int) *mat2.T {
+	var m mat2.T
+	m_i := 0
+	for i := 0; i < 3; i++ {
+		if i == blockI {
+			continue
+		}
+		m_j := 0
+		for j := 0; j < 3; j++ {
+			if j == blockJ {
+				continue
+			}
+			m[m_i][m_j] = mat[i][j]
+			m_j++
+		}
+		m_i++
+	}
+	return &m
+}
+
+// Invert inverts the given matrix. Destructive operation.
+// Does not check if matrix is singular and may lead to strange results!
+func (mat *T) Invert() (*T, error) {
+	initialDet := mat.Determinant()
+	if initialDet == 0 {
+		return &Zero, errors.New("can not create inverted matrix as determinant is 0")
+	}
+
+	mat.Adjugate()
+	mat.Scale(1 / initialDet)
+	return mat, nil
+}
+
+// Inverted inverts a copy of the given matrix.
+// Does not check if matrix is singular and may lead to strange results!
+func (mat *T) Inverted() (T, error) {
+	result := *mat
+	_, err := result.Invert()
+	return result, err
 }

@@ -71,6 +71,7 @@ func (mat *T) Size() int {
 }
 
 // Slice returns the elements of the matrix as slice.
+// The data may be a copy depending on the platform implementation.
 func (mat *T) Slice() []float64 {
 	return mat.Array()[:]
 }
@@ -136,6 +137,10 @@ func (mat *T) TransformVec2(v *vec2.T) {
 	x := mat[0][0]*v[0] + mat[1][0]*v[1]
 	v[1] = mat[0][1]*v[0] + mat[1][1]*v[1]
 	v[0] = x
+}
+
+func (mat *T) Determinant() float64 {
+	return mat[0][0]*mat[1][1] - mat[1][0]*mat[0][1]
 }
 
 // Transpose transposes the matrix.
