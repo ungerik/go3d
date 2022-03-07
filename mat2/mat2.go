@@ -2,6 +2,7 @@
 package mat2
 
 import (
+	"errors"
 	"fmt"
 
 	"github.com/ungerik/go3d/generic"
@@ -10,7 +11,10 @@ import (
 
 var (
 	// Zero holds a zero matrix.
-	Zero = T{}
+	Zero = T{
+		vec2.T{0, 0},
+		vec2.T{0, 0},
+	}
 
 	// Ident holds an ident matrix.
 	Ident = T{
@@ -77,6 +81,18 @@ func (mat *T) Slice() []float32 {
 }
 
 // Get returns one element of the matrix.
+// Matrices are defined by (two) column vectors.
+//
+// Note that this function use the opposite reference order of rows and columns to the mathematical matrix indexing.
+//
+// A value in this matrix is referenced by <col><row> where both row and column is in the range [0..1].
+// This notation and range reflects the underlying representation.
+//
+// A value in a matrix A is mathematically referenced by A<row><col>
+// where both row and column is in the range [1..2].
+// (It is really the lower case 'a' followed by <row><col> but this documentation syntax is somewhat limited.)
+//
+// matrixA.Get(0, 1) == matrixA[0][1] ( == A21 in mathematical indexing)
 func (mat *T) Get(col, row int) float32 {
 	return mat[col][row]
 }
@@ -143,10 +159,46 @@ func (mat *T) Determinant() float32 {
 	return mat[0][0]*mat[1][1] - mat[1][0]*mat[0][1]
 }
 
+// PracticallyEquals compares two matrices if they are equal with each other within a delta tolerance.
+func (mat *T) PracticallyEquals(matrix *T, allowedDelta float32) bool {
+	return mat[0].PracticallyEquals(&matrix[0], allowedDelta) &&
+		mat[1].PracticallyEquals(&matrix[1], allowedDelta)
+}
+
 // Transpose transposes the matrix.
 func (mat *T) Transpose() *T {
-	temp := mat[0][1]
-	mat[0][1] = mat[1][0]
-	mat[1][0] = temp
+	mat[0][1], mat[1][0] = mat[1][0], mat[0][1]
 	return mat
+}
+
+// Transposed returns a transposed copy the matrix.
+func (mat *T) Transposed() T {
+	result := *mat
+	result.Transpose()
+	return result
+}
+
+// Invert inverts the given matrix. Destructive operation.
+// Does not check if matrix is singular and may lead to strange results!
+func (mat *T) Invert() (*T, error) {
+	determinant := mat.Determinant()
+	if determinant == 0 {
+		return &Zero, errors.New("can not create inverted matrix as determinant is 0")
+	}
+
+	invDet := 1.0 / determinant
+
+	mat[0][0], mat[1][1] = invDet*mat[1][1], invDet*mat[0][0]
+	mat[0][1] = -invDet * mat[0][1]
+	mat[1][0] = -invDet * mat[1][0]
+
+	return mat, nil
+}
+
+// Inverted inverts a copy of the given matrix.
+// Does not check if matrix is singular and may lead to strange results!
+func (mat *T) Inverted() (T, error) {
+	result := *mat
+	_, err := result.Invert()
+	return result, err
 }
