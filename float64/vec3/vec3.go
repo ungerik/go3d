@@ -119,6 +119,13 @@ func (vec *T) Scaled(f float64) T {
 	return T{vec[0] * f, vec[1] * f, vec[2] * f}
 }
 
+// PracticallyEquals compares two vectors if they are equal with each other within a delta tolerance.
+func (vec *T) PracticallyEquals(compareVector *T, allowedDelta float64) bool {
+	return (math.Abs(vec[0]-compareVector[0]) <= allowedDelta) &&
+		(math.Abs(vec[1]-compareVector[1]) <= allowedDelta) &&
+		(math.Abs(vec[2]-compareVector[2]) <= allowedDelta)
+}
+
 // Invert inverts the vector.
 func (vec *T) Invert() *T {
 	vec[0] = -vec[0]

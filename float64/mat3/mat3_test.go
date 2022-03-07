@@ -33,6 +33,70 @@ var (
 	row123Changed, _ = Parse("3 1 0.5   2 5 2   1 6 7")
 )
 
+func Test_ColsAndRows(t *testing.T) {
+	A := testMatrix2
+
+	a11 := A.Get(0, 0)
+	a21 := A.Get(0, 1)
+	a31 := A.Get(0, 2)
+
+	a12 := A.Get(1, 0)
+	a22 := A.Get(1, 1)
+	a32 := A.Get(1, 2)
+
+	a13 := A.Get(2, 0)
+	a23 := A.Get(2, 1)
+	a33 := A.Get(2, 2)
+
+	correctReference := a11 == 23 && a21 == -4 && a31 == -0.5 &&
+		a12 == -12 && a22 == 20.5 && a32 == -5 &&
+		a13 == 7 && a23 == -17 && a33 == 13
+
+	if !correctReference {
+		t.Errorf("matrix ill referenced")
+	}
+}
+
+func TestT_Transposed(t *testing.T) {
+	matrix := T{
+		vec3.T{1, 2, 3},
+		vec3.T{4, 5, 6},
+		vec3.T{7, 8, 9},
+	}
+	expectedMatrix := T{
+		vec3.T{1, 4, 7},
+		vec3.T{2, 5, 8},
+		vec3.T{3, 6, 9},
+	}
+
+	transposedMatrix := matrix.Transposed()
+
+	if transposedMatrix != expectedMatrix {
+		t.Errorf("matrix transposed wrong: %v --> %v", matrix, transposedMatrix)
+	}
+}
+
+func TestT_Transpose(t *testing.T) {
+	matrix := T{
+		vec3.T{10, 20, 30},
+		vec3.T{40, 50, 60},
+		vec3.T{70, 80, 90},
+	}
+
+	expectedMatrix := T{
+		vec3.T{10, 40, 70},
+		vec3.T{20, 50, 80},
+		vec3.T{30, 60, 90},
+	}
+
+	transposedMatrix := matrix
+	transposedMatrix.Transpose()
+
+	if transposedMatrix != expectedMatrix {
+		t.Errorf("matrix transposed wrong: %v --> %v", matrix, transposedMatrix)
+	}
+}
+
 func TestDeterminant_2(t *testing.T) {
 	detTwo := Ident
 	detTwo[0][0] = 2
@@ -68,12 +132,12 @@ func TestDeterminant_7(t *testing.T) {
 	if err != nil {
 		t.Errorf("Could not parse random matrix: %v", err)
 	}
-	if det := randomMatrix.Determinant(); practicallyEqual(det, 0.043437) {
+	if det := randomMatrix.Determinant(); PracticallyEquals(det, 0.043437) {
 		t.Errorf("Wrong determinant for random sub 3x3 matrix: %f", det)
 	}
 }
 
-func practicallyEqual(value1 float64, value2 float64) bool {
+func PracticallyEquals(value1 float64, value2 float64) bool {
 	return math.Abs(value1-value2) > EPSILON
 }
 
@@ -101,11 +165,39 @@ func TestMaskedBlock(t *testing.T) {
 
 func TestAdjugate(t *testing.T) {
 	adj := row123Changed
-	adj.Adjugate()
+
 	// Computed in octave:
-	adjExpected := T{vec3.T{23, -4, -0.5}, vec3.T{-12, 20.5, -5}, vec3.T{7, -17, 13}}
+	adjExpected := T{
+		vec3.T{23, -4, -0.5},
+		vec3.T{-12, 20.5, -5},
+		vec3.T{7, -17, 13},
+	}
+
+	adj.Adjugate()
+
 	if adj != adjExpected {
 		t.Errorf("Adjugate not computed correctly: %#v", adj)
+	}
+}
+
+func TestAdjugated(t *testing.T) {
+	sqrt2 := math.Sqrt(2)
+	A := T{
+		vec3.T{1, 0, -1},
+		vec3.T{0, sqrt2, 0},
+		vec3.T{1, 0, 1},
+	}
+
+	expectedAdjugated := T{
+		vec3.T{1.4142135623730951, -0, 1.4142135623730951},
+		vec3.T{-0, 2, -0},
+		vec3.T{-1.4142135623730951, -0, 1.4142135623730951},
+	}
+
+	adjA := A.Adjugated()
+
+	if adjA != expectedAdjugated {
+		t.Errorf("Adjugate not computed correctly: %v", adjA)
 	}
 }
 
@@ -120,6 +212,30 @@ func TestInvert_ok(t *testing.T) {
 	invExpected := invertedMatrix1
 	if inv != invExpected {
 		t.Errorf("Inverse not computed correctly: %#v", inv)
+	}
+}
+
+func TestInvert_ok2(t *testing.T) {
+	sqrt2 := math.Sqrt(2)
+	A := T{
+		vec3.T{1, 0, -1},
+		vec3.T{0, sqrt2, 0},
+		vec3.T{1, 0, 1},
+	}
+
+	expectedInverted := T{
+		vec3.T{0.5, 0, 0.5},
+		vec3.T{0, 0.7071067811865475, 0},
+		vec3.T{-0.5, 0, 0.5},
+	}
+
+	invA, err := A.Inverted()
+	if err != nil {
+		t.Error("Inverse not computed correctly", err)
+	}
+
+	if invA != expectedInverted {
+		t.Errorf("Inverse not computed correctly: %v", A)
 	}
 }
 

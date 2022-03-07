@@ -181,11 +181,18 @@ func (mat *T) AssignMat2x2(m *mat2.T) *T {
 
 // Mul multiplies every element by f and returns mat.
 func (mat *T) Mul(f float32) *T {
-	for i, col := range mat {
-		for j := range col {
-			mat[i][j] *= f
-		}
-	}
+	mat[0][0] *= f
+	mat[0][1] *= f
+	mat[0][2] *= f
+
+	mat[1][0] *= f
+	mat[1][1] *= f
+	mat[1][2] *= f
+
+	mat[2][0] *= f
+	mat[2][1] *= f
+	mat[2][2] *= f
+
 	return mat
 }
 
@@ -392,31 +399,45 @@ func (mat *T) IsReflective() bool {
 	return mat.Determinant() < 0
 }
 
-func swap(a, b *float32) {
-	temp := *a
-	*a = *b
-	*b = temp
+// PracticallyEquals compares two matrices if they are equal with each other within a delta tolerance.
+func (mat *T) PracticallyEquals(matrix *T, allowedDelta float32) bool {
+	return mat[0].PracticallyEquals(&matrix[0], allowedDelta) &&
+		mat[1].PracticallyEquals(&matrix[1], allowedDelta) &&
+		mat[2].PracticallyEquals(&matrix[2], allowedDelta)
 }
 
 // Transpose transposes the matrix.
 func (mat *T) Transpose() *T {
-	swap(&mat[1][0], &mat[0][1])
-	swap(&mat[2][0], &mat[0][2])
-	swap(&mat[2][1], &mat[1][2])
+	mat[1][0], mat[0][1] = mat[0][1], mat[1][0]
+	mat[2][0], mat[0][2] = mat[0][2], mat[2][0]
+	mat[2][1], mat[1][2] = mat[1][2], mat[2][1]
 	return mat
+}
+
+// Transposed returns a transposed copy the matrix.
+func (mat *T) Transposed() T {
+	result := *mat
+	result.Transpose()
+	return result
 }
 
 // Adjugate computes the adjugate of this matrix and returns mat
 func (mat *T) Adjugate() *T {
-	matOrig := *mat
-	for i := 0; i < 3; i++ {
-		for j := 0; j < 3; j++ {
-			// -1 for odd i+j, 1 for even i+j
-			sign := float32(((i+j)%2)*-2 + 1)
-			mat[i][j] = matOrig.maskedBlock(i, j).Determinant() * sign
-		}
-	}
-	return mat.Transpose()
+	matrix := *mat
+
+	mat[0][0] = +(matrix[1][1]*matrix[2][2] - matrix[1][2]*matrix[2][1])
+	mat[0][1] = -(matrix[0][1]*matrix[2][2] - matrix[0][2]*matrix[2][1])
+	mat[0][2] = +(matrix[0][1]*matrix[1][2] - matrix[0][2]*matrix[1][1])
+
+	mat[1][0] = -(matrix[1][0]*matrix[2][2] - matrix[1][2]*matrix[2][0])
+	mat[1][1] = +(matrix[0][0]*matrix[2][2] - matrix[0][2]*matrix[2][0])
+	mat[1][2] = -(matrix[0][0]*matrix[1][2] - matrix[0][2]*matrix[1][0])
+
+	mat[2][0] = +(matrix[1][0]*matrix[2][1] - matrix[1][1]*matrix[2][0])
+	mat[2][1] = -(matrix[0][0]*matrix[2][1] - matrix[0][1]*matrix[2][0])
+	mat[2][2] = +(matrix[0][0]*matrix[1][1] - matrix[0][1]*matrix[1][0])
+
+	return mat
 }
 
 // Adjugated returns an adjugated copy of the matrix.
@@ -456,7 +477,7 @@ func (mat *T) Invert() (*T, error) {
 	}
 
 	mat.Adjugate()
-	mat.Scale(1 / initialDet)
+	mat.Mul(1.0 / initialDet)
 	return mat, nil
 }
 
