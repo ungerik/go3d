@@ -111,7 +111,6 @@ func (vec *T) Scale(f float32) *T {
 	vec[0] *= f
 	vec[1] *= f
 	vec[2] *= f
-
 	return vec
 }
 
@@ -159,8 +158,7 @@ func (vec *T) Normalize() *T {
 	if sl == 0 || sl == 1 {
 		return vec
 	}
-	vec.Scale(1 / math.Sqrt(sl))
-	return vec
+	return vec.Scale(1 / math.Sqrt(sl))
 }
 
 // Normalized returns a unit length normalized copy of the vector.
@@ -187,12 +185,22 @@ func (vec *T) Add(v *T) *T {
 	return vec
 }
 
+// Added adds another vector to vec and returns a copy of the result
+func (vec *T) Added(v *T) T {
+	return T{vec[0] + v[0], vec[1] + v[1], vec[2] + v[2]}
+}
+
 // Sub subtracts another vector from vec.
 func (vec *T) Sub(v *T) *T {
 	vec[0] -= v[0]
 	vec[1] -= v[1]
 	vec[2] -= v[2]
 	return vec
+}
+
+// Subed subtracts another vector from vec and returns a copy of the result
+func (vec *T) Subed(v *T) T {
+	return T{vec[0] - v[0], vec[1] - v[1], vec[2] - v[2]}
 }
 
 // Mul multiplies the components of the vector with the respective components of v.
@@ -203,21 +211,26 @@ func (vec *T) Mul(v *T) *T {
 	return vec
 }
 
-// Add returns the sum of two vectors.
-func Add(a, b *T) T {
-	return T{a[0] + b[0], a[1] + b[1], a[2] + b[2]}
+// Muled multiplies the components of the vector with the respective components of v and returns a copy of the result
+func (vec *T) Muled(v *T) T {
+	return T{vec[0] * v[0], vec[1] * v[1], vec[2] * v[2]}
 }
 
-// Squared Distance between two vectors
+// SquareDistance the distance between two vectors squared (= distance*distance)
 func SquareDistance(a, b *T) float32 {
 	d := Sub(a, b)
 	return d.LengthSqr()
 }
 
-// Distance between two vectors
+// Distance the distance between two vectors
 func Distance(a, b *T) float32 {
 	d := Sub(a, b)
 	return d.Length()
+}
+
+// Add adds the composants of the two vectors and returns a new vector with the sum of the two vectors.
+func Add(a, b *T) T {
+	return T{a[0] + b[0], a[1] + b[1], a[2] + b[2]}
 }
 
 // Sub returns the difference of two vectors.
