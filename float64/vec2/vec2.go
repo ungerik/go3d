@@ -116,6 +116,18 @@ func (vec *T) Inverted() T {
 	return T{-vec[0], -vec[1]}
 }
 
+// Abs sets every component of the vector to its absolute value.
+func (vec *T) Abs() *T {
+	vec[0] = math.Abs(vec[0])
+	vec[1] = math.Abs(vec[1])
+	return vec
+}
+
+// Absed returns a copy of the vector containing the absolute values.
+func (vec *T) Absed() T {
+	return T{math.Abs(vec[0]), math.Abs(vec[1])}
+}
+
 // Normalize normalizes the vector to unit length.
 func (vec *T) Normalize() *T {
 	sl := vec.LengthSqr()
@@ -132,11 +144,32 @@ func (vec *T) Normalized() T {
 	return v
 }
 
+// Normal returns an orthogonal vector.
+// The normal is orthogonal clockwise to the vector.
+func (vec *T) Normal() T {
+	n := *vec
+	n[0], n[1] = n[1], -n[0]
+	return *n.Normalize()
+}
+
+// Normal returns an orthogonal vector.
+// The normal is orthogonal counter clockwise to the vector.
+func (vec *T) NormalCCW() T {
+	n := *vec
+	n[0], n[1] = -n[1], n[0]
+	return *n.Normalize()
+}
+
 // Add adds another vector to vec.
 func (vec *T) Add(v *T) *T {
 	vec[0] += v[0]
 	vec[1] += v[1]
 	return vec
+}
+
+// Added adds another vector to vec and returns a copy of the result
+func (vec *T) Added(v *T) T {
+	return T{vec[0] + v[0], vec[1] + v[1]}
 }
 
 // Sub subtracts another vector from vec.
@@ -146,11 +179,21 @@ func (vec *T) Sub(v *T) *T {
 	return vec
 }
 
+// Subed subtracts another vector from vec and returns a copy of the result
+func (vec *T) Subed(v *T) T {
+	return T{vec[0] - v[0], vec[1] - v[1]}
+}
+
 // Mul multiplies the components of the vector with the respective components of v.
 func (vec *T) Mul(v *T) *T {
 	vec[0] *= v[0]
 	vec[1] *= v[1]
 	return vec
+}
+
+// Muled multiplies the components of the vector with the respective components of v and returns a copy of the result
+func (vec *T) Muled(v *T) T {
+	return T{vec[0] * v[0], vec[1] * v[1]}
 }
 
 // Rotate rotates the vector counter-clockwise by angle.
@@ -195,7 +238,7 @@ func (vec *T) Angle() float64 {
 	return math.Atan2(vec[1], vec[0])
 }
 
-// Add returns the sum of two vectors.
+// Add adds the composants of the two vectors and returns a new vector with the sum of the two vectors.
 func Add(a, b *T) T {
 	return T{a[0] + b[0], a[1] + b[1]}
 }
