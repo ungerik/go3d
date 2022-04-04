@@ -1,6 +1,8 @@
 package vec3
 
 import (
+	math "github.com/ungerik/go3d/fmath"
+
 	"testing"
 )
 
@@ -140,5 +142,89 @@ func TestMuled(t *testing.T) {
 	}
 	if v3 != expectedV3 {
 		t.Fail()
+	}
+}
+
+func TestAngle(t *testing.T) {
+	radFor45deg := float32(math.Pi / 4.0)
+	testSetups := []struct {
+		a, b          T
+		expectedAngle float32
+		name          string
+	}{
+		{a: T{1, 0, 0}, b: T{1, 0, 0}, expectedAngle: 0 * radFor45deg, name: "0/360 degree angle, equal/parallell vectors"},
+		{a: T{1, 0, 0}, b: T{1, 1, 0}, expectedAngle: 1 * radFor45deg, name: "45 degree angle"},
+		{a: T{1, 0, 0}, b: T{0, 1, 0}, expectedAngle: 2 * radFor45deg, name: "90 degree angle, orthogonal vectors"},
+		{a: T{1, 0, 0}, b: T{-1, 1, 0}, expectedAngle: 3 * radFor45deg, name: "135 degree angle"},
+		{a: T{1, 0, 0}, b: T{-1, 0, 0}, expectedAngle: 4 * radFor45deg, name: "180 degree angle, inverted/anti parallell vectors"},
+		{a: T{1, 0, 0}, b: T{-1, -1, 0}, expectedAngle: (8 - 5) * radFor45deg, name: "225 degree angle"},
+		{a: T{1, 0, 0}, b: T{0, -1, 0}, expectedAngle: (8 - 6) * radFor45deg, name: "270 degree angle, orthogonal vectors"},
+		{a: T{1, 0, 0}, b: T{1, -1, 0}, expectedAngle: (8 - 7) * radFor45deg, name: "315 degree angle"},
+	}
+
+	for _, testSetup := range testSetups {
+		t.Run(testSetup.name, func(t *testing.T) {
+			angle := Angle(&testSetup.a, &testSetup.b)
+
+			if !PracticallyEquals(angle, testSetup.expectedAngle, 0.00000001) {
+				t.Errorf("Angle expected to be %f but was %f for test \"%s\".", testSetup.expectedAngle, angle, testSetup.name)
+			}
+		})
+	}
+}
+
+func TestCosine(t *testing.T) {
+	radFor45deg := float32(math.Pi / 4.0)
+	testSetups := []struct {
+		a, b           T
+		expectedCosine float32
+		name           string
+	}{
+		{a: T{1, 0, 0}, b: T{1, 0, 0}, expectedCosine: math.Cos(0 * radFor45deg), name: "0/360 degree angle, equal/parallell vectors"},
+		{a: T{1, 0, 0}, b: T{1, 1, 0}, expectedCosine: math.Cos(1 * radFor45deg), name: "45 degree angle"},
+		{a: T{1, 0, 0}, b: T{0, 1, 0}, expectedCosine: math.Cos(2 * radFor45deg), name: "90 degree angle, orthogonal vectors"},
+		{a: T{1, 0, 0}, b: T{-1, 1, 0}, expectedCosine: math.Cos(3 * radFor45deg), name: "135 degree angle"},
+		{a: T{1, 0, 0}, b: T{-1, 0, 0}, expectedCosine: math.Cos(4 * radFor45deg), name: "180 degree angle, inverted/anti parallell vectors"},
+		{a: T{1, 0, 0}, b: T{-1, -1, 0}, expectedCosine: math.Cos(5 * radFor45deg), name: "225 degree angle"},
+		{a: T{1, 0, 0}, b: T{0, -1, 0}, expectedCosine: math.Cos(6 * radFor45deg), name: "270 degree angle, orthogonal vectors"},
+		{a: T{1, 0, 0}, b: T{1, -1, 0}, expectedCosine: math.Cos(7 * radFor45deg), name: "315 degree angle"},
+	}
+
+	for _, testSetup := range testSetups {
+		t.Run(testSetup.name, func(t *testing.T) {
+			cos := Cosine(&testSetup.a, &testSetup.b)
+
+			if !PracticallyEquals(cos, testSetup.expectedCosine, 0.000001) {
+				t.Errorf("Cosine expected to be %f but was %f for test \"%s\".", testSetup.expectedCosine, cos, testSetup.name)
+			}
+		})
+	}
+}
+
+func TestSinus(t *testing.T) {
+	radFor45deg := float32(math.Pi / 4.0)
+	testSetups := []struct {
+		a, b         T
+		expectedSine float32
+		name         string
+	}{
+		{a: T{1, 0, 0}, b: T{1, 0, 0}, expectedSine: math.Sin(0 * radFor45deg), name: "0/360 degree angle, equal/parallell vectors"},
+		{a: T{1, 0, 0}, b: T{1, 1, 0}, expectedSine: math.Sin(1 * radFor45deg), name: "45 degree angle"},
+		{a: T{1, 0, 0}, b: T{0, 1, 0}, expectedSine: math.Sin(2 * radFor45deg), name: "90 degree angle, orthogonal vectors"},
+		{a: T{1, 0, 0}, b: T{-1, 1, 0}, expectedSine: math.Sin(3 * radFor45deg), name: "135 degree angle"},
+		{a: T{1, 0, 0}, b: T{-1, 0, 0}, expectedSine: math.Sin(4 * radFor45deg), name: "180 degree angle, inverted/anti parallell vectors"},
+		{a: T{1, 0, 0}, b: T{-1, -1, 0}, expectedSine: math.Abs(math.Sin(5 * radFor45deg)), name: "225 degree angle"},
+		{a: T{1, 0, 0}, b: T{0, -1, 0}, expectedSine: math.Abs(math.Sin(6 * radFor45deg)), name: "270 degree angle, orthogonal vectors"},
+		{a: T{1, 0, 0}, b: T{1, -1, 0}, expectedSine: math.Abs(math.Sin(7 * radFor45deg)), name: "315 degree angle"},
+	}
+
+	for _, testSetup := range testSetups {
+		t.Run(testSetup.name, func(t *testing.T) {
+			sin := Sinus(&testSetup.a, &testSetup.b)
+
+			if !PracticallyEquals(sin, testSetup.expectedSine, 0.000001) {
+				t.Errorf("Sine expected to be %f but was %f for test \"%s\".", testSetup.expectedSine, sin, testSetup.name)
+			}
+		})
 	}
 }
