@@ -126,6 +126,11 @@ func (vec *T) PracticallyEquals(compareVector *T, allowedDelta float32) bool {
 		(math.Abs(vec[2]-compareVector[2]) <= allowedDelta)
 }
 
+// PracticallyEquals compares two values if they are equal with each other within a delta tolerance.
+func PracticallyEquals(v1, v2, allowedDelta float32) bool {
+	return math.Abs(v1-v2) <= allowedDelta
+}
+
 // Invert inverts the vector.
 func (vec *T) Invert() *T {
 	vec[0] = -vec[0]
@@ -257,16 +262,38 @@ func Cross(a, b *T) T {
 	}
 }
 
-// Angle returns the angle between two vectors.
-func Angle(a, b *T) float32 {
-	v := Dot(a, b) / (a.Length() * b.Length())
-	// prevent NaN
-	if v > 1. {
-		return 0
-	} else if v < -1. {
-		return math.Pi
+// Sinus returns the sinus value of the (shortest/smallest) angle between the two vectors a and b.
+// The returned sine value is in the range 0.0 ≤ value ≤ 1.0.
+// The angle is always considered to be in the range 0 to Pi radians and thus the sine value returned is always positive.
+func Sinus(a, b *T) float32 {
+	cross := Cross(a, b)
+	v := cross.Length() / math.Sqrt(a.LengthSqr()*b.LengthSqr())
+
+	if v > 1.0 {
+		return 1.0
+	} else if v < 0.0 {
+		return 0.0
 	}
-	return math.Acos(v)
+	return v
+}
+
+// Cosine returns the cosine value of the angle between the two vectors.
+// The returned cosine value is in the range -1.0 ≤ value ≤ 1.0.
+func Cosine(a, b *T) float32 {
+	v := Dot(a, b) / math.Sqrt(a.LengthSqr()*b.LengthSqr())
+
+	if v > 1.0 {
+		return 1.0
+	} else if v < -1.0 {
+		return -1.0
+	}
+	return v
+}
+
+// Angle returns the angle value of the (shortest/smallest) angle between the two vectors a and b.
+// The returned value is in the range 0 ≤ angle ≤ Pi radians.
+func Angle(a, b *T) float32 {
+	return math.Acos(Cosine(a, b))
 }
 
 // Min returns the component wise minimum of two vectors.

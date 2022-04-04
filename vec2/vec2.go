@@ -104,6 +104,11 @@ func (vec *T) PracticallyEquals(compareVector *T, allowedDelta float32) bool {
 		(math.Abs(vec[1]-compareVector[1]) <= allowedDelta)
 }
 
+// PracticallyEquals compares two values if they are equal with each other within a delta tolerance.
+func PracticallyEquals(v1, v2, allowedDelta float32) bool {
+	return math.Abs(v1-v2) <= allowedDelta
+}
+
 // Invert inverts the vector.
 func (vec *T) Invert() *T {
 	vec[0] = -vec[0]
@@ -134,7 +139,7 @@ func (vec *T) Normalize() *T {
 	if sl == 0 || sl == 1 {
 		return vec
 	}
-	return vec.Scale(1 / math.Sqrt(sl))
+	return vec.Scale(1.0 / math.Sqrt(sl))
 }
 
 // Normalized returns a unit length normalized copy of the vector.
@@ -144,16 +149,18 @@ func (vec *T) Normalized() T {
 	return v
 }
 
-// Normal returns an orthogonal vector.
+// Normal returns a new normalized orthogonal vector.
 // The normal is orthogonal clockwise to the vector.
+// See also function Rotate90DegRight.
 func (vec *T) Normal() T {
 	n := *vec
 	n[0], n[1] = n[1], -n[0]
 	return *n.Normalize()
 }
 
-// Normal returns an orthogonal vector.
-// The normal is orthogonal counter clockwise to the vector.
+// NormalCCW returns a new normalized orthogonal vector.
+// The normal is orthogonal counterclockwise to the vector.
+// See also function Rotate90DegLeft.
 func (vec *T) NormalCCW() T {
 	n := *vec
 	n[0], n[1] = -n[1], n[0]
@@ -218,19 +225,44 @@ func (vec *T) RotateAroundPoint(point *T, angle float32) *T {
 }
 
 // Rotate90DegLeft rotates the vector 90 degrees left (counter-clockwise).
+// See also function NormalCCW.
 func (vec *T) Rotate90DegLeft() *T {
-	temp := vec[0]
-	vec[0] = -vec[1]
-	vec[1] = temp
+	vec[0], vec[1] = -vec[1], vec[0]
 	return vec
 }
 
 // Rotate90DegRight rotates the vector 90 degrees right (clockwise).
+// See also function Normal.
 func (vec *T) Rotate90DegRight() *T {
-	temp := vec[0]
-	vec[0] = vec[1]
-	vec[1] = -temp
+	vec[0], vec[1] = vec[1], -vec[0]
 	return vec
+}
+
+// Sinus returns the sinus value of the (shortest/smallest) angle between the two vectors a and b.
+// The returned sine value is in the range -1.0 ≤ value ≤ 1.0.
+// The angle is always considered to be in the range 0 to Pi radians and thus the sine value returned is always positive.
+func Sinus(a, b *T) float32 {
+	v := Cross(a, b) / math.Sqrt(a.LengthSqr()*b.LengthSqr())
+
+	if v > 1.0 {
+		return 1.0
+	} else if v < -1.0 {
+		return -1.0
+	}
+	return v
+}
+
+// Cosine returns the cosine value of the angle between the two vectors.
+// The returned cosine value is in the range -1.0 ≤ value ≤ 1.0.
+func Cosine(a, b *T) float32 {
+	v := Dot(a, b) / math.Sqrt(a.LengthSqr()*b.LengthSqr())
+
+	if v > 1.0 {
+		return 1.0
+	} else if v < -1.0 {
+		return -1.0
+	}
+	return v
 }
 
 // Angle returns the counter-clockwise angle of the vector from the x axis.
@@ -258,36 +290,30 @@ func Dot(a, b *T) float32 {
 	return a[0]*b[0] + a[1]*b[1]
 }
 
-// Cross returns the cross product of two vectors.
-func Cross(a, b *T) T {
-	return T{
-		a[1]*b[0] - a[0]*b[1],
-		a[0]*b[1] - a[1]*b[0],
-	}
+// Cross returns the "cross product" of two vectors.
+// In 2D space it is a scalar value.
+// It is the same as the determinant value of the 2D matrix constructed by the two vectors.
+// Cross product in 2D is not well-defined but this is the implementation stated at https://mathworld.wolfram.com/CrossProduct.html .
+func Cross(a, b *T) float32 {
+	return a[0]*b[1] - a[1]*b[0]
 }
 
-// Angle returns the angle between two vectors.
+// Angle returns the angle value of the (shortest/smallest) angle between the two vectors a and b.
+// The returned value is in the range 0 ≤ angle ≤ Pi radians.
 func Angle(a, b *T) float32 {
-	v := Dot(a, b) / (a.Length() * b.Length())
-	// prevent NaN
-	if v > 1. {
-		v = v - 2
-	} else if v < -1. {
-		v = v + 2
-	}
-	return math.Acos(v)
+	return math.Acos(Cosine(a, b))
 }
 
 // IsLeftWinding returns if the angle from a to b is left winding.
+// Two parallell or anti parallell vectors will give a false result.
 func IsLeftWinding(a, b *T) bool {
-	ab := b.Rotated(-a.Angle())
-	return ab.Angle() > 0
+	return Cross(a, b) > 0 // It's really the sign changing part of the Sinus(a, b) function
 }
 
 // IsRightWinding returns if the angle from a to b is right winding.
+// Two parallell or anti parallell vectors will give a false result.
 func IsRightWinding(a, b *T) bool {
-	ab := b.Rotated(-a.Angle())
-	return ab.Angle() < 0
+	return Cross(a, b) < 0 // It's really the sign changing part of the Sinus(a, b) function
 }
 
 // Min returns the component wise minimum of two vectors.
@@ -316,7 +342,7 @@ func Max(a, b *T) T {
 
 // Interpolate interpolates between a and b at t (0,1).
 func Interpolate(a, b *T, t float32) T {
-	t1 := 1 - t
+	t1 := 1.0 - t
 	return T{
 		a[0]*t1 + b[0]*t,
 		a[1]*t1 + b[1]*t,
