@@ -28,7 +28,7 @@ var (
 	Red = T{1, 0, 0, 1}
 	// Green holds the color green.
 	Green = T{0, 1, 0, 1}
-	// Black holds the color black.
+	// Blue holds the color blue.
 	Blue = T{0, 0, 1, 1}
 	// Black holds the color black.
 	Black = T{0, 0, 0, 1}
