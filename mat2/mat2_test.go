@@ -16,16 +16,6 @@ var (
 	nonInvertableMatrix1 = T{vec2.T{1, 1}, vec2.T{1, 1}}
 	nonInvertableMatrix2 = T{vec2.T{2, 0}, vec2.T{1, 0}}
 
-	testMatrix1 = T{
-		vec2.T{0.38016528, -0.0661157},
-		vec2.T{-0.19834709, 0.33884296},
-	}
-
-	testMatrix2 = T{
-		vec2.T{23, -4},
-		vec2.T{-12, 20.5},
-	}
-
 	row123Changed, _ = Parse("3 1   2 5")
 )
 
@@ -150,5 +140,30 @@ func TestInvert_nok_2(t *testing.T) {
 	_, err := inv.Inverted()
 	if err == nil {
 		t.Error("Inverse should not be possible", err)
+	}
+}
+
+func TestIsZeroEps(t *testing.T) {
+	tests := []struct {
+		name    string
+		mat     T
+		epsilon float32
+		want    bool
+	}{
+		{"exact zero", Zero, 0.0001, true},
+		{"within epsilon", T{vec2.T{0.00001, -0.00001}, vec2.T{0.00001, -0.00001}}, 0.0001, true},
+		{"at epsilon boundary", T{vec2.T{0.0001, 0.0001}, vec2.T{0.0001, 0.0001}}, 0.0001, true},
+		{"outside epsilon", T{vec2.T{0.001, 0}, vec2.T{0, 0}}, 0.0001, false},
+		{"one element outside", T{vec2.T{0.00001, 0.00001}, vec2.T{0.001, 0.00001}}, 0.0001, false},
+		{"negative outside epsilon", T{vec2.T{-0.001, 0}, vec2.T{0, 0}}, 0.0001, false},
+		{"identity matrix", Ident, 0.0001, false},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := tt.mat.IsZeroEps(tt.epsilon); got != tt.want {
+				t.Errorf("IsZeroEps() = %v, want %v for mat %v with epsilon %v", got, tt.want, tt.mat, tt.epsilon)
+			}
+		})
 	}
 }

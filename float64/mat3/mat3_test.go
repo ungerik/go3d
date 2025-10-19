@@ -264,3 +264,28 @@ func BenchmarkAssignMul(b *testing.B) {
 		mMult.AssignMul(&m1, &m2)
 	}
 }
+
+func TestIsZeroEps(t *testing.T) {
+	tests := []struct {
+		name    string
+		mat     T
+		epsilon float64
+		want    bool
+	}{
+		{"exact zero", Zero, 0.0001, true},
+		{"within epsilon", T{vec3.T{0.00001, -0.00001, 0.00001}, vec3.T{-0.00001, 0.00001, -0.00001}, vec3.T{0.00001, -0.00001, 0.00001}}, 0.0001, true},
+		{"at epsilon boundary", T{vec3.T{0.0001, 0.0001, 0.0001}, vec3.T{0.0001, 0.0001, 0.0001}, vec3.T{0.0001, 0.0001, 0.0001}}, 0.0001, true},
+		{"outside epsilon", T{vec3.T{0.001, 0, 0}, vec3.T{0, 0, 0}, vec3.T{0, 0, 0}}, 0.0001, false},
+		{"one element outside", T{vec3.T{0.00001, 0.00001, 0.00001}, vec3.T{0.001, 0.00001, 0.00001}, vec3.T{0.00001, 0.00001, 0.00001}}, 0.0001, false},
+		{"negative outside epsilon", T{vec3.T{-0.001, 0, 0}, vec3.T{0, 0, 0}, vec3.T{0, 0, 0}}, 0.0001, false},
+		{"identity matrix", Ident, 0.0001, false},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := tt.mat.IsZeroEps(tt.epsilon); got != tt.want {
+				t.Errorf("IsZeroEps() = %v, want %v for mat with epsilon %v", got, tt.want, tt.epsilon)
+			}
+		})
+	}
+}
