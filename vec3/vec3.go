@@ -94,6 +94,11 @@ func (vec *T) IsZero() bool {
 	return vec[0] == 0 && vec[1] == 0 && vec[2] == 0
 }
 
+// IsZeroEps checks if all elements of the vector are zero within the given epsilon tolerance.
+func (vec *T) IsZeroEps(epsilon float32) bool {
+	return math.Abs(vec[0]) <= epsilon && math.Abs(vec[1]) <= epsilon && math.Abs(vec[2]) <= epsilon
+}
+
 // Length returns the length of the vector.
 // See also LengthSqr and Normalize.
 func (vec *T) Length() float32 {

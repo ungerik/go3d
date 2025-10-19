@@ -624,6 +624,11 @@ func (vec *T) IsZero() bool {
 	return vec[0] == 0 && vec[1] == 0 && vec[2] == 0 && vec[3] == 0
 }
 
+// IsZeroEps checks if all elements of the vector are zero within the given epsilon tolerance.
+func (vec *T) IsZeroEps(epsilon float32) bool {
+	return math.Abs(vec[0]) <= epsilon && math.Abs(vec[1]) <= epsilon && math.Abs(vec[2]) <= epsilon && math.Abs(vec[3]) <= epsilon
+}
+
 // Shuffle returns the vector with its components shuffled in the order according to mask.
 //
 // Example:

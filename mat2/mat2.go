@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 
+	math "github.com/ungerik/go3d/fmath"
 	"github.com/ungerik/go3d/generic"
 	"github.com/ungerik/go3d/vec2"
 )
@@ -100,6 +101,12 @@ func (mat *T) Get(col, row int) float32 {
 // IsZero checks if all elements of the matrix are zero.
 func (mat *T) IsZero() bool {
 	return *mat == Zero
+}
+
+// IsZeroEps checks if all elements of the matrix are zero within the given epsilon tolerance.
+func (mat *T) IsZeroEps(epsilon float32) bool {
+	return math.Abs(mat[0][0]) <= epsilon && math.Abs(mat[0][1]) <= epsilon &&
+		math.Abs(mat[1][0]) <= epsilon && math.Abs(mat[1][1]) <= epsilon
 }
 
 // Scale multiplies the diagonal scale elements by f returns mat.

@@ -96,6 +96,13 @@ func (mat *T) IsZero() bool {
 	return *mat == Zero
 }
 
+// IsZeroEps checks if all elements of the matrix are zero within the given epsilon tolerance.
+func (mat *T) IsZeroEps(epsilon float32) bool {
+	return math.Abs(mat[0][0]) <= epsilon && math.Abs(mat[0][1]) <= epsilon && math.Abs(mat[0][2]) <= epsilon &&
+		math.Abs(mat[1][0]) <= epsilon && math.Abs(mat[1][1]) <= epsilon && math.Abs(mat[1][2]) <= epsilon &&
+		math.Abs(mat[2][0]) <= epsilon && math.Abs(mat[2][1]) <= epsilon && math.Abs(mat[2][2]) <= epsilon
+}
+
 // Scale multiplies the diagonal scale elements by f returns mat.
 func (mat *T) Scale(f float32) *T {
 	mat[0][0] *= f
