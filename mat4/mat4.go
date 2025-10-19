@@ -300,18 +300,59 @@ func (mat *T) ScaleVec3(s *vec3.T) *T {
 
 // Quaternion extracts a quaternion from the rotation part of the matrix.
 func (mat *T) Quaternion() quaternion.T {
-	tr := mat.Trace()
+	// Use Trace3() for the 3x3 rotation part only (not the full 4x4 matrix)
+	tr := mat.Trace3()
 
-	s := math.Sqrt(tr + 1)
-	w := s * 0.5
-	s = 0.5 / s
+	var q quaternion.T
 
-	q := quaternion.T{
-		(mat[1][2] - mat[2][1]) * s,
-		(mat[2][0] - mat[0][2]) * s,
-		(mat[0][1] - mat[1][0]) * s,
-		w,
+	// Use Shepperd's method to handle numerical stability
+	// Pick the largest diagonal element to avoid division by small numbers
+	if tr > 0 {
+		// w is the largest component
+		s := math.Sqrt(tr + 1)
+		w := s * 0.5
+		s = 0.5 / s
+		q = quaternion.T{
+			(mat[1][2] - mat[2][1]) * s,
+			(mat[2][0] - mat[0][2]) * s,
+			(mat[0][1] - mat[1][0]) * s,
+			w,
+		}
+	} else if mat[0][0] > mat[1][1] && mat[0][0] > mat[2][2] {
+		// x is the largest component
+		s := math.Sqrt(1 + mat[0][0] - mat[1][1] - mat[2][2])
+		x := s * 0.5
+		s = 0.5 / s
+		q = quaternion.T{
+			x,
+			(mat[0][1] + mat[1][0]) * s,
+			(mat[2][0] + mat[0][2]) * s,
+			(mat[1][2] - mat[2][1]) * s,
+		}
+	} else if mat[1][1] > mat[2][2] {
+		// y is the largest component
+		s := math.Sqrt(1 + mat[1][1] - mat[0][0] - mat[2][2])
+		y := s * 0.5
+		s = 0.5 / s
+		q = quaternion.T{
+			(mat[0][1] + mat[1][0]) * s,
+			y,
+			(mat[1][2] + mat[2][1]) * s,
+			(mat[2][0] - mat[0][2]) * s,
+		}
+	} else {
+		// z is the largest component
+		s := math.Sqrt(1 + mat[2][2] - mat[0][0] - mat[1][1])
+		z := s * 0.5
+		s = 0.5 / s
+		q = quaternion.T{
+			(mat[2][0] + mat[0][2]) * s,
+			(mat[1][2] + mat[2][1]) * s,
+			z,
+			(mat[0][1] - mat[1][0]) * s,
+		}
 	}
+
 	return q.Normalized()
 }
 

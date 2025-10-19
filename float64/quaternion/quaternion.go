@@ -254,8 +254,24 @@ func Mul4(a, b, c, d *T) T {
 // Slerp returns the spherical linear interpolation quaternion between a and b at t (0,1).
 // See http://en.wikipedia.org/wiki/Slerp
 func Slerp(a, b *T, t float64) T {
-	d := math.Acos(a[0]*b[0] + a[1]*b[1] + a[2]*b[2] + a[3]*b[3])
-	ooSinD := 1 / math.Sin(d)
+	dot := a[0]*b[0] + a[1]*b[1] + a[2]*b[2] + a[3]*b[3]
+
+	// If quaternions are very close, use linear interpolation to avoid division by zero
+	const threshold = 0.9995
+	if math.Abs(dot) > threshold {
+		// Linear interpolation for close quaternions
+		q := T{
+			a[0]*(1-t) + b[0]*t,
+			a[1]*(1-t) + b[1]*t,
+			a[2]*(1-t) + b[2]*t,
+			a[3]*(1-t) + b[3]*t,
+		}
+		return q.Normalized()
+	}
+
+	d := math.Acos(dot)
+	sinD := math.Sin(d)
+	ooSinD := 1 / sinD
 
 	t1 := math.Sin(d*(1-t)) * ooSinD
 	t2 := math.Sin(d*t) * ooSinD
@@ -272,8 +288,25 @@ func Slerp(a, b *T, t float64) T {
 
 // Vec3Diff returns the rotation quaternion between two vectors.
 func Vec3Diff(a, b *vec3.T) T {
+	dot := vec3.Dot(a, b)
+
+	// Handle opposite vectors (dot product near -1)
+	if dot < -0.999999 {
+		// Find an orthogonal axis
+		axis := vec3.UnitX
+		test := vec3.Cross(a, &axis)
+		if test.LengthSqr() < 0.01 {
+			// a is parallel to UnitX, use UnitY instead
+			axis = vec3.UnitY
+			test = vec3.Cross(a, &axis)
+		}
+		test.Normalize()
+		// 180 degree rotation around the orthogonal axis
+		return T{test[0], test[1], test[2], 0}
+	}
+
 	cr := vec3.Cross(a, b)
-	sr := math.Sqrt(2 * (1 + vec3.Dot(a, b)))
+	sr := math.Sqrt(2 * (1 + dot))
 	oosr := 1 / sr
 
 	q := T{cr[0] * oosr, cr[1] * oosr, cr[2] * oosr, sr * 0.5}
