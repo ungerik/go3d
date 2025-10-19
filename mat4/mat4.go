@@ -546,8 +546,10 @@ func (mat *T) ExtractEulerAngles() (yHead, xPitch, zRoll float32) {
 	return yHead, xPitch, zRoll
 }
 
-// AssignPerspectiveProjection assigns a perspective projection transformation.
-func (mat *T) AssignPerspectiveProjection(left, right, bottom, top, znear, zfar float32) *T {
+// AssignFrustum assigns a frustum projection transformation.
+// This creates an asymmetric perspective projection with explicit left, right, bottom, top planes.
+// For a typical symmetric perspective projection, use AssignPerspective instead.
+func (mat *T) AssignFrustum(left, right, bottom, top, znear, zfar float32) *T {
 	near2 := znear + znear
 	ooFarNear := 1 / (zfar - znear)
 
@@ -559,6 +561,42 @@ func (mat *T) AssignPerspectiveProjection(left, right, bottom, top, znear, zfar 
 	mat[0][1] = 0
 	mat[1][1] = near2 / (top - bottom)
 	mat[2][1] = (top + bottom) / (top - bottom)
+	mat[3][1] = 0
+
+	mat[0][2] = 0
+	mat[1][2] = 0
+	mat[2][2] = -(zfar + znear) * ooFarNear
+	mat[3][2] = -2 * zfar * znear * ooFarNear
+
+	mat[0][3] = 0
+	mat[1][3] = 0
+	mat[2][3] = -1
+	mat[3][3] = 0
+
+	return mat
+}
+
+// AssignPerspective assigns a symmetric perspective projection transformation.
+// This is the typical perspective projection using field of view and aspect ratio.
+// For asymmetric projections, use AssignFrustum instead.
+//
+// Parameters:
+//   - fovy: Field of view in the y direction, in radians
+//   - aspect: Aspect ratio (width / height)
+//   - znear: Distance to near clipping plane (must be positive)
+//   - zfar: Distance to far clipping plane (must be positive and > znear)
+func (mat *T) AssignPerspective(fovy, aspect, znear, zfar float32) *T {
+	tanHalfFovy := math.Tan(fovy / 2)
+	ooFarNear := 1 / (zfar - znear)
+
+	mat[0][0] = 1 / (aspect * tanHalfFovy)
+	mat[1][0] = 0
+	mat[2][0] = 0
+	mat[3][0] = 0
+
+	mat[0][1] = 0
+	mat[1][1] = 1 / tanHalfFovy
+	mat[2][1] = 0
 	mat[3][1] = 0
 
 	mat[0][2] = 0
