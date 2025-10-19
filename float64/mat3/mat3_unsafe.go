@@ -1,5 +1,4 @@
 //go:build !netgo
-// +build !netgo
 
 package mat3
 
