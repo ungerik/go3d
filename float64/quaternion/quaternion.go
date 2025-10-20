@@ -241,14 +241,28 @@ func Dot(a, b *T) float64 {
 	return a[0]*b[0] + a[1]*b[1] + a[2]*b[2] + a[3]*b[3]
 }
 
-// Mul multiplies two quaternions.
-func Mul(a, b *T) T {
-	q := T{
+// MulRaw multiplies two quaternions without normalizing the result.
+// Use this when you want to chain multiple quaternion operations and normalize once at the end:
+//
+//	q := quaternion.MulRaw(&a, &b)
+//	q = quaternion.MulRaw(&q, &c)
+//	q.Normalize()  // Normalize once at the end
+//
+// For most use cases, use Mul() instead which automatically normalizes.
+func MulRaw(a, b *T) T {
+	return T{
 		a[3]*b[0] + a[0]*b[3] + a[1]*b[2] - a[2]*b[1],
 		a[3]*b[1] + a[1]*b[3] + a[2]*b[0] - a[0]*b[2],
 		a[3]*b[2] + a[2]*b[3] + a[0]*b[1] - a[1]*b[0],
 		a[3]*b[3] - a[0]*b[0] - a[1]*b[1] - a[2]*b[2],
 	}
+}
+
+// Mul multiplies two quaternions and normalizes the result.
+// The result is guaranteed to be a unit quaternion suitable for rotations.
+// For chaining multiple operations, consider using MulRaw() and normalizing once at the end.
+func Mul(a, b *T) T {
+	q := MulRaw(a, b)
 	return q.Normalized()
 }
 
