@@ -287,8 +287,13 @@ func Cross(a, b *T) T {
 // The returned sine value is in the range 0.0 ≤ value ≤ 1.0.
 // The angle is always considered to be in the range 0 to Pi radians and thus the sine value returned is always positive.
 func Sinus(a, b *T) float32 {
+	lenSqrProduct := a.LengthSqr() * b.LengthSqr()
+	if lenSqrProduct < 1e-10 {
+		return 0.0
+	}
+
 	cross := Cross(a, b)
-	v := cross.Length() / math.Sqrt(a.LengthSqr()*b.LengthSqr())
+	v := cross.Length() / math.Sqrt(lenSqrProduct)
 
 	if v > 1.0 {
 		return 1.0
@@ -301,7 +306,12 @@ func Sinus(a, b *T) float32 {
 // Cosine returns the cosine value of the angle between the two vectors.
 // The returned cosine value is in the range -1.0 ≤ value ≤ 1.0.
 func Cosine(a, b *T) float32 {
-	v := Dot(a, b) / math.Sqrt(a.LengthSqr()*b.LengthSqr())
+	lenSqrProduct := a.LengthSqr() * b.LengthSqr()
+	if lenSqrProduct < 1e-10 {
+		return 0.0
+	}
+
+	v := Dot(a, b) / math.Sqrt(lenSqrProduct)
 
 	if v > 1.0 {
 		return 1.0
