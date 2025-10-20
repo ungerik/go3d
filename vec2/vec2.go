@@ -69,12 +69,16 @@ func (vec *T) Get(col, row int) float32 {
 	return vec[row]
 }
 
-// IsZero checks if all elements of the vector are zero.
+// IsZero checks if all elements of the vector are exactly zero.
+// Uses exact equality comparison, which may not be suitable for floating-point math results.
+// For tolerance-based comparison, use IsZeroEps instead.
 func (vec *T) IsZero() bool {
 	return vec[0] == 0 && vec[1] == 0
 }
 
 // IsZeroEps checks if all elements of the vector are zero within the given epsilon tolerance.
+// This is the recommended method for comparing floating-point vectors that result from calculations.
+// For exact zero comparison, use IsZero instead.
 func (vec *T) IsZeroEps(epsilon float32) bool {
 	return math.Abs(vec[0]) <= epsilon && math.Abs(vec[1]) <= epsilon
 }

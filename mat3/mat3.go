@@ -91,12 +91,16 @@ func (mat *T) Get(col, row int) float32 {
 	return mat[col][row]
 }
 
-// IsZero checks if all elements of the matrix are zero.
+// IsZero checks if all elements of the matrix are exactly zero.
+// Uses exact equality comparison, which may not be suitable for floating-point math results.
+// For tolerance-based comparison, use IsZeroEps instead.
 func (mat *T) IsZero() bool {
 	return *mat == Zero
 }
 
 // IsZeroEps checks if all elements of the matrix are zero within the given epsilon tolerance.
+// This is the recommended method for comparing floating-point matrices that result from calculations.
+// For exact zero comparison, use IsZero instead.
 func (mat *T) IsZeroEps(epsilon float32) bool {
 	return math.Abs(mat[0][0]) <= epsilon && math.Abs(mat[0][1]) <= epsilon && math.Abs(mat[0][2]) <= epsilon &&
 		math.Abs(mat[1][0]) <= epsilon && math.Abs(mat[1][1]) <= epsilon && math.Abs(mat[1][2]) <= epsilon &&
