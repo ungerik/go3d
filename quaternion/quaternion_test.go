@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	math "github.com/ungerik/go3d/fmath"
+	math "github.com/chewxy/math32"
 	"github.com/ungerik/go3d/vec3"
 )
 
@@ -470,9 +470,9 @@ func TestSetShortestRotationAndIsShortestRotation(t *testing.T) {
 
 func TestNormalizeEdgeCases(t *testing.T) {
 	tests := []struct {
-		name        string
-		quat        T
-		checkNorm   bool
+		name      string
+		quat      T
+		checkNorm bool
 	}{
 		{"zero quaternion", T{0, 0, 0, 0}, false},
 		{"tiny quaternion (below epsilon)", T{1e-10, 1e-10, 1e-10, 1e-10}, false},

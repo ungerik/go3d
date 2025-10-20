@@ -30,7 +30,7 @@ import (
     "github.com/ungerik/go3d/vec3"
     "github.com/ungerik/go3d/mat4"
     "github.com/ungerik/go3d/quaternion"
-    math "github.com/ungerik/go3d/fmath"
+    math "github.com/chewxy/math32"
 )
 
 func main() {
@@ -69,7 +69,6 @@ Every type has its own sub-package and is named `T`. Packages under `float64/` u
 | `mat3` | 3×3 matrices | 36 bytes |
 | `mat4` | 4×4 matrices | 64 bytes (one cache line!) |
 | `quaternion` | Quaternions for 3D rotations | 16 bytes |
-| `fmath` | Fast math functions (float32) | - |
 
 ### Float64 Packages
 
@@ -84,6 +83,16 @@ All types are available in float64 precision under `float64/`:
 - `generic` - Generic matrix/vector interfaces
 - `hermit2` - 2D Hermite splines
 - `hermit3` - 3D Hermite splines
+
+### Float32 Math Functions
+
+This library uses [github.com/chewxy/math32](https://github.com/chewxy/math32) for float32 math functions. Import it as:
+
+```go
+import math "github.com/chewxy/math32"
+```
+
+The math32 package provides float32 versions of Go's standard `math` library functions, offering better performance for float32-based graphics calculations compared to converting to/from float64.
 
 ## Core Concepts
 
@@ -127,7 +136,7 @@ For DirectX (row-major), use `Transpose()`.
 
 - **Right-handed coordinates**: X × Y = Z
 - **Rotation direction**: Counter-clockwise (right-hand rule)
-- **Angles**: Radians (use `fmath.Pi` constants)
+- **Angles**: Radians (use `math32.Pi` constants)
 
 ## Common Operations
 
@@ -293,66 +302,74 @@ for i := range objects {
 }
 ```
 
-## Documentation
+## API Reference
 
-- **API Reference**: See [API_REFERENCE.md](API_REFERENCE.md) for complete API documentation
-- **Code Critique**: See [CODE_CRITIQUE.md](CODE_CRITIQUE.md) for known issues and fixes
-- **Go Documentation**: https://pkg.go.dev/github.com/ungerik/go3d
-
-## Documentation Standards
-
-### All exported names must be documented
-
-Every exported function, type, constant, and variable must have a comment following Go conventions:
+### Rectangle (vec2 package)
 
 ```go
-// Normalize normalizes the vector to unit length.
-// It modifies the vector in place and returns a pointer for chaining.
-// The zero vector remains zero as it cannot be normalized.
-func (vec *T) Normalize() *T
+type Rect struct {
+    Min vec2.T
+    Max vec2.T
+}
 ```
 
-### Documentation Requirements
+**Operations:**
+```go
+r := vec2.Rect{Min: vec2.T{0, 0}, Max: vec2.T{100, 100}}
 
-1. **First sentence**: Brief summary (appears in package listings)
-2. **Parameters**: Describe non-obvious parameters
-3. **Return values**: Explain what is returned
-4. **Special cases**: Document edge cases, nil handling, panics
-5. **Examples**: Include for complex operations
+width := r.Width()
+height := r.Height()
+center := r.Center()
+area := r.Area()
 
-### Validation
-
-Run the documentation checker:
-
-```bash
-./tools/check-docs.sh
+joined := r.Join(&other)        // Bounding rectangle
+clamped := r.Clamp(&point)      // Clamp point to rectangle
+contains := r.Contains(&point)   // Point-in-rectangle test
 ```
 
-Generate documentation:
+### Box (vec3 package)
 
-```bash
-# View in browser
-godoc -http=:6060
-
-# Generate text documentation
-go doc -all > docs.txt
+```go
+type Box struct {
+    Min vec3.T
+    Max vec3.T
+}
 ```
 
-## Testing
+**Operations:**
+```go
+b := vec3.Box{Min: vec3.T{0, 0, 0}, Max: vec3.T{10, 10, 10}}
 
-```bash
-# Run all tests
-go test ./...
+size := b.Size()
+center := b.Center()
+volume := b.Volume()
 
-# Run specific package tests
-go test ./vec3
-go test ./mat4
+joined := b.Join(&other)        // Bounding box
+contains := b.Contains(&point)   // Point-in-box test
+```
 
-# Run with race detector
-go test -race ./...
+### Migration Notes
 
-# Run benchmarks
-go test -bench=. ./vec3
+#### Matrix Multiplication Order
+
+Transforms apply **right to left**:
+
+```go
+// Mathematical notation: MVP = P × V × M
+// In go3d:
+var mvp mat4.T
+mvp.AssignMul(&projection, &view)  // mvp = P × V
+mvp.Mul(&model)                     // mvp = (P × V) × M
+```
+
+#### Vec4 Homogeneous Coordinates
+
+```go
+// Point in space (affected by translation): w=1
+point := vec4.T{x, y, z, 1.0}
+
+// Direction vector (not affected by translation): w=0
+direction := vec4.T{x, y, z, 0.0}
 ```
 
 ## Examples
@@ -402,6 +419,34 @@ func SmoothCamera(start, end quaternion.T, t float32) quaternion.T {
 
     // Smooth interpolation
     return quaternion.Slerp(&start, &end, t)
+}
+```
+
+### Billboard Matrix
+
+Make objects always face the camera:
+
+```go
+func CreateBillboard(objectPos, cameraPos, cameraUp vec3.T) mat4.T {
+    // Calculate direction to camera
+    direction := vec3.Sub(&cameraPos, &objectPos)
+    direction.Normalize()
+
+    // Calculate right vector
+    right := vec3.Cross(&cameraUp, &direction)
+    right.Normalize()
+
+    // Recalculate up vector
+    up := vec3.Cross(&direction, &right)
+
+    // Build matrix
+    var billboard mat4.T
+    billboard[0] = vec4.T{right[0], right[1], right[2], 0}
+    billboard[1] = vec4.T{up[0], up[1], up[2], 0}
+    billboard[2] = vec4.T{direction[0], direction[1], direction[2], 0}
+    billboard[3] = vec4.T{objectPos[0], objectPos[1], objectPos[2], 1}
+
+    return billboard
 }
 ```
 

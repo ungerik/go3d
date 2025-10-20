@@ -5,7 +5,7 @@ import (
 	"errors"
 	"fmt"
 
-	math "github.com/ungerik/go3d/fmath"
+	math "github.com/chewxy/math32"
 	"github.com/ungerik/go3d/generic"
 	"github.com/ungerik/go3d/vec2"
 )

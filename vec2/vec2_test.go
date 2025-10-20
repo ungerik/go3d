@@ -6,7 +6,7 @@ import (
 
 	math64 "math"
 
-	math "github.com/ungerik/go3d/fmath"
+	math "github.com/chewxy/math32"
 )
 
 func TestAbs(t *testing.T) {

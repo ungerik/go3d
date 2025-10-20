@@ -2,4 +2,4 @@ module github.com/ungerik/go3d
 
 go 1.23
 
-//require github.com/barnex/fmath v0.0.0-20150108074215-ec9671f295c2
+require github.com/chewxy/math32 v1.11.1

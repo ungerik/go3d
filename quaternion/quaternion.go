@@ -4,7 +4,7 @@ package quaternion
 import (
 	"fmt"
 
-	math "github.com/ungerik/go3d/fmath"
+	math "github.com/chewxy/math32"
 	"github.com/ungerik/go3d/vec3"
 	"github.com/ungerik/go3d/vec4"
 )

@@ -1,11 +1,12 @@
 package mat4
 
 import (
-	math "github.com/ungerik/go3d/fmath"
+	"testing"
+
+	math "github.com/chewxy/math32"
 	"github.com/ungerik/go3d/mat3"
 	"github.com/ungerik/go3d/vec3"
 	"github.com/ungerik/go3d/vec4"
-	"testing"
 )
 
 const EPSILON = 0.0001

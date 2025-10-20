@@ -1,7 +1,7 @@
 package vec3
 
 import (
-	math "github.com/ungerik/go3d/fmath"
+	math "github.com/chewxy/math32"
 
 	"testing"
 )
