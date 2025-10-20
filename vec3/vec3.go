@@ -163,15 +163,24 @@ func (vec *T) Absed() T {
 }
 
 // Normalize normalizes the vector to unit length.
+// Uses the package Epsilon variable for numerical stability:
+// - Vectors with squared length < Epsilon are considered zero and left unchanged
+// - Vectors with squared length within Epsilon of 1.0 are considered already normalized
 func (vec *T) Normalize() *T {
 	sl := vec.LengthSqr()
-	if sl == 0 || sl == 1 {
+	if sl < Epsilon {
+		// Vector is effectively zero
+		return vec
+	}
+	if math.Abs(sl-1) < Epsilon {
+		// Vector is already normalized
 		return vec
 	}
 	return vec.Scale(1 / math.Sqrt(sl))
 }
 
 // Normalized returns a unit length normalized copy of the vector.
+// Uses the package Epsilon variable for numerical stability. See Normalize() for details.
 func (vec *T) Normalized() T {
 	v := *vec
 	v.Normalize()
@@ -179,9 +188,12 @@ func (vec *T) Normalized() T {
 }
 
 // Normal returns an orthogonal vector.
+// Uses the package Epsilon variable when checking if the cross product is zero,
+// which provides numerical stability when the input vector is parallel to UnitZ.
+// Falls back to UnitX when the cross product is effectively zero.
 func (vec *T) Normal() T {
 	n := Cross(vec, &UnitZ)
-	if n.IsZero() {
+	if n.IsZeroEps(Epsilon) {
 		return UnitX
 	}
 	return n.Normalized()

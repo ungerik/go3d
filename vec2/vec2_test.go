@@ -366,3 +366,72 @@ func TestIsZeroEps(t *testing.T) {
 		})
 	}
 }
+
+func TestNormalizeEdgeCases(t *testing.T) {
+	tests := []struct {
+		name        string
+		vec         T
+		checkLength bool
+	}{
+		{"zero vector", T{0, 0}, false},
+		{"tiny vector (below epsilon)", T{1e-10, 1e-10}, false},
+		{"already normalized", T{1, 0}, true},
+		{"nearly normalized positive deviation", T{1.0000001, 0}, true},
+		{"nearly normalized negative deviation", T{0.9999999, 0}, true},
+		{"nearly normalized mixed", T{0.7071068, 0.7071067}, true}, // ~sqrt(2)/2 components
+		{"needs normalization", T{3, 4}, true},
+		{"negative components", T{-3, -4}, true},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			original := tt.vec
+			originalLengthSqr := original.LengthSqr()
+			result := tt.vec.Normalize()
+
+			// Check that Normalize returns pointer to vec
+			if result != &tt.vec {
+				t.Errorf("Normalize() should return pointer to vec")
+			}
+
+			if tt.checkLength {
+				length := tt.vec.Length()
+				if !PracticallyEquals(length, 1.0, 0.001) {
+					t.Errorf("After Normalize(), Length() = %v, want 1.0 (original lengthSqr=%v)", length, originalLengthSqr)
+				}
+			}
+		})
+	}
+}
+
+func TestNormalizedEdgeCases(t *testing.T) {
+	tests := []struct {
+		name        string
+		vec         T
+		checkLength bool
+	}{
+		{"zero vector", T{0, 0}, false},
+		{"tiny vector", T{1e-10, 1e-10}, false},
+		{"already normalized", T{1, 0}, true},
+		{"needs normalization", T{3, 4}, true},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			original := tt.vec
+			result := tt.vec.Normalized()
+
+			// Check that original is unchanged
+			if tt.vec != original {
+				t.Errorf("Normalized() modified original vector")
+			}
+
+			if tt.checkLength {
+				length := result.Length()
+				if !PracticallyEquals(length, 1.0, 0.0001) {
+					t.Errorf("Normalized().Length() = %v, want 1.0", length)
+				}
+			}
+		})
+	}
+}
