@@ -118,31 +118,45 @@ func (quat *T) Norm() float32 {
 }
 
 // Normalize normalizes to a unit quaternation.
+// Uses the package Epsilon variable for numerical stability:
+// - Quaternions with norm < Epsilon are considered zero and left unchanged
+// - Quaternions with norm within Epsilon of 1.0 are considered already normalized
 func (quat *T) Normalize() *T {
 	norm := quat.Norm()
-	if norm != 1 && norm != 0 {
-		ool := 1 / math.Sqrt(norm)
-		quat[0] *= ool
-		quat[1] *= ool
-		quat[2] *= ool
-		quat[3] *= ool
+	if norm < Epsilon {
+		// Quaternion is effectively zero
+		return quat
 	}
+	if math.Abs(norm-1) < Epsilon {
+		// Quaternion is already normalized
+		return quat
+	}
+	ool := 1 / math.Sqrt(norm)
+	quat[0] *= ool
+	quat[1] *= ool
+	quat[2] *= ool
+	quat[3] *= ool
 	return quat
 }
 
 // Normalized returns a copy normalized to a unit quaternation.
+// Uses the package Epsilon variable for numerical stability. See Normalize() for details.
 func (quat *T) Normalized() T {
 	norm := quat.Norm()
-	if norm != 1 && norm != 0 {
-		ool := 1 / math.Sqrt(norm)
-		return T{
-			quat[0] * ool,
-			quat[1] * ool,
-			quat[2] * ool,
-			quat[3] * ool,
-		}
-	} else {
+	if norm < Epsilon {
+		// Quaternion is effectively zero
 		return *quat
+	}
+	if math.Abs(norm-1) < Epsilon {
+		// Quaternion is already normalized
+		return *quat
+	}
+	ool := 1 / math.Sqrt(norm)
+	return T{
+		quat[0] * ool,
+		quat[1] * ool,
+		quat[2] * ool,
+		quat[3] * ool,
 	}
 }
 

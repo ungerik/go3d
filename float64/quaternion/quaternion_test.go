@@ -90,3 +90,72 @@ func TestToEulerAngles(t *testing.T) {
 		}
 	}
 }
+
+func TestNormalizeEdgeCases(t *testing.T) {
+	tests := []struct {
+		name        string
+		quat        T
+		checkNorm   bool
+	}{
+		{"zero quaternion", T{0, 0, 0, 0}, false},
+		{"tiny quaternion (below epsilon)", T{1e-16, 1e-16, 1e-16, 1e-16}, false},
+		{"already normalized", T{1, 0, 0, 0}, true},
+		{"nearly normalized positive deviation", T{1.00000000001, 0, 0, 0}, true},
+		{"nearly normalized negative deviation", T{0.99999999999, 0, 0, 0}, true},
+		{"nearly normalized mixed", T{0.5, 0.5, 0.5, 0.5}, true}, // sqrt(4*0.25) = 1
+		{"needs normalization", T{2, 0, 0, 0}, true},
+		{"needs normalization mixed", T{1, 1, 1, 1}, true},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			original := tt.quat
+			originalNorm := original.Norm()
+			result := tt.quat.Normalize()
+
+			if result != &tt.quat {
+				t.Errorf("Normalize() should return pointer to quat")
+			}
+
+			if tt.checkNorm {
+				norm := tt.quat.Norm()
+				// For unit quaternions, norm (squared magnitude) should be 1
+				if math.Abs(norm-1.0) > 0.00001 {
+					t.Errorf("After Normalize(), Norm() = %v, want 1.0 (original norm=%v)", norm, originalNorm)
+				}
+			}
+		})
+	}
+}
+
+func TestNormalizedEdgeCases(t *testing.T) {
+	tests := []struct {
+		name      string
+		quat      T
+		checkNorm bool
+	}{
+		{"zero quaternion", T{0, 0, 0, 0}, false},
+		{"tiny quaternion", T{1e-16, 1e-16, 1e-16, 1e-16}, false},
+		{"already normalized", T{1, 0, 0, 0}, true},
+		{"needs normalization", T{2, 0, 0, 0}, true},
+		{"needs normalization mixed", T{1, 1, 1, 1}, true},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			original := tt.quat
+			result := tt.quat.Normalized()
+
+			if tt.quat != original {
+				t.Errorf("Normalized() modified original quaternion")
+			}
+
+			if tt.checkNorm {
+				norm := result.Norm()
+				if math.Abs(norm-1.0) > 0.00001 {
+					t.Errorf("Normalized().Norm() = %v, want 1.0", norm)
+				}
+			}
+		})
+	}
+}
