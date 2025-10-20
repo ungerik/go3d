@@ -17,7 +17,7 @@ var (
 	Ident = T{0, 0, 0, 1}
 )
 
-// T represents a orientatin/rotation as a unit quaternion.
+// T represents an orientation/rotation as a unit quaternion.
 // See http://en.wikipedia.org/wiki/Quaternions_and_spatial_rotation
 type T [4]float32
 
@@ -174,7 +174,7 @@ func (quat *T) Negated() T {
 	return T{-quat[0], -quat[1], -quat[2], -quat[3]}
 }
 
-// Invert inverts the quaterion.
+// Invert inverts the quaternion.
 func (quat *T) Invert() *T {
 	quat[0] = -quat[0]
 	quat[1] = -quat[1]

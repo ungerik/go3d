@@ -19,7 +19,7 @@ func rotateAndNormalizeVec3(quat *T, v *vec3.T) {
 }
 
 func TestQuaternionRotateVec3(t *testing.T) {
-	eularAngles := []vec3.T{
+	eulerAngles := []vec3.T{
 		{90, 20, 21},
 		{-90, 0, 0},
 		{28, 1043, -38},
@@ -30,9 +30,9 @@ func TestQuaternionRotateVec3(t *testing.T) {
 		{-6, 2, 9},
 	}
 	for _, vec := range vecs {
-		for _, eularAngle := range eularAngles {
+		for _, eulerAngle := range eulerAngles {
 			func() {
-				q := FromEulerAngles(eularAngle[1]*math.Pi/180.0, eularAngle[0]*math.Pi/180.0, eularAngle[2]*math.Pi/180.0)
+				q := FromEulerAngles(eulerAngle[1]*math.Pi/180.0, eulerAngle[0]*math.Pi/180.0, eulerAngle[2]*math.Pi/180.0)
 				vec_r1 := vec
 				vec_r2 := vec
 				magSqr := vec_r1.LengthSqr()
@@ -42,7 +42,7 @@ func TestQuaternionRotateVec3(t *testing.T) {
 				magSqr2 := vec_r1.LengthSqr()
 
 				if !vecd.PracticallyEquals(&vec_r1, 0.000000000000001) {
-					t.Logf("test case %v rotates %v failed - vector rotation: %+v, %+v\n", eularAngle, vec, vecd, vec_r1)
+					t.Logf("test case %v rotates %v failed - vector rotation: %+v, %+v\n", eulerAngle, vec, vecd, vec_r1)
 					t.Fail()
 				}
 
@@ -50,14 +50,14 @@ func TestQuaternionRotateVec3(t *testing.T) {
 				length := math.Abs(magSqr - magSqr2)
 
 				if angle > 0.0000001 {
-					t.Logf("test case %v rotates %v failed - angle difference to large\n", eularAngle, vec)
+					t.Logf("test case %v rotates %v failed - angle difference to large\n", eulerAngle, vec)
 					t.Logf("vectors: %+v, %+v\n", vec_r1, vec_r2)
 					t.Logf("angle: %v\n", angle)
 					t.Fail()
 				}
 
 				if length > 0.000000000001 {
-					t.Logf("test case %v rotates %v failed - squared length difference to large\n", eularAngle, vec)
+					t.Logf("test case %v rotates %v failed - squared length difference to large\n", eulerAngle, vec)
 					t.Logf("vectors: %+v %+v\n", vec_r1, vec_r2)
 					t.Logf("squared lengths: %v, %v\n", magSqr, magSqr2)
 					t.Fail()
